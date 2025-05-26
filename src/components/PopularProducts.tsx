@@ -1,58 +1,10 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import Link from 'next/link'
+import { getPopularProducts } from '@/data/products'
 
 export default function PopularProducts() {
-  const products = [
-    {
-      id: 1,
-      name: 'Kartvizit',
-      description: 'Profesyonel kartvizit tasarımları',
-      image: '/api/placeholder/300/200',
-      href: '/kartvizit',
-      gradient: 'from-[#59af05] to-[#4a9321]'
-    },
-    {
-      id: 2,
-      name: 'Broşür',
-      description: 'Reklam broşürü tasarım ve baskı',
-      image: '/api/placeholder/300/200',
-      href: '/brosur',
-      gradient: 'from-blue-400 to-blue-600'
-    },
-    {
-      id: 3,
-      name: 'Magnet',
-      description: 'Özel tasarım magnet çözümleri',
-      image: '/api/placeholder/300/200',
-      href: '/magnet',
-      gradient: 'from-purple-400 to-purple-600'
-    },
-    {
-      id: 4,
-      name: 'Etiket',
-      description: 'Özel tasarım etiket çözümleri',
-      image: '/api/placeholder/300/200',
-      href: '/etiket',
-      gradient: 'from-orange-400 to-orange-600'
-    },
-    {
-      id: 5,
-      name: 'El İlanı',
-      description: 'Etkili el ilanı tasarımları',
-      image: '/api/placeholder/300/200',
-      href: '/el-ilani',
-      gradient: 'from-red-400 to-red-600'
-    },
-    {
-      id: 6,
-      name: 'Promosyon Kalemi',
-      description: 'Kurumsal promosyon kalemleri',
-      image: '/api/placeholder/300/200',
-      href: '/promosyon',
-      gradient: 'from-indigo-400 to-indigo-600'
-    }
-  ]
+  const products = getPopularProducts()
 
   return (
     <section className="py-16 bg-gray-50">
@@ -81,12 +33,17 @@ export default function PopularProducts() {
                   <p className="text-gray-600 mb-4">
                     {product.description}
                   </p>
+                  {product.price && (
+                    <div className="text-sm text-[#59af05] font-semibold">
+                      {product.price.min}₺ - {product.price.max}₺
+                    </div>
+                  )}
                 </div>
               </CardContent>
               <CardFooter className="px-6 pb-6">
                 <Link href={product.href} className="w-full">
                   <Button className="w-full bg-[#59af05] hover:bg-[#4a9321]">
-                    Sepete Ekle
+                    İncele
                   </Button>
                 </Link>
               </CardFooter>

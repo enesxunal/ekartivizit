@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Mail, Phone, MapPin } from 'lucide-react'
+import { CATEGORIES } from '@/data/products'
 
 export default function Footer() {
   return (
@@ -38,35 +39,17 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Ürünler */}
+          {/* Kategoriler */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Ürünler</h3>
+            <h3 className="text-lg font-semibold mb-4">Kategoriler</h3>
             <ul className="space-y-2">
-              <li>
-                <Link href="/kartvizit" className="text-gray-300 hover:text-[#59af05] transition-colors">
-                  Kartvizit
-                </Link>
-              </li>
-              <li>
-                <Link href="/brosur" className="text-gray-300 hover:text-[#59af05] transition-colors">
-                  Broşür
-                </Link>
-              </li>
-              <li>
-                <Link href="/magnet" className="text-gray-300 hover:text-[#59af05] transition-colors">
-                  Magnet
-                </Link>
-              </li>
-              <li>
-                <Link href="/etiket" className="text-gray-300 hover:text-[#59af05] transition-colors">
-                  Etiket
-                </Link>
-              </li>
-              <li>
-                <Link href="/promosyon" className="text-gray-300 hover:text-[#59af05] transition-colors">
-                  Promosyon
-                </Link>
-              </li>
+              {CATEGORIES.map((category) => (
+                <li key={category.id}>
+                  <Link href={category.href} className="text-gray-300 hover:text-[#59af05] transition-colors">
+                    {category.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -82,6 +65,11 @@ export default function Footer() {
               <li>
                 <Link href="/iletisim" className="text-gray-300 hover:text-[#59af05] transition-colors">
                   İletişim
+                </Link>
+              </li>
+              <li>
+                <Link href="/cok-satanlar" className="text-gray-300 hover:text-[#59af05] transition-colors">
+                  Çok Satanlar
                 </Link>
               </li>
               <li>

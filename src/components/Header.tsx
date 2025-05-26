@@ -12,12 +12,11 @@ export default function Header() {
   const cartItemCount = 0 // Bu değer daha sonra context'ten gelecek
 
   const menuItems = [
-    { name: 'Ana Sayfa', href: '/' },
-    { name: 'Kartvizit', href: '/kartvizit' },
-    { name: 'Broşür', href: '/brosur' },
-    { name: 'Magnet', href: '/magnet' },
-    { name: 'Etiket', href: '/etiket' },
+    { name: 'Tüm Ürünler', href: '/urunler' },
+    { name: 'Kurumsal', href: '/kurumsal' },
+    { name: 'Reklam', href: '/reklam' },
     { name: 'Promosyon', href: '/promosyon' },
+    { name: 'Çok Satanlar', href: '/cok-satanlar' },
   ]
 
   return (
