@@ -12,7 +12,7 @@ export default function HeroSection() {
             <div className="space-y-4">
               <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
                 Profesyonel Baskı{' '}
-                <span className="text-green-600">Çözüm Merkezi</span>
+                <span className="text-[#59af05]">Çözüm Merkezi</span>
               </h1>
               <p className="text-lg text-gray-600 leading-relaxed">
                 Kartvizit, broşür, magnet ve daha fazlası için online tasarım 
@@ -23,7 +23,7 @@ export default function HeroSection() {
 
             {/* Butonlar */}
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="bg-green-600 hover:bg-green-700 text-white px-8 py-3">
+              <Button size="lg" className="bg-[#59af05] hover:bg-[#4a9321] text-white px-8 py-3">
                 Hemen Başla
               </Button>
               <Button variant="outline" size="lg" className="px-8 py-3">
@@ -34,8 +34,8 @@ export default function HeroSection() {
             {/* Özellikler */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-8">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-10 h-10 bg-[#59af05]/10 rounded-lg flex items-center justify-center">
+                  <svg className="w-5 h-5 text-[#59af05]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                   </svg>
                 </div>
@@ -45,8 +45,8 @@ export default function HeroSection() {
               </div>
 
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-10 h-10 bg-[#59af05]/10 rounded-lg flex items-center justify-center">
+                  <svg className="w-5 h-5 text-[#59af05]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                   </svg>
                 </div>
@@ -56,8 +56,8 @@ export default function HeroSection() {
               </div>
 
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-10 h-10 bg-[#59af05]/10 rounded-lg flex items-center justify-center">
+                  <svg className="w-5 h-5 text-[#59af05]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                   </svg>
                 </div>
@@ -71,7 +71,7 @@ export default function HeroSection() {
           {/* Sağ taraf - Ürün görselleri */}
           <div className="grid grid-cols-2 gap-4">
             <Card className="p-4 bg-white shadow-lg hover:shadow-xl transition-shadow">
-              <div className="aspect-square bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center mb-3">
+              <div className="aspect-square bg-gradient-to-br from-[#59af05] to-[#4a9321] rounded-lg flex items-center justify-center mb-3">
                 <div className="text-white text-center">
                   <div className="w-16 h-10 bg-white/20 rounded mb-2 mx-auto"></div>
                   <div className="text-xs font-medium">Kartvizit</div>

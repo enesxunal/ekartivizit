@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Mail, Phone, MapPin } from 'lucide-react'
 
 export default function Footer() {
@@ -8,11 +9,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo ve Açıklama */}
           <div className="col-span-1 md:col-span-2">
-            <Link href="/" className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-sm">E</span>
-              </div>
-              <span className="text-xl font-bold">Kartvizit</span>
+            <Link href="/" className="flex items-center mb-4">
+              <Image
+                src="/logo.png"
+                alt="E-Kartvizit Logo"
+                width={120}
+                height={40}
+                className="h-10 w-auto brightness-0 invert"
+              />
             </Link>
             <p className="text-gray-300 mb-4 max-w-md">
               Profesyonel baskı çözümleri ile işinizi bir adım öne taşıyın. 
@@ -20,15 +24,15 @@ export default function Footer() {
             </p>
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
-                <Phone className="h-4 w-4 text-green-400" />
+                <Phone className="h-4 w-4 text-[#59af05]" />
                 <span className="text-gray-300">+90 (212) 123 45 67</span>
               </div>
               <div className="flex items-center space-x-2">
-                <Mail className="h-4 w-4 text-green-400" />
+                <Mail className="h-4 w-4 text-[#59af05]" />
                 <span className="text-gray-300">info@ekartvizit.com</span>
               </div>
               <div className="flex items-center space-x-2">
-                <MapPin className="h-4 w-4 text-green-400" />
+                <MapPin className="h-4 w-4 text-[#59af05]" />
                 <span className="text-gray-300">İstanbul, Türkiye</span>
               </div>
             </div>
@@ -39,27 +43,27 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Ürünler</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/kartvizit" className="text-gray-300 hover:text-green-400 transition-colors">
+                <Link href="/kartvizit" className="text-gray-300 hover:text-[#59af05] transition-colors">
                   Kartvizit
                 </Link>
               </li>
               <li>
-                <Link href="/brosur" className="text-gray-300 hover:text-green-400 transition-colors">
+                <Link href="/brosur" className="text-gray-300 hover:text-[#59af05] transition-colors">
                   Broşür
                 </Link>
               </li>
               <li>
-                <Link href="/magnet" className="text-gray-300 hover:text-green-400 transition-colors">
+                <Link href="/magnet" className="text-gray-300 hover:text-[#59af05] transition-colors">
                   Magnet
                 </Link>
               </li>
               <li>
-                <Link href="/etiket" className="text-gray-300 hover:text-green-400 transition-colors">
+                <Link href="/etiket" className="text-gray-300 hover:text-[#59af05] transition-colors">
                   Etiket
                 </Link>
               </li>
               <li>
-                <Link href="/promosyon" className="text-gray-300 hover:text-green-400 transition-colors">
+                <Link href="/promosyon" className="text-gray-300 hover:text-[#59af05] transition-colors">
                   Promosyon
                 </Link>
               </li>
@@ -71,27 +75,27 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Hızlı Linkler</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/hakkimizda" className="text-gray-300 hover:text-green-400 transition-colors">
+                <Link href="/hakkimizda" className="text-gray-300 hover:text-[#59af05] transition-colors">
                   Hakkımızda
                 </Link>
               </li>
               <li>
-                <Link href="/iletisim" className="text-gray-300 hover:text-green-400 transition-colors">
+                <Link href="/iletisim" className="text-gray-300 hover:text-[#59af05] transition-colors">
                   İletişim
                 </Link>
               </li>
               <li>
-                <Link href="/sss" className="text-gray-300 hover:text-green-400 transition-colors">
+                <Link href="/sss" className="text-gray-300 hover:text-[#59af05] transition-colors">
                   Sık Sorulan Sorular
                 </Link>
               </li>
               <li>
-                <Link href="/gizlilik" className="text-gray-300 hover:text-green-400 transition-colors">
+                <Link href="/gizlilik" className="text-gray-300 hover:text-[#59af05] transition-colors">
                   Gizlilik Politikası
                 </Link>
               </li>
               <li>
-                <Link href="/kullanim-kosullari" className="text-gray-300 hover:text-green-400 transition-colors">
+                <Link href="/kullanim-kosullari" className="text-gray-300 hover:text-[#59af05] transition-colors">
                   Kullanım Koşulları
                 </Link>
               </li>

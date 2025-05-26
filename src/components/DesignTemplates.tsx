@@ -8,7 +8,7 @@ export default function DesignTemplates() {
       name: 'Modern Kartvizit',
       description: 'Minimalist ve modern tasarım',
       category: 'Kartvizit',
-      gradient: 'from-green-400 to-green-600'
+      gradient: 'from-[#59af05] to-[#4a9321]'
     },
     {
       id: 2,
@@ -55,7 +55,7 @@ export default function DesignTemplates() {
                   <p className="text-gray-600 mb-4">
                     {template.description}
                   </p>
-                  <Button className="w-full bg-green-600 hover:bg-green-700">
+                  <Button className="w-full bg-[#59af05] hover:bg-[#4a9321]">
                     Şablonu Özelleştir
                   </Button>
                 </div>

@@ -6,7 +6,7 @@ export default function WhyChooseUs() {
       icon: CheckCircle,
       title: 'Ücretsiz Tasarım Desteği',
       description: 'Uzman tasarım ekibimiz sizin için profesyonel tasarımlar hazırlar.',
-      color: 'text-green-600'
+      color: 'text-[#59af05]'
     },
     {
       icon: Truck,
@@ -27,7 +27,7 @@ export default function WhyChooseUs() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-            <span className="text-green-600">Özellikler</span>
+            <span className="text-[#59af05]">Özellikler</span>
           </h2>
           <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
             Neden Bizi Tercih Etmelisiniz?
@@ -40,7 +40,7 @@ export default function WhyChooseUs() {
             return (
               <div key={index} className="text-center group">
                 <div className="flex justify-center mb-6">
-                  <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center group-hover:bg-green-50 transition-colors">
+                  <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center group-hover:bg-[#59af05]/10 transition-colors">
                     <IconComponent className={`w-8 h-8 ${feature.color}`} />
                   </div>
                 </div>

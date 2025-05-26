@@ -10,7 +10,7 @@ export default function PopularProducts() {
       description: 'Profesyonel kartvizit tasarımları',
       image: '/api/placeholder/300/200',
       href: '/kartvizit',
-      gradient: 'from-green-400 to-green-600'
+      gradient: 'from-[#59af05] to-[#4a9321]'
     },
     {
       id: 2,
@@ -85,7 +85,7 @@ export default function PopularProducts() {
               </CardContent>
               <CardFooter className="px-6 pb-6">
                 <Link href={product.href} className="w-full">
-                  <Button className="w-full bg-green-600 hover:bg-green-700">
+                  <Button className="w-full bg-[#59af05] hover:bg-[#4a9321]">
                     Sepete Ekle
                   </Button>
                 </Link>

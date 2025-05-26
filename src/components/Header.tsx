@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { ShoppingCart, User, Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -25,10 +26,14 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-sm">E</span>
-            </div>
-            <span className="text-xl font-bold text-gray-900">Kartvizit</span>
+            <Image
+              src="/logo.png"
+              alt="E-Kartvizit Logo"
+              width={120}
+              height={40}
+              className="h-10 w-auto"
+              priority
+            />
           </Link>
 
           {/* Desktop Menü */}
@@ -37,7 +42,7 @@ export default function Header() {
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-gray-700 hover:text-green-600 px-3 py-2 text-sm font-medium transition-colors"
+                className="text-gray-700 hover:text-[#59af05] px-3 py-2 text-sm font-medium transition-colors"
               >
                 {item.name}
               </Link>
@@ -86,7 +91,7 @@ export default function Header() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="text-gray-700 hover:text-green-600 block px-3 py-2 text-base font-medium transition-colors"
+                  className="text-gray-700 hover:text-[#59af05] block px-3 py-2 text-base font-medium transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}
