@@ -12,13 +12,13 @@ export default function WhyChooseUs() {
       icon: Truck,
       title: 'Ücretsiz Kargo',
       description: 'Tüm siparişlerinizde kargo ücretsizdir.',
-      color: 'text-blue-600'
+      color: 'text-[#59af05]'
     },
     {
       icon: CreditCard,
       title: 'KDV Dahil Fiyatlar',
       description: 'Tüm fiyatlarımızda KDV dahildir.',
-      color: 'text-purple-600'
+      color: 'text-[#59af05]'
     }
   ]
 

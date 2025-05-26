@@ -4,16 +4,33 @@ export interface Product {
   description: string;
   category: 'kurumsal' | 'reklam' | 'promosyon';
   image: string;
+  images?: string[]; // Ek görseller için
   href: string;
   gradient: string;
   features?: string[];
   sizes?: string[];
   materials?: string[];
   colors?: string[];
+  windowOptions?: string[]; // Zarf için pencere seçenekleri
   minQuantity?: number;
   price?: {
     min: number;
     max: number;
+  };
+  extraOptions?: {
+    name: string;
+    price: number;
+  }[];
+  quantityPricing?: {
+    quantity: number;
+    price: number;
+    material?: string;
+    size?: string;
+  }[];
+  customSizing?: {
+    enabled: boolean;
+    pricePerCm2: number;
+    minSize: number;
   };
 }
 
@@ -56,75 +73,135 @@ export const PRODUCTS: Product[] = [
     name: 'Kartvizit',
     description: 'Profesyonel kartvizit tasarımları',
     category: 'kurumsal',
-    image: '/images/kartvizit.jpg',
-    href: '/kurumsal/kartvizit',
+    image: '/images/Kartvizit.png',
+    images: [
+      '/images/Kartvizit.png',
+      '/images/Kartvizit (1).png',
+      '/images/Kartvizit (2).png',
+      '/images/Kartvizit-Ekonomik.png'
+    ],
+    href: '/urun/kartvizit',
     gradient: 'from-[#59af05] to-[#4a9321]',
-    features: ['Mat/Parlak Laminasyon', 'UV Spot Laminasyon', 'Özel Kesim'],
-    sizes: ['85x55mm (Standart)', '90x50mm', '85x50mm'],
-    materials: ['350gr Kuşe Karton', '300gr Bristol', '250gr Kraft'],
+    features: ['Mat/Parlak Laminasyon', 'UV Spot Laminasyon', 'Özel Kesim', 'Kabartma Laklı'],
+    sizes: ['86.75x54mm (Standart)'],
+    materials: ['350 Gram Kuşe', '700 Gram Sıvama'],
     colors: ['CMYK 4 Renk', 'Pantone Özel Renk'],
-    minQuantity: 100,
-    price: { min: 25, max: 150 }
+    minQuantity: 1000,
+    price: { min: 500, max: 2000 },
+    extraOptions: [
+      { name: 'Özel Kesim', price: 200 },
+      { name: 'Logo Tasarımı', price: 250 }
+    ],
+    quantityPricing: [
+      { quantity: 1000, price: 800, material: '350 Gram Kuşe' },
+      { quantity: 2000, price: 1500, material: '350 Gram Kuşe' },
+      { quantity: 1000, price: 1100, material: '700 Gram Sıvama' },
+      { quantity: 2000, price: 2000, material: '700 Gram Sıvama' }
+    ]
   },
   {
     id: 'antetli-kagit',
     name: 'Antetli Kağıt',
     description: 'Kurumsal antetli kağıt tasarımları',
     category: 'kurumsal',
-    image: '/images/antetli-kagit.jpg',
-    href: '/kurumsal/antetli-kagit',
+    image: '/images/antetli-kagit-2222.png',
+    href: '/urun/antetli-kagit',
     gradient: 'from-blue-400 to-blue-600',
-    features: ['Letterhead Tasarım', 'Logo Entegrasyonu', 'Özel Boyut'],
-    sizes: ['A4 (21x29.7cm)', 'A5 (14.8x21cm)', 'Özel Boyut'],
-    materials: ['80gr Beyaz Kağıt', '90gr Beyaz Kağıt', '100gr Kuşe'],
-    colors: ['CMYK 4 Renk', 'Tek Renk', 'İki Renk'],
-    minQuantity: 250,
-    price: { min: 50, max: 200 }
+    features: ['Letterhead Tasarım', 'Tek Yön Renkli'],
+    sizes: ['A4 (21x29.7cm)'],
+    materials: ['80 Gram 1. Hamur'],
+    colors: ['CMYK 4 Renk', 'Tek Renk'],
+    minQuantity: 2000,
+    price: { min: 2500, max: 2500 },
+    extraOptions: [
+      { name: 'Logo Tasarımı', price: 250 }
+    ],
+    quantityPricing: [
+      { quantity: 2000, price: 2500 }
+    ]
   },
   {
     id: 'zarf',
     name: 'Zarf',
     description: 'Kurumsal zarf tasarımları',
     category: 'kurumsal',
-    image: '/images/zarf.jpg',
-    href: '/kurumsal/zarf',
+    image: '/images/Zarf-Diplomat2.png',
+    images: [
+      '/images/Zarf-Diplomat2.png',
+      '/images/diplomat-zarf-111.png'
+    ],
+    href: '/urun/zarf',
     gradient: 'from-gray-400 to-gray-600',
-    features: ['Pencereli/Pencersiz', 'Özel Logo Baskı', 'Farklı Boyutlar'],
-    sizes: ['DL (11x22cm)', 'C5 (16.2x22.9cm)', 'C4 (22.9x32.4cm)'],
-    materials: ['80gr Beyaz Kağıt', '90gr Kraft', '100gr Renkli'],
-    colors: ['CMYK 4 Renk', 'Tek Renk Baskı'],
-    minQuantity: 250,
-    price: { min: 75, max: 300 }
+    features: ['Pencereli', 'Pencersiz', 'Tek Renk Baskı'],
+    sizes: ['Diplomat (104x240mm)'],
+    materials: ['110 Gram Kağıt'],
+    colors: ['Tek Renk Baskı'],
+    windowOptions: ['Pencereli', 'Pencersiz'],
+    minQuantity: 500,
+    price: { min: 1600, max: 3500 },
+    extraOptions: [
+      { name: 'Logo Tasarımı', price: 250 }
+    ],
+    quantityPricing: [
+      { quantity: 500, price: 1600 },
+      { quantity: 1000, price: 2300 }
+    ]
   },
   {
     id: 'makbuz',
     name: 'Makbuz',
     description: 'Özel tasarım makbuz ve fiş',
     category: 'kurumsal',
-    image: '/images/makbuz.jpg',
-    href: '/kurumsal/makbuz',
+    image: '/images/makbuz-111.png',
+    images: [
+      '/images/makbuz-111.png',
+      '/images/makbuz-222.png'
+    ],
+    href: '/urun/makbuz',
     gradient: 'from-yellow-400 to-yellow-600',
-    features: ['Numaralı Makbuz', 'Karbonlu Kağıt', 'Özel Tasarım'],
-    sizes: ['A6 (10.5x14.8cm)', 'A5 (14.8x21cm)', 'Özel Boyut'],
-    materials: ['NCR Karbonlu', '80gr Beyaz', '90gr Renkli'],
-    colors: ['Tek Renk', 'İki Renk', 'CMYK'],
-    minQuantity: 100,
-    price: { min: 40, max: 180 }
+    features: ['Numaralı Makbuz', 'Karbonlu Kağıt', '50\'lik Otocopy'],
+    sizes: ['14x20 cm', '20x29 cm'],
+    materials: ['NCR Karbonlu'],
+    colors: ['Tek Renk Siyah'],
+    minQuantity: 10,
+    price: { min: 1400, max: 3500 },
+    extraOptions: [
+      { name: 'Logo Tasarımı', price: 250 }
+    ],
+    quantityPricing: [
+      { quantity: 10, price: 1400, size: '14x20 cm' },
+      { quantity: 20, price: 2200, size: '14x20 cm' },
+      { quantity: 10, price: 2000, size: '20x29 cm' },
+      { quantity: 20, price: 3500, size: '20x29 cm' }
+    ]
   },
   {
     id: 'cepli-dosya',
     name: 'Cepli Dosya',
     description: 'Kurumsal cepli dosya tasarımları',
     category: 'kurumsal',
-    image: '/images/cepli-dosya.jpg',
-    href: '/kurumsal/cepli-dosya',
+    image: '/images/Cepli-Dosya-111.png',
+    images: [
+      '/images/Cepli-Dosya-111.png',
+      '/images/Cepli-dosya-222-800x800.png',
+      '/images/Cepli-Dosya-333-800x800.png'
+    ],
+    href: '/urun/cepli-dosya',
     gradient: 'from-indigo-400 to-indigo-600',
-    features: ['Mat Laminasyon', 'UV Spot', 'Özel Kesim'],
-    sizes: ['A4 Boyut', 'A5 Boyut', 'Özel Boyut'],
-    materials: ['350gr Kuşe', '300gr Bristol', '280gr Kraft'],
-    colors: ['CMYK 4 Renk', 'Pantone Özel'],
-    minQuantity: 100,
-    price: { min: 150, max: 500 }
+    features: ['Kulak Yapıştırmalı', 'Mat Selefon', 'Kabartma Selefon'],
+    sizes: ['A4 Boyut'],
+    materials: ['Tek Yön Renkli Mat Selefon', 'Kabartma Selefon'],
+    colors: ['CMYK 4 Renk'],
+    minQuantity: 500,
+    price: { min: 6500, max: 10000 },
+    extraOptions: [
+      { name: 'Logo Tasarımı', price: 250 }
+    ],
+    quantityPricing: [
+      { quantity: 500, price: 6500, material: 'Tek Yön Renkli Mat Selefon' },
+      { quantity: 1000, price: 10000, material: 'Tek Yön Renkli Mat Selefon' },
+      { quantity: 500, price: 9000, material: 'Kabartma Selefon' }
+    ]
   },
 
   // REKLAM ÜRÜNLER
@@ -133,75 +210,137 @@ export const PRODUCTS: Product[] = [
     name: 'Broşür',
     description: 'Reklam broşürü tasarım ve baskı',
     category: 'reklam',
-    image: '/images/brosur.jpg',
-    href: '/reklam/brosur',
+    image: '/images/Brosur-Ekonomik.png',
+    images: [
+      '/images/Brosur-Ekonomik.png',
+      '/images/Brosur-Tek-Kirim-Standart.png',
+      '/images/Brosur-Tek-Kirim-Standart-A5-800x800.png'
+    ],
+    href: '/urun/brosur',
     gradient: 'from-blue-400 to-blue-600',
-    features: ['Çift Katlama', 'Üç Katlama', 'Z Katlama'],
-    sizes: ['A4 (21x29.7cm)', 'A5 (14.8x21cm)', 'A6 (10.5x14.8cm)'],
-    materials: ['170gr Kuşe', '200gr Kuşe', '250gr Kuşe'],
-    colors: ['CMYK 4 Renk', 'Pantone Özel Renk'],
-    minQuantity: 250,
-    price: { min: 100, max: 400 }
+    features: ['Çift Yön Baskı', 'Kırım (Tek-Çift)', 'Parlak Selefon'],
+    sizes: ['A5 (140x200mm)', 'A4 (200x280mm)'],
+    materials: ['115 Gram', '130 Gram'],
+    colors: ['CMYK 4 Renk'],
+    minQuantity: 1000,
+    price: { min: 1200, max: 2800 },
+    extraOptions: [
+      { name: 'Logo Tasarımı', price: 250 },
+      { name: 'Kırım 1000 Adet', price: 300 },
+      { name: 'Kırım 2000 Adet', price: 400 }
+    ],
+    quantityPricing: [
+      { quantity: 1000, price: 1200, material: '115 Gram', size: 'A5 (140x200mm)' },
+      { quantity: 2000, price: 1600, material: '115 Gram', size: 'A5 (140x200mm)' },
+      { quantity: 1000, price: 1600, material: '115 Gram', size: 'A4 (200x280mm)' },
+      { quantity: 2000, price: 2400, material: '115 Gram', size: 'A4 (200x280mm)' },
+      { quantity: 1000, price: 1400, material: '130 Gram', size: 'A5 (140x200mm)' },
+      { quantity: 2000, price: 2000, material: '130 Gram', size: 'A5 (140x200mm)' },
+      { quantity: 1000, price: 2000, material: '130 Gram', size: 'A4 (200x280mm)' },
+      { quantity: 2000, price: 2800, material: '130 Gram', size: 'A4 (200x280mm)' }
+    ]
   },
   {
     id: 'magnet',
     name: 'Magnet',
     description: 'Özel tasarım magnet çözümleri',
     category: 'reklam',
-    image: '/images/magnet.jpg',
-    href: '/reklam/magnet',
+    image: '/images/Magnet-800x800.png',
+    images: [
+      '/images/Magnet-800x800.png',
+      '/images/Magnet-ozel-Kesim-800x800.png',
+      '/images/Magnet2.png'
+    ],
+    href: '/urun/magnet',
     gradient: 'from-purple-400 to-purple-600',
-    features: ['Buzdolabı Magneti', 'Güçlü Mıknatıs', 'Dayanıklı Baskı'],
-    sizes: ['85x55mm', '90x50mm', '100x70mm', 'Özel Boyut'],
-    materials: ['0.7mm Magnet', '1mm Magnet', 'Esnek Magnet'],
-    colors: ['CMYK 4 Renk', 'UV Dayanıklı'],
-    minQuantity: 100,
-    price: { min: 150, max: 600 }
+    features: ['Buzdolabı Magneti', 'Güçlü Mıknatıs', 'Parlak Selefon'],
+    sizes: ['46x68mm (Standart)', 'Özel Ölçü'],
+    materials: ['60 Mikron'],
+    colors: ['CMYK 4 Renk'],
+    minQuantity: 1000,
+    price: { min: 1200, max: 1200 },
+    extraOptions: [
+      { name: 'Logo Tasarımı', price: 250 }
+    ],
+    quantityPricing: [
+      { quantity: 1000, price: 1200 }
+    ],
+    customSizing: {
+      enabled: true,
+      pricePerCm2: 40,
+      minSize: 3
+    }
   },
   {
     id: 'arac-magnet',
     name: 'Araç Magnet',
     description: 'Araç üstü magnet reklam çözümleri',
     category: 'reklam',
-    image: '/images/arac-magnet.jpg',
-    href: '/reklam/arac-magnet',
+    image: '/images/Magnet Araç.png',
+    href: '/urun/arac-magnet',
     gradient: 'from-red-400 to-red-600',
     features: ['Güçlü Tutunma', 'Hava Koşullarına Dayanıklı', 'Kolay Uygulama'],
-    sizes: ['30x40cm', '40x60cm', '50x70cm', 'Özel Boyut'],
-    materials: ['1.5mm Güçlü Magnet', '2mm Extra Güçlü'],
-    colors: ['CMYK UV Dayanıklı', 'Lamine Koruma'],
-    minQuantity: 10,
-    price: { min: 200, max: 800 }
+    sizes: ['20x60 cm', '30x60 cm'],
+    materials: ['Güçlü Magnet'],
+    colors: ['CMYK UV Dayanıklı'],
+    minQuantity: 2,
+    price: { min: 900, max: 1000 },
+    extraOptions: [
+      { name: 'Logo Tasarımı', price: 250 }
+    ],
+    quantityPricing: [
+      { quantity: 2, price: 900, size: '20x60 cm' },
+      { quantity: 2, price: 1000, size: '30x60 cm' }
+    ]
   },
   {
     id: 'etiket',
     name: 'Etiket',
     description: 'Özel tasarım etiket çözümleri',
     category: 'reklam',
-    image: '/images/etiket.jpg',
-    href: '/reklam/etiket',
+    image: '/images/Sticker.png',
+    images: [
+      '/images/Sticker.png',
+      '/images/Sticker2-800x800.png'
+    ],
+    href: '/urun/etiket',
     gradient: 'from-orange-400 to-orange-600',
-    features: ['Su Geçirmez', 'Yapışkan Etiket', 'Şeffaf/Opak'],
-    sizes: ['Yuvarlak', 'Kare', 'Dikdörtgen', 'Özel Kesim'],
-    materials: ['Vinyl Etiket', 'Kağıt Etiket', 'Şeffaf Etiket'],
-    colors: ['CMYK 4 Renk', 'Beyaz Baskı', 'Metalik'],
-    minQuantity: 250,
-    price: { min: 50, max: 300 }
+    features: ['Kuşe Etiket', 'Parlak Selefon', 'Özel Kesim'],
+    sizes: ['53x83mm', 'A5', 'A4'],
+    materials: ['Kuşe Etiket'],
+    colors: ['CMYK 4 Renk'],
+    minQuantity: 1000,
+    price: { min: 600, max: 4500 },
+    extraOptions: [
+      { name: 'Logo Tasarımı', price: 250 },
+      { name: 'Özel Kesim', price: 200 }
+    ],
+    quantityPricing: [
+      { quantity: 1000, price: 600, size: '53x83mm' },
+      { quantity: 1000, price: 2500, size: 'A5' },
+      { quantity: 1000, price: 4500, size: 'A4' }
+    ]
   },
   {
     id: 'yelken-bayrak',
     name: 'Yelken Bayrak',
     description: 'Açık hava reklam yelken bayrakları',
     category: 'reklam',
-    image: '/images/yelken-bayrak.jpg',
-    href: '/reklam/yelken-bayrak',
+    image: '/images/Yelken-Bayrak-e1686170893487-800x799.png',
+    href: '/urun/yelken-bayrak',
     gradient: 'from-green-400 to-green-600',
-    features: ['Rüzgar Dayanımlı', 'UV Korumalı', 'Çift Taraflı Baskı'],
-    sizes: ['2.5m', '3m', '4m', '5m'],
-    materials: ['Polyester Kumaş', 'Mesh Kumaş', 'Vinyl'],
-    colors: ['Dijital Baskı', 'Sublimation'],
-    minQuantity: 1,
-    price: { min: 300, max: 1200 }
+    features: ['Rüzgar Dayanımlı', 'UV Korumalı', '4 Renk Baskı'],
+    sizes: ['75x300 cm'],
+    materials: ['Polyester Kumaş'],
+    colors: ['Dijital Baskı'],
+    minQuantity: 2,
+    price: { min: 1750, max: 1750 },
+    extraOptions: [
+      { name: 'Logo Tasarımı', price: 250 }
+    ],
+    quantityPricing: [
+      { quantity: 2, price: 1750 }
+    ]
   },
 
   // PROMOSYON ÜRÜNLER
@@ -210,45 +349,68 @@ export const PRODUCTS: Product[] = [
     name: 'Plastik Kalem',
     description: 'Kurumsal promosyon kalemleri',
     category: 'promosyon',
-    image: '/images/plastik-kalem.jpg',
-    href: '/promosyon/plastik-kalem',
+    image: '/images/Kalem-e1685732155641.png',
+    href: '/urun/plastik-kalem',
     gradient: 'from-indigo-400 to-indigo-600',
-    features: ['Logo Baskı', 'Farklı Renkler', 'Kaliteli Mürekkep'],
-    sizes: ['Standart Boy', 'Kısa Boy', 'Uzun Boy'],
-    materials: ['ABS Plastik', 'PP Plastik', 'Metal Klips'],
-    colors: ['Mavi', 'Siyah', 'Kırmızı', 'Yeşil', 'Beyaz'],
-    minQuantity: 250,
-    price: { min: 200, max: 800 }
+    features: ['4 Renk Baskı', 'Plastik Beyaz', 'Kaliteli Mürekkep'],
+    sizes: ['Standart Boy'],
+    materials: ['Plastik'],
+    colors: ['Beyaz', '4 Renk Baskı'],
+    minQuantity: 100,
+    price: { min: 900, max: 900 },
+    extraOptions: [
+      { name: 'Logo Tasarımı', price: 250 }
+    ],
+    quantityPricing: [
+      { quantity: 100, price: 900 }
+    ]
   },
   {
     id: 'cakmak',
     name: 'Çakmak',
     description: 'Promosyon çakmak baskı hizmetleri',
     category: 'promosyon',
-    image: '/images/cakmak.jpg',
-    href: '/promosyon/cakmak',
+    image: '/images/gold-kart-800x800.jpg',
+    href: '/urun/cakmak',
     gradient: 'from-red-400 to-red-600',
-    features: ['Logo Baskı', 'Tam Renkli Baskı', 'Dayanıklı'],
-    sizes: ['Standart Çakmak', 'Mini Çakmak'],
-    materials: ['Plastik Gövde', 'Metal Gövde'],
-    colors: ['Beyaz', 'Siyah', 'Kırmızı', 'Mavi', 'Sarı'],
+    features: ['4 Renk Baskı', 'Plastik Beyaz', 'Dayanıklı'],
+    sizes: ['Standart Çakmak'],
+    materials: ['Plastik'],
+    colors: ['Beyaz', '4 Renk Baskı'],
     minQuantity: 100,
-    price: { min: 300, max: 1000 }
+    price: { min: 1000, max: 1100 },
+    extraOptions: [
+      { name: 'Logo Tasarımı', price: 250 }
+    ],
+    quantityPricing: [
+      { quantity: 100, price: 1000 },
+      { quantity: 100, price: 1100 }
+    ]
   },
   {
     id: 'seramik-kupa',
     name: 'Seramik Kupa',
     description: 'Özel tasarım seramik kupa baskı',
     category: 'promosyon',
-    image: '/images/seramik-kupa.jpg',
-    href: '/promosyon/seramik-kupa',
+    image: '/images/Kupa-e1686170189162-800x800.png',
+    images: [
+      '/images/Kupa-e1686170189162-800x800.png',
+      '/images/Kupa2-e1686170511722.png'
+    ],
+    href: '/urun/seramik-kupa',
     gradient: 'from-pink-400 to-pink-600',
-    features: ['Sublimation Baskı', 'Bulaşık Makinesi Uyumlu', 'Dayanıklı'],
-    sizes: ['300ml', '350ml', '400ml'],
-    materials: ['Seramik', 'Porselen', 'Cam'],
-    colors: ['Beyaz', 'Siyah', 'Renkli İç', 'Metalik'],
-    minQuantity: 50,
-    price: { min: 400, max: 1200 }
+    features: ['4 Renk Baskı', 'Seramik', 'Bulaşık Makinesi Uyumlu'],
+    sizes: ['Standart Kupa'],
+    materials: ['Seramik'],
+    colors: ['Beyaz', '4 Renk Baskı'],
+    minQuantity: 10,
+    price: { min: 2200, max: 2200 },
+    extraOptions: [
+      { name: 'Logo Tasarımı', price: 250 }
+    ],
+    quantityPricing: [
+      { quantity: 10, price: 2200 }
+    ]
   }
 ];
 

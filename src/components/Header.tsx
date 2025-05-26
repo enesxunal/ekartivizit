@@ -12,7 +12,7 @@ export default function Header() {
   const cartItemCount = 0 // Bu değer daha sonra context'ten gelecek
 
   const menuItems = [
-    { name: 'Tüm Ürünler', href: '/urunler' },
+    { name: 'Tüm Ürünler', href: '/tum-urunler' },
     { name: 'Kurumsal', href: '/kurumsal' },
     { name: 'Reklam', href: '/reklam' },
     { name: 'Promosyon', href: '/promosyon' },

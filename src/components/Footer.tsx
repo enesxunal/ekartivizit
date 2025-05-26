@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Mail, Phone, MapPin } from 'lucide-react'
+import { Mail, Phone, MapPin, Instagram } from 'lucide-react'
 import { CATEGORIES } from '@/data/products'
 
 export default function Footer() {
@@ -26,15 +26,21 @@ export default function Footer() {
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
                 <Phone className="h-4 w-4 text-[#59af05]" />
-                <span className="text-gray-300">+90 (212) 123 45 67</span>
+                <span className="text-gray-300">0 850 840 30 11</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4 text-[#59af05]" />
-                <span className="text-gray-300">info@ekartvizit.com</span>
+                <span className="text-gray-300">info@ekartvizit.co</span>
               </div>
               <div className="flex items-center space-x-2">
                 <MapPin className="h-4 w-4 text-[#59af05]" />
-                <span className="text-gray-300">İstanbul, Türkiye</span>
+                <span className="text-gray-300">Mustafa Kemal Mah. 2139 Sk. 15/5 Çankaya/Ankara</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Instagram className="h-4 w-4 text-[#59af05]" />
+                <a href="https://instagram.com/e.kartvizit" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-[#59af05] transition-colors">
+                  @e.kartvizit
+                </a>
               </div>
             </div>
           </div>

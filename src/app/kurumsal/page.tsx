@@ -1,22 +1,32 @@
+'use client'
+import Image from 'next/image'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
-import Link from 'next/link'
-import Image from 'next/image'
-import { getPopularProducts } from '@/data/products'
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
+import { getProductsByCategory } from '@/data/products'
 
-export default function PopularProducts() {
-  const products = getPopularProducts()
+export default function KurumsalPage() {
+  const products = getProductsByCategory('kurumsal')
 
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Başlık */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-            Popüler Ürünlerimiz
-          </h2>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            Kurumsal Ürünler
+          </h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Profesyonel işletmeniz için kartvizit, antetli kağıt, zarf ve daha fazlası
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        {/* Ürün Listesi */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {products.map((product) => (
             <Card key={product.id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
               <CardContent className="p-0">
@@ -54,15 +64,9 @@ export default function PopularProducts() {
             </Card>
           ))}
         </div>
+      </main>
 
-        <div className="text-center">
-          <Link href="/tum-urunler">
-            <Button variant="outline" size="lg" className="px-8 py-3 border-[#59af05] text-[#59af05] hover:bg-[#59af05]/5">
-              Tüm Ürünleri Görüntüle
-            </Button>
-          </Link>
-        </div>
-      </div>
-    </section>
+      <Footer />
+    </div>
   )
 } 
