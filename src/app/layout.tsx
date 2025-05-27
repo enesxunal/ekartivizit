@@ -7,7 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { InventoryProvider } from "@/contexts/InventoryContext";
 import { OrderProvider } from "@/contexts/OrderContext";
 import { ReviewProvider } from "@/contexts/ReviewContext";
-import { ToastProvider } from "@/components/ui/toast";
+import { ToastProvider } from "@/contexts/ToastContext";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import PerformanceMonitor from "@/components/PerformanceMonitor";
 

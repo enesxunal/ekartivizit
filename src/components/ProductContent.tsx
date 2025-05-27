@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Product } from '@/data/products'
 import { useCart } from '@/contexts/CartContext'
+import { useToast } from '@/contexts/ToastContext'
 import { Truck, Shield, Clock, MessageCircle, ShoppingCart } from 'lucide-react'
 import ProductReviews from '@/components/ProductReviews'
 
@@ -16,6 +17,7 @@ interface ProductContentProps {
 
 export default function ProductContent({ product }: ProductContentProps) {
   const { addToCart } = useCart()
+  const { addToast } = useToast()
   const [selectedMaterial, setSelectedMaterial] = useState('')
   const [selectedSize, setSelectedSize] = useState('')
   const [selectedWindow, setSelectedWindow] = useState('')
@@ -116,8 +118,13 @@ export default function ProductContent({ product }: ProductContentProps) {
       price
     })
     
-    // Başarı mesajı gösterebiliriz
-    alert(`${quantity.toLocaleString()} adetlik ${product.name} sepete eklendi!`)
+    // Başarı mesajı göster
+    addToast({
+      type: 'success',
+      title: 'Sepete Eklendi! 🎉',
+      description: `${quantity.toLocaleString()} adetlik ${product.name} sepetinize eklendi.`,
+      duration: 4000
+    })
   }
 
   const handleWhatsApp = () => {

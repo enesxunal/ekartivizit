@@ -13,7 +13,7 @@ import Footer from '@/components/Footer'
 import { useCart } from '@/contexts/CartContext'
 import { useAuth } from '@/contexts/AuthContext'
 import { useOrders } from '@/contexts/OrderContext'
-import { createToast, useToast } from '@/components/ui/toast'
+import { useToast } from '@/contexts/ToastContext'
 import { paymentMethods, processCreditCardPayment, processWhatsAppPayment, processBankTransferPayment } from '@/lib/payment'
 // E-posta şablonları artık API üzerinden kullanılacak
 import { CreditCard, Smartphone, Building2, Truck, ShoppingCart, User, MapPin } from 'lucide-react'
@@ -24,7 +24,6 @@ export default function OdemePage() {
   const { user } = useAuth()
   const { createOrder } = useOrders()
   const { addToast } = useToast()
-  const toast = createToast(addToast)
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'whatsapp' | 'credit-card' | 'bank-transfer'>('whatsapp')
   const [isProcessing, setIsProcessing] = useState(false)
@@ -100,13 +99,21 @@ export default function OdemePage() {
 
   const validateForm = () => {
     if (!customerInfo.name || !customerInfo.email || !customerInfo.phone) {
-      toast.error('Eksik Bilgi', 'Lütfen tüm zorunlu alanları doldurun')
+      addToast({
+        type: 'error',
+        title: 'Eksik Bilgi',
+        description: 'Lütfen tüm zorunlu alanları doldurun'
+      })
       return false
     }
 
     if (selectedPaymentMethod === 'credit-card') {
       if (!cardInfo.cardNumber || !cardInfo.expiryMonth || !cardInfo.expiryYear || !cardInfo.cvc || !cardInfo.cardHolderName) {
-        toast.error('Eksik Kart Bilgisi', 'Lütfen tüm kart bilgilerini doldurun')
+        addToast({
+          type: 'error',
+          title: 'Eksik Kart Bilgisi',
+          description: 'Lütfen tüm kart bilgilerini doldurun'
+        })
         return false
       }
     }
@@ -137,7 +144,11 @@ export default function OdemePage() {
       const orderResult = await createOrder(orderData)
 
       if (!orderResult.success || !orderResult.orderId) {
-        toast.error('Hata', orderResult.message || 'Sipariş oluşturulamadı')
+        addToast({
+          type: 'error',
+          title: 'Hata',
+          description: orderResult.message || 'Sipariş oluşturulamadı'
+        })
         return
       }
 
@@ -221,13 +232,25 @@ export default function OdemePage() {
           router.push(`/siparis-onay/${orderResult.orderId}`)
         }
 
-        toast.success('Ödeme Başarılı!', 'Siparişiniz alındı ve işleme konuldu')
+        addToast({
+          type: 'success',
+          title: 'Ödeme Başarılı!',
+          description: 'Siparişiniz alındı ve işleme konuldu'
+        })
       } else {
-        toast.error('Ödeme Hatası', paymentResult.errorMessage || 'Ödeme işlemi başarısız oldu')
+        addToast({
+          type: 'error',
+          title: 'Ödeme Hatası',
+          description: paymentResult.errorMessage || 'Ödeme işlemi başarısız oldu'
+        })
       }
     } catch (error) {
       console.error('Ödeme hatası:', error)
-      toast.error('Hata', 'Ödeme işlemi sırasında bir hata oluştu')
+      addToast({
+        type: 'error',
+        title: 'Hata',
+        description: 'Ödeme işlemi sırasında bir hata oluştu'
+      })
     } finally {
       setIsProcessing(false)
     }
