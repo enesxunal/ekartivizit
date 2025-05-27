@@ -3,6 +3,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { CartProvider } from "@/contexts/CartContext";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { InventoryProvider } from "@/contexts/InventoryContext";
+import { OrderProvider } from "@/contexts/OrderContext";
+import { ToastProvider } from "@/components/ui/toast";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import PerformanceMonitor from "@/components/PerformanceMonitor";
 
@@ -91,10 +95,18 @@ export default function RootLayout({
       >
         {GA_MEASUREMENT_ID && <GoogleAnalytics GA_MEASUREMENT_ID={GA_MEASUREMENT_ID} />}
         <PerformanceMonitor />
-        <CartProvider>
-          {children}
-          <WhatsAppButton />
-        </CartProvider>
+        <ToastProvider>
+          <AuthProvider>
+            <InventoryProvider>
+              <OrderProvider>
+                <CartProvider>
+                  {children}
+                  <WhatsAppButton />
+                </CartProvider>
+              </OrderProvider>
+            </InventoryProvider>
+          </AuthProvider>
+        </ToastProvider>
       </body>
     </html>
   );

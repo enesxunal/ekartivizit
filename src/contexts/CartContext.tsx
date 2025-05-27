@@ -22,16 +22,23 @@ interface CartContextType {
   addToCart: (item: Omit<CartItem, 'id' | 'cartQuantity'>) => void
   removeFromCart: (id: string) => void
   updateQuantity: (id: string, quantity: number) => void
+  updateProductQuantity: (id: string, quantity: number) => void
   clearCart: () => void
   getTotalPrice: () => number
   getTotalItems: () => number
   getItemCount: () => number
+  isInCart: (productId: string) => boolean
+  getCartItemByProduct: (productId: string) => CartItem | undefined
+  applyDiscount: (discountCode: string) => { success: boolean; message: string; discount: number }
+  getDiscountedTotal: () => number
+  discount: number
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
+  const [discount, setDiscount] = useState<number>(0)
 
   // LocalStorage'dan sepeti yükle
   useEffect(() => {
@@ -92,16 +99,67 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     return items.length
   }
 
-      return (
+  const updateProductQuantity = (id: string, quantity: number) => {
+    setItems(prev => 
+      prev.map(item => 
+        item.id === id ? { ...item, quantity } : item
+      )
+    )
+  }
+
+  const isInCart = (productId: string) => {
+    return items.some(item => item.product.id === productId)
+  }
+
+  const getCartItemByProduct = (productId: string) => {
+    return items.find(item => item.product.id === productId)
+  }
+
+  const applyDiscount = (discountCode: string) => {
+    const discountCodes: Record<string, number> = {
+      'WELCOME10': 10,
+      'SAVE20': 20,
+      'FIRST50': 50,
+      'STUDENT15': 15
+    }
+
+    if (discountCodes[discountCode]) {
+      setDiscount(discountCodes[discountCode])
+      return {
+        success: true,
+        message: `%${discountCodes[discountCode]} indirim uygulandı!`,
+        discount: discountCodes[discountCode]
+      }
+    }
+
+    return {
+      success: false,
+      message: 'Geçersiz indirim kodu',
+      discount: 0
+    }
+  }
+
+  const getDiscountedTotal = () => {
+    const total = getTotalPrice()
+    return total - (total * discount / 100)
+  }
+
+  return (
     <CartContext.Provider value={{
       items,
       addToCart,
       removeFromCart,
       updateQuantity,
+      updateProductQuantity,
       clearCart,
       getTotalPrice,
       getTotalItems,
-      getItemCount
+      getItemCount,
+      isInCart,
+      getCartItemByProduct,
+      applyDiscount,
+      getDiscountedTotal,
+      discount
     }}>
       {children}
     </CartContext.Provider>
