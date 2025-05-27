@@ -19,6 +19,7 @@ export interface CartItem {
 
 interface CartContextType {
   items: CartItem[]
+  cart: CartItem[] // Alias for items
   addToCart: (item: Omit<CartItem, 'id' | 'cartQuantity'>) => void
   removeFromCart: (id: string) => void
   updateQuantity: (id: string, quantity: number) => void
@@ -32,6 +33,7 @@ interface CartContextType {
   applyDiscount: (discountCode: string) => { success: boolean; message: string; discount: number }
   getDiscountedTotal: () => number
   discount: number
+  appliedDiscount: { code: string; discount: number } | null
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
@@ -39,6 +41,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined)
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
   const [discount, setDiscount] = useState<number>(0)
+  const [appliedDiscount, setAppliedDiscount] = useState<{ code: string; discount: number } | null>(null)
 
   // LocalStorage'dan sepeti yükle
   useEffect(() => {
@@ -125,6 +128,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     if (discountCodes[discountCode]) {
       setDiscount(discountCodes[discountCode])
+      setAppliedDiscount({ code: discountCode, discount: discountCodes[discountCode] })
       return {
         success: true,
         message: `%${discountCodes[discountCode]} indirim uygulandı!`,
@@ -147,6 +151,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   return (
     <CartContext.Provider value={{
       items,
+      cart: items, // Alias for items
       addToCart,
       removeFromCart,
       updateQuantity,
@@ -159,7 +164,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       getCartItemByProduct,
       applyDiscount,
       getDiscountedTotal,
-      discount
+      discount,
+      appliedDiscount
     }}>
       {children}
     </CartContext.Provider>

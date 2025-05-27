@@ -36,6 +36,7 @@ interface OrderContextType {
   orders: Order[]
   createOrder: (orderData: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>) => Promise<{ success: boolean; orderId?: string; message: string }>
   getOrder: (orderId: string) => Order | undefined
+  getOrderById: (orderId: string) => Order | undefined // Alias for getOrder
   getUserOrders: (userId: string) => Order[]
   updateOrderStatus: (orderId: string, status: Order['status']) => void
   updatePaymentStatus: (orderId: string, status: Order['paymentStatus']) => void
@@ -179,6 +180,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       orders,
       createOrder,
       getOrder,
+      getOrderById: getOrder, // Alias for getOrder
       getUserOrders,
       updateOrderStatus,
       updatePaymentStatus,

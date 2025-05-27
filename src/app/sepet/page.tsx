@@ -242,9 +242,11 @@ Sipariş detayları hakkında bilgi alabilir miyim?`
                 <span>WhatsApp ile Sipariş Ver</span>
               </Button>
               
-              <Button className="w-full bg-[#59af05] hover:bg-[#4a9321] text-white py-3 text-lg">
-                Ödemeye Geç
-              </Button>
+              <Link href="/odeme" className="block">
+                <Button className="w-full bg-[#59af05] hover:bg-[#4a9321] text-white py-3 text-lg">
+                  Ödemeye Geç
+                </Button>
+              </Link>
               
               <Link href="/tum-urunler" className="block">
                 <Button variant="outline" className="w-full py-3 text-lg">
