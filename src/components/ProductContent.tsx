@@ -8,6 +8,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Product } from '@/data/products'
 import { useCart } from '@/contexts/CartContext'
 import { Truck, Shield, Clock, MessageCircle, ShoppingCart } from 'lucide-react'
+import ProductReviews from '@/components/ProductReviews'
 
 interface ProductContentProps {
   product: Product
@@ -22,6 +23,7 @@ export default function ProductContent({ product }: ProductContentProps) {
   const [selectedExtras, setSelectedExtras] = useState<string[]>([])
   const [customWidth, setCustomWidth] = useState('')
   const [customHeight, setCustomHeight] = useState('')
+  const [activeTab, setActiveTab] = useState('details')
 
   // Mevcut seçeneklere göre adet seçeneklerini getir
   const getAvailableQuantities = () => {
@@ -413,54 +415,112 @@ Detaylı bilgi alabilir miyim?`
         </div>
       </div>
 
-      {/* Ürün Detayları */}
+      {/* Ürün Detayları ve Yorumlar */}
       <div className="mt-16">
         <div className="border-b border-gray-200">
           <nav className="-mb-px flex space-x-8">
-            <button className="border-b-2 border-[#59af05] py-2 px-1 text-sm font-medium text-[#59af05]">
+            <button 
+              onClick={() => setActiveTab('details')}
+              className={`border-b-2 py-2 px-1 text-sm font-medium transition-colors ${
+                activeTab === 'details'
+                  ? 'border-[#59af05] text-[#59af05]'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
               Ürün Detayları
             </button>
-            <button className="border-b-2 border-transparent py-2 px-1 text-sm font-medium text-gray-500 hover:text-gray-700">
+            <button 
+              onClick={() => setActiveTab('reviews')}
+              className={`border-b-2 py-2 px-1 text-sm font-medium transition-colors ${
+                activeTab === 'reviews'
+                  ? 'border-[#59af05] text-[#59af05]'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
               Değerlendirmeler
             </button>
-            <button className="border-b-2 border-transparent py-2 px-1 text-sm font-medium text-gray-500 hover:text-gray-700">
+            <button 
+              onClick={() => setActiveTab('shipping')}
+              className={`border-b-2 py-2 px-1 text-sm font-medium transition-colors ${
+                activeTab === 'shipping'
+                  ? 'border-[#59af05] text-[#59af05]'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
               Kargo & İade
             </button>
           </nav>
         </div>
         
         <div className="py-8">
-          <div className="prose max-w-none">
-            <h3 className="text-xl font-semibold text-gray-900 mb-4">Ürün Özellikleri</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Teknik Özellikler</h4>
-                <ul className="space-y-1 text-gray-600">
-                  {product.sizes && product.sizes.map((size, index) => (
-                    <li key={index}>• Boyut: {size}</li>
-                  ))}
-                  {product.materials && product.materials.map((material, index) => (
-                    <li key={index}>• Malzeme: {material}</li>
-                  ))}
-                  {product.colors && product.colors.map((color, index) => (
-                    <li key={index}>• Renk: {color}</li>
-                  ))}
-                  <li>• Minimum Sipariş: {product.minQuantity} adet</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Ek Özellikler</h4>
-                <ul className="space-y-1 text-gray-600">
-                  {product.features && product.features.map((feature, index) => (
-                    <li key={index}>• {feature}</li>
-                  ))}
-                  <li>• Ücretsiz tasarım desteği</li>
-                  <li>• Hızlı teslimat garantisi</li>
-                  <li>• Kalite garantisi</li>
-                </ul>
+          {/* Ürün Detayları Tab */}
+          {activeTab === 'details' && (
+            <div className="prose max-w-none">
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">Ürün Özellikleri</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Teknik Özellikler</h4>
+                  <ul className="space-y-1 text-gray-600">
+                    {product.sizes && product.sizes.map((size, index) => (
+                      <li key={index}>• Boyut: {size}</li>
+                    ))}
+                    {product.materials && product.materials.map((material, index) => (
+                      <li key={index}>• Malzeme: {material}</li>
+                    ))}
+                    {product.colors && product.colors.map((color, index) => (
+                      <li key={index}>• Renk: {color}</li>
+                    ))}
+                    <li>• Minimum Sipariş: {product.minQuantity} adet</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Ek Özellikler</h4>
+                  <ul className="space-y-1 text-gray-600">
+                    {product.features && product.features.map((feature, index) => (
+                      <li key={index}>• {feature}</li>
+                    ))}
+                    <li>• Ücretsiz tasarım desteği</li>
+                    <li>• Hızlı teslimat garantisi</li>
+                    <li>• Kalite garantisi</li>
+                  </ul>
+                </div>
               </div>
             </div>
-          </div>
+          )}
+
+          {/* Değerlendirmeler Tab */}
+          {activeTab === 'reviews' && (
+            <ProductReviews productId={product.id} />
+          )}
+
+          {/* Kargo & İade Tab */}
+          {activeTab === 'shipping' && (
+            <div className="prose max-w-none">
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">Kargo & İade Bilgileri</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Kargo Bilgileri</h4>
+                  <ul className="space-y-2 text-gray-600">
+                    <li>• Siparişiniz 4-5 iş günü içinde hazırlanır</li>
+                    <li>• Kargo ücretsizdir (Türkiye geneli)</li>
+                    <li>• Teslimat süresi 1-3 iş günüdür</li>
+                    <li>• Kargo takip numarası SMS ile gönderilir</li>
+                    <li>• Aras Kargo ile güvenli teslimat</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">İade Koşulları</h4>
+                  <ul className="space-y-2 text-gray-600">
+                    <li>• 14 gün içinde iade hakkı</li>
+                    <li>• Ürün hasarlı gelirse ücretsiz değişim</li>
+                    <li>• Özel tasarım ürünlerde iade kabul edilmez</li>
+                    <li>• İade kargo ücreti müşteriye aittir</li>
+                    <li>• Para iadesi 3-5 iş günü içinde yapılır</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </main>

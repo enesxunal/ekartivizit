@@ -1,17 +1,44 @@
+'use client'
+
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import Link from 'next/link'
 import Image from 'next/image'
 import { getPopularProducts } from '@/data/products'
+import { useReviews } from '@/contexts/ReviewContext'
+import { Star } from 'lucide-react'
 
 export default function PopularProducts() {
   const products = getPopularProducts()
+  const { getProductReviewStats } = useReviews()
 
   const formatPrice = (price: { min: number; max: number }) => {
     if (price.min === price.max) {
       return `${price.min}₺`
     }
     return `${price.min}₺ - ${price.max}₺`
+  }
+
+  const renderStars = (rating: number, reviewCount: number) => {
+    if (reviewCount === 0) return null
+    
+    return (
+      <div className="flex items-center gap-1 mb-2">
+        <div className="flex">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <Star
+              key={star}
+              className={`w-3 h-3 sm:w-4 sm:h-4 ${
+                star <= rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
+              }`}
+            />
+          ))}
+        </div>
+        <span className="text-xs text-gray-600 ml-1">
+          ({reviewCount})
+        </span>
+      </div>
+    )
   }
 
   return (
@@ -44,6 +71,10 @@ export default function PopularProducts() {
                   <p className="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-4 line-clamp-2">
                     {product.description}
                   </p>
+                  {(() => {
+                    const stats = getProductReviewStats(product.id)
+                    return renderStars(stats.averageRating, stats.totalReviews)
+                  })()}
                   {product.price && (
                     <div className="text-xs sm:text-sm text-[#59af05] font-semibold">
                       {formatPrice(product.price)}

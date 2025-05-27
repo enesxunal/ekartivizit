@@ -1,0 +1,266 @@
+<link rel="stylesheet" href="extension/alttantire/catalog/view/template/payment/card-form/form.css">
+<meta charset="UTF-8">
+<fieldset>
+  <legend>{{ text_title }}</legend>
+  {% if not verified%}
+  <div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation"></i> {{ text_description }}</div>
+  {% else %}
+
+  <form action="{{ formUrl }}" id="paymentForm" method="POST">
+    <input type="hidden" name="ThreeDSessionId" id="ThreeDSessionId"/>
+    <div class="card-wrapper" style="display: none"></div>
+    <div id="alttantire-card-form-wrapper">
+
+      <div>
+
+        <div class="form-row form-row-wide">
+          <label for="CardHolderName">{{ text_cc_name }}<span class="required">*</span></label>
+          <input class="alttantire-form-control input-text" placeholder="" type="text" name="CardHolderName" id="CardHolderName" maxlength="60" >
+
+        </div>
+
+        <div class="form-row form-row-wide">
+          <label for="CardNo">{{ text_cc_no }}
+            <span class="required">*</span></label>
+
+          <input class="alttantire-form-control input-text"  id="CardNo" name="CardNo"  inputmode="numeric" autocomplete="cc-number" autocorrect="no" autocapitalize="no" spellcheck="no"
+                 type="tel" placeholder="•••• •••• •••• ••••">
+
+        </div>
+
+
+        <div style="display: flex; justify-content: space-between">
+          <div style="flex: 1">
+            <div class="form-row " style="margin-bottom: 1px">
+              <label>{{text_cc_expire}} <span class="required">*</span></label>
+            </div>
+            <div style="display: flex; justify-content: flex-start">
+              <div class="form-row " style="margin-right: 10px!important;">
+                {{ expire.month }}
+              </div>
+              <div class="form-row ">
+                {{ expire.year }}
+              </div>
+              <input style="display: none" placeholder="{{ text_cc_expire }}" type="tel" name="ExpireDate">
+            </div>
+          </div>
+
+          <div style="flex: 1">
+            <div class="form-row " >
+              <label for="Cvv">{{ text_cc_cvv }}
+                <span class="required">*</span></label>
+              <input id="Cvv" name="Cvv" type="password"
+                     autocomplete="off"
+                     placeholder="•••" class=" alttantire-form-control input-text wc-credit-card-form-card-cvc" style="font-size: unset">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row form-row-wide installment-table-div" style="display: none;" id="installment_table"></div>
+
+      <div class="alttantire-form-group mt-2 pt-5">
+        <button type="button" id="alttantire-submit-btn" class="alttantire-submit-btn alttantire-w100"><i class="fas fa-credit-card"></i>{{ text_cc_pay }}</button>
+      </div>
+      <div class="alttantire-form-group mt-2 pt-5 error">
+        <strong id="errorMessage"></strong>
+      </div>
+      <div class="alttantire-form-group mt-2">
+      </div>
+
+    </div>
+
+  </form>
+
+  {% endif %}
+
+</fieldset>
+
+<script src="extension/alttantire/catalog/view/template/payment/card-form/jquery.card.js"></script>
+<script type="text/javascript"><!--
+  jQuery('#paymentForm').card({
+    container: '.card-wrapper', // *required*
+    placeholders: {
+      name: '{{ text_cc_name }}',
+    },
+    formSelectors: {
+      numberInput: 'input[name="CardNo"]',
+      nameInput: 'input[name="CardHolderName"]',
+      expiryInput: 'input[name="ExpireDate"]',
+      cvcInput: 'input[name="Cvv"]',
+
+    },
+  });
+
+
+  $('#alttantire-submit-btn').bind('click', function () {
+    if (check() == true) {
+      $.ajax({
+        url: 'index.php?route=extension/alttantire/payment/credit_card.process_payment&language={{ language }}',
+        dataType: 'json',
+        data: $('#paymentForm').serialize(),
+        type: 'post',
+        cache: false,
+        beforeSend: function () {
+          $('#alttantire-submit-btn').button('loading');
+        },
+        complete: function () {
+          $('#alttantire-submit-btn').button('reset');
+        },
+        success: function (response) {
+          if (response.result) {
+            document.write(response.messages);
+          } else {
+            $("#errorMessage").html(response.messages);
+            $('#alttantire-submit-btn').button('reset');
+          }
+        },
+        error: function (xhr, textStatus, error) {
+          console.log(xhr, textStatus, error);
+          $("#errorMessage").html("{{ error_msg }}");
+          $('#alttantire-submit-btn').button('reset');
+        }
+      });
+    } else {
+      $("#errorMessage").html("{{ error_input_msg }}");
+    }
+  });
+
+  $(document).on('change', '#CardNo', function () {
+    function formatCurrency(amount) {
+      const formatter = new Intl.NumberFormat("tr-TR", {
+        style: 'currency',
+        currency: 'TRY',
+        minimumFractionDigits: 2,
+      });
+
+      const formattedAmount = formatter.format(amount);
+      const currencySymbol = formattedAmount.match(/[\p{Sc}\u00A4]/gu)[0];
+      const amountWithoutSymbol = formattedAmount.replace(currencySymbol, '').trim();
+      return `${amountWithoutSymbol} TL`;
+    }
+
+    let bin = $(this).val().replace(/\s/g, '').substring(0, 6);
+    if (bin.length == 6) {
+      $.ajax({
+        url: "index.php?route=extension/alttantire/payment/credit_card.installment&language={{ language }}",
+        type: 'POST',
+        dataType: 'json',
+        data: {
+          action: 'installment',
+          bin: bin,
+        },
+        success: function (data) {
+          let order_total = parseFloat('{{ paymentData.total }}');
+
+          let content =
+                  '    <div class="table-row">' +
+                  '        <div class="table-cell"><input type="radio" id="installment-1" name="installment" value="1"  data-extra-fee="0"><label for="installment-1"></label></div>' +
+                  '        <div class="table-cell full-width">Tek Çekim</div>' +
+                  '        <div class="table-cell">' + formatCurrency(order_total) + '</div>' +
+                  '        <div class="table-cell">'+ formatCurrency(order_total) +'</div>' +
+                  '    </div>' ;
+
+          if (
+                  data &&
+                  typeof data.CommissionPackages !== "undefined" &&
+                  typeof data.CommissionPackages[0] !== "undefined" &&
+                  typeof data.CommissionPackages[0].InstallmentRate !== "undefined" &&
+                  data.CommissionPackages[0].InstallmentRate) {
+
+            let installment_object = data.CommissionPackages[0].InstallmentRate;
+
+            for (let key in installment_object) {
+              if (installment_object.hasOwnProperty(key)) {
+                let installment = key.split("T").join("");
+                let rate = installment_object[key].Rate;
+                let constant = installment_object[key].Constant;
+                let amount = order_total;
+                let calculated_amount = amount / (1 - (rate / 100));
+                let total_amount = Math.round((calculated_amount + constant) * 100) / 100;
+                let extra_fee = total_amount - amount;
+                let label = (installment > 1) ? installment + " Taksit" : "Tek Çekim";
+                let monthly_amount = (total_amount /installment);
+
+                content +=
+                        '    <div class="table-row">' +
+                        '        <div class="table-cell"><input type="radio" id="installment-' + installment + '" name="installment" value="' + installment + '" data-extra-fee="' + extra_fee + '"><label for="installment-' + installment + '"></label></div>' +
+                        '        <div class="table-cell full-width">' + label +'</div>' +
+                        '        <div class="table-cell">'+ formatCurrency(monthly_amount) +'</div>' +
+                        '        <div class="table-cell">'+ formatCurrency(total_amount) +'</div>' +
+                        '    </div>' ;
+
+              }
+            }
+
+          }
+
+
+          let table ='<div class="table-container full-width">' +
+                  '    <div class="table-row">' +
+                  '        <div class="table-cell">#</div>' +
+                  '        <div class="table-cell full-width">Taksit</div>' +
+                  '        <div class="table-cell">Aylık</div>' +
+                  '        <div class="table-cell">Toplam</div>' +
+                  '    </div>' +
+                  content +
+                  '</div>';
+
+          $("#installment_table").html(table);
+          $(".installment-table-div").show();
+
+        },
+        error: function (xhr, status, error) {
+          console.log(xhr, status, error);
+        }
+      });
+    }else{
+      $("#installment_table").html("");
+      $(".installment-table-div").hide();
+    }
+  });
+
+  $(document).on('click', 'input[type=radio][name=installment]', function () {
+    $.ajax({
+      url: "index.php?route=extension/alttantire/payment/credit_card.commission_fee&language={{ language }}",
+      type: 'POST',
+      data: {
+        action: 'commission_fee',
+        extra_fee: $(this).attr("data-extra-fee"),
+        installment: $(this).val(),
+      },
+      success: function (data) {
+      },
+      error: function (xhr, status, error) {
+        console.log(xhr, status, error);
+      }
+    });
+
+  });
+
+  function check() {
+    var check = true;
+    var CardNo = $("input[name=\"CardNo\"]").val().replace(/\s+/g, '');
+    var CardHolderName = $("input[name=\"CardHolderName\"]").val();
+    var ExpireDateMonth = $("#card-expiry-month").val()?$("#card-expiry-month").val().replace(/\s+/g, ''):null;
+    var ExpireDateYear = $("#card-expiry-year").val()?$("#card-expiry-year").val().replace(/\s+/g, ''):null;
+
+    if (CardHolderName.length ==0) {
+      check = false;
+    }
+    if (CardNo.length < 14) {
+      check = false;
+    }
+    if (!ExpireDateMonth) {
+      check = false;
+    }
+    if (!ExpireDateYear) {
+      check = false;
+    }
+    if ($("input[name=\"Cvv\"]").val().length < 3) {
+      check = false;
+    }
+    return check;
+  }
+  //--></script>
+

@@ -1,0 +1,633 @@
+@font-face {
+    font-family: 'Maven Pro';
+    src: url('./font/MavenPro-Regular.woff2') format('woff2'),
+    url('./font/MavenPro-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+.alttantire-container *::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    color: #454545;
+    font-family: 'Maven Pro', Arial, Helvetica, sans-serif;
+
+}
+
+.alttantire-container *::-moz-placeholder { /* Firefox 19+ */
+    color: #454545;
+    font-family: 'Maven Pro', Arial, Helvetica, sans-serif;
+
+}
+
+.alttantire-container *:-ms-input-placeholder { /* IE 10+ */
+    color: #454545;
+    font-family: 'Maven Pro', Arial, Helvetica, sans-serif;
+
+}
+
+.alttantire-container *:-moz-placeholder { /* Firefox 18- */
+    color: #454545;
+    font-family: 'Maven Pro', Arial, Helvetica, sans-serif;
+
+}
+
+.alttantire-container {
+    /*width: 100%;*/
+    font-family: "Maven Pro", Arial, sans-serif;
+
+    margin-right: auto;
+    margin-left: auto;
+    max-width: 350px;
+    min-width: 250px;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border: 1px solid #d1d1d1;
+    border-radius: 10px;
+}
+
+.alttantire-container .row {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: calc(var(--bs-gutter-y) * -1);
+    margin-right: calc(var(--bs-gutter-x) * -.5);
+    margin-left: calc(var(--bs-gutter-x) * -.5);
+
+}
+
+
+.alttantire-container .alttantire-form-group .no-left-radius {
+    border-bottom-left-radius: 0px;
+    border-top-left-radius: 0px;
+}
+
+.alttantire-container .alttantire-form-group .no-right-radius {
+    border-bottom-right-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+.alttantire-container .alttantire-form-group .no-border-left {
+    border-left: 0px;
+}
+
+.alttantire-container .alttantire-form-group .no-border-right {
+    border-right: 0px;
+}
+
+.alttantire-container .header {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+
+.alttantire-container .title {
+    line-height: 32px;
+    text-indent: 5px;
+    padding-left: 10px;
+    font-size: 18px;
+    white-space: nowrap;
+}
+
+
+.alttantire-container .alttantire-w100 {
+    flex: 0 0 auto;
+    width: 100%;
+}
+
+.alttantire-container .my-1 {
+    margin-top: .25rem !important;
+    margin-bottom: .25rem !important;
+}
+
+.alttantire-container .py-5 {
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+}
+
+.alttantire-container .mt-2 {
+    margin-top: .5rem !important;
+}
+
+.alttantire-container .pt-5 {
+    padding-top: .5rem !important;
+}
+
+.alttantire-container .alttantire-form-group {
+    max-width: 340px;
+    margin: 0 auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 5px;
+}
+
+.alttantire-container .col-6 {
+    flex: 0 0 auto;
+    width: 50%;
+}
+
+.alttantire-container .alttantire-form-row {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+}
+
+.alttantire-container .alttantire-form-control {
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+    /*font-size: 1.1rem;*/
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+.alttantire-container .alttantire-form-select {
+    display: flex;
+    width: 100%;
+    padding: .375rem .75rem;
+    /*font-size: 1.1rem;*/
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.alttantire-container form {
+    display: block;
+    margin-top: 0em;
+    margin-block-end: 0;
+}
+
+
+.alttantire-container [type=button]:not(:disabled),
+.alttantire-container [type=reset]:not(:disabled),
+.alttantire-container [type=submit]:not(:disabled),
+.alttantire-container button:not(:disabled) {
+    cursor: pointer;
+}
+
+
+.alttantire-container .alttantire-submit-btn {
+    display: inline-block;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    border: 1px solid #ffc72c;
+    padding: .375rem .75rem;
+    /*font-size: 1.2rem;*/
+    font-size: 16px;
+    /*font-weight: 600;*/
+    border-radius: .25rem;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    color: #333;
+    background-color: #ffc72c;
+    font-family: "Maven Pro", Arial, sans-serif;
+
+}
+
+.alttantire-container [type=button],
+.alttantire-container [type=reset],
+.alttantire-container [type=submit],
+.alttantire-container button {
+    -webkit-appearance: button;
+}
+
+.alttantire-container .logo {
+    width: 60px;
+    display: block;
+    margin: 0 auto;
+    padding-top: 10px;
+}
+
+.alttantire-container .protect {
+    width: 32px;
+
+    /*padding-top: 10px;*/
+    display: block;
+    margin-left: auto;
+}
+
+.alttantire-container .error {
+    width: 100%;
+    text-align: center;
+}
+
+.alttantire-container #errorMessage {
+    color: #A52A2A;
+    font-weight: 100;
+}
+
+.alttantire-container .installment-table-div table{
+    width: 100%;
+}
+.alttantire-container .installment-table-div label{
+    margin-top: 5px;
+    margin-bottom: 5px;
+    white-space: nowrap;
+}
+.alttantire-container .installment-table-div table tr td{
+    border-top: 1px solid #e5e5e5;
+}
+
+.alttantire-container .installment-table-div > span{
+    font-size: 1.3rem;
+    margin-top: 10px;
+}
+.alttantire-container .installment-table-div table thead tr th:first-child{
+    width: 5px;
+    padding-right: 10px;
+    min-width: 5px!important;
+}
+.alttantire-container .installment-table-div table tbody tr td:first-child{
+    width: 5px;
+    padding-right: 10px;
+    min-width: 5px!important;
+}
+
+
+/*/////*/
+
+
+#alttantire-card-form-wrapper *::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    color: #454545;
+    font-family: 'Maven Pro', Arial, Helvetica, sans-serif;
+
+}
+
+#alttantire-card-form-wrapper *::-moz-placeholder { /* Firefox 19+ */
+    color: #454545;
+    font-family: 'Maven Pro', Arial, Helvetica, sans-serif;
+
+}
+
+#alttantire-card-form-wrapper *:-ms-input-placeholder { /* IE 10+ */
+    color: #454545;
+    font-family: 'Maven Pro', Arial, Helvetica, sans-serif;
+
+}
+
+#alttantire-card-form-wrapper *:-moz-placeholder { /* Firefox 18- */
+    color: #454545;
+    font-family: 'Maven Pro', Arial, Helvetica, sans-serif;
+
+}
+
+
+
+#alttantire-card-form-wrapper label {
+    font-size: 14px !important;
+    color: black;
+    margin: 0 !important;
+    width: 100%;
+}
+
+#alttantire-card-form-wrapper input,
+#alttantire-card-form-wrapper select
+{
+    border: 1px solid #ddd;
+    height: 50px;
+    line-height: 50px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #2C2B32;
+    border-radius: 4px !important;
+    background-color: #fefefe;
+}
+
+#alttantire-card-form-wrapper .form-row.form-row-wide {
+    padding: 0 !important;
+    margin: 0 0 1rem !important;
+}
+
+
+#alttantire-card-form-wrapper {
+    width: 100%;
+    font-family: "Maven Pro", Arial, sans-serif;
+    font-size: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    max-width: 500px;
+    min-width: 340px;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border: 1px solid #d1d1d1;
+    border-top: 4px solid #DC0005;
+    border-radius: 10px;
+}
+
+#alttantire-card-form-wrapper .row {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: calc(var(--bs-gutter-y) * -1);
+    margin-right: calc(var(--bs-gutter-x) * -.5);
+    margin-left: calc(var(--bs-gutter-x) * -.5);
+
+}
+
+
+#alttantire-card-form-wrapper .alttantire-form-group .no-left-radius {
+    border-bottom-left-radius: 0px;
+    border-top-left-radius: 0px;
+}
+
+#alttantire-card-form-wrapper .alttantire-form-group .no-right-radius {
+    border-bottom-right-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+#alttantire-card-form-wrapper .alttantire-form-group .no-border-left {
+    border-left: 0px;
+}
+
+#alttantire-card-form-wrapper .alttantire-form-group .no-border-right {
+    border-right: 0px;
+}
+
+#alttantire-card-form-wrapper .header {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+
+#alttantire-card-form-wrapper .title {
+    line-height: 32px;
+    text-indent: 5px;
+    padding-left: 10px;
+    font-size: 18px;
+    white-space: nowrap;
+}
+
+
+#alttantire-card-form-wrapper .alttantire-w100 {
+    flex: 0 0 auto;
+    width: 100%;
+}
+
+#alttantire-card-form-wrapper .my-1 {
+    margin-top: .25rem !important;
+    margin-bottom: .25rem !important;
+}
+
+#alttantire-card-form-wrapper .py-5 {
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+}
+
+#alttantire-card-form-wrapper .mt-2 {
+    margin-top: .5rem !important;
+}
+
+#alttantire-card-form-wrapper .pt-5 {
+    padding-top: .5rem !important;
+}
+
+#alttantire-card-form-wrapper .alttantire-form-group {
+    max-width: 340px;
+    margin: 0 auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 5px;
+}
+
+#alttantire-card-form-wrapper .col-6 {
+    flex: 0 0 auto;
+    width: 50%;
+}
+
+#alttantire-card-form-wrapper .form-row {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0!important;
+    padding: 0!important;
+}
+
+#alttantire-card-form-wrapper .alttantire-form-control {
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+    /*font-size: 1.1rem;*/
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+#alttantire-card-form-wrapper .alttantire-form-select {
+    display: flex;
+    width: 100%;
+    padding: .375rem .75rem;
+    /*font-size: 1.1rem;*/
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+#alttantire-card-form-wrapper form {
+    display: block;
+    margin-top: 0em;
+    margin-block-end: 0;
+}
+
+
+#alttantire-card-form-wrapper [type=button]:not(:disabled),
+#alttantire-card-form-wrapper [type=reset]:not(:disabled),
+#alttantire-card-form-wrapper [type=submit]:not(:disabled),
+#alttantire-card-form-wrapper button:not(:disabled) {
+    cursor: pointer;
+}
+
+
+#alttantire-card-form-wrapper .alttantire-submit-btn {
+    display: inline-block;
+    /*font-weight: 400;*/
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    border: 1px solid #A52A2A;
+    padding: .75rem .75rem;
+    /*font-size: 1.2rem;*/
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    color: #f8f9fa;
+    background-color: #A52A2A;
+    font-family: "Maven Pro", Arial, sans-serif;
+}
+
+#alttantire-card-form-wrapper .alttantire-submit-btn:hover {
+    background-color: #ab2c2c;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+
+#alttantire-card-form-wrapper .alttantire-submit-btn i {
+   margin-right: 10px;
+}
+
+#alttantire-card-form-wrapper [type=button],
+#alttantire-card-form-wrapper [type=reset],
+#alttantire-card-form-wrapper [type=submit],
+#alttantire-card-form-wrapper button {
+    -webkit-appearance: button;
+}
+
+#alttantire-card-form-wrapper .logo {
+    width: 60px;
+    display: block;
+    margin: 0 auto;
+    padding-top: 10px;
+}
+
+#alttantire-card-form-wrapper .protect {
+    width: 32px;
+
+    /*padding-top: 10px;*/
+    display: block;
+    margin-left: auto;
+}
+
+#alttantire-card-form-wrapper .error {
+    width: 100%;
+    text-align: center;
+}
+
+#alttantire-card-form-wrapper #errorMessage {
+    color: #A52A2A;
+    font-weight: 100;
+}
+
+
+
+#alttantire-card-form-wrapper .installment-table-div {
+    margin-top: 5px;
+    width: 100%;
+}
+#alttantire-card-form-wrapper  .installment-table-div label{
+    margin-top: 5px;
+    margin-bottom: 5px;
+    white-space: nowrap;
+}
+
+#alttantire-card-form-wrapper  .installment-table-div > span{
+    font-size: 1.3rem;
+    margin-top: 10px;
+}
+
+
+
+/*/////*/
+
+#alttantire-card-form-wrapper .full-width {
+    width: 100%;
+}
+#alttantire-card-form-wrapper .table-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0 14px 0 14px;
+}
+#alttantire-card-form-wrapper .table-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+#alttantire-card-form-wrapper .table-row:first-child {
+    font-weight: bold;
+}
+
+#alttantire-card-form-wrapper .table-cell {
+    flex: 2;
+    padding:5px;
+    white-space: nowrap;
+    border-bottom: 1px solid #e5e5e5;
+    height: 50px;
+    align-content: center;
+
+}
+#alttantire-card-form-wrapper .table-cell.full-width {
+    flex: 10;
+}
+
+#alttantire-card-form-wrapper .table-row input[type="radio"]
+{
+    display: none;
+}
+
+#alttantire-card-form-wrapper .table-row label {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    border: 1px solid #212529;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+    position: relative;
+}
+
+#alttantire-card-form-wrapper .table-row label::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    background-color: white;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.3s;
+    border-radius: 2px;
+    clip-path: polygon(14% 44%, 0% 65%, 50% 100%, 100% 35%, 80% 10%, 48% 62%);
+}
+
+#alttantire-card-form-wrapper .table-row input[type="radio"]:checked + label {
+    background-color: #DC0005;
+    border-color: #DC0005;
+}
+
+#alttantire-card-form-wrapper .table-row input[type="radio"]:checked + label::before {
+    transform: translate(-50%, -50%) scale(1);
+}

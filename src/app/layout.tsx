@@ -6,6 +6,7 @@ import { CartProvider } from "@/contexts/CartContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { InventoryProvider } from "@/contexts/InventoryContext";
 import { OrderProvider } from "@/contexts/OrderContext";
+import { ReviewProvider } from "@/contexts/ReviewContext";
 import { ToastProvider } from "@/components/ui/toast";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import PerformanceMonitor from "@/components/PerformanceMonitor";
@@ -99,10 +100,12 @@ export default function RootLayout({
           <AuthProvider>
             <InventoryProvider>
               <OrderProvider>
-                <CartProvider>
-                  {children}
-                  <WhatsAppButton />
-                </CartProvider>
+                <ReviewProvider>
+                  <CartProvider>
+                    {children}
+                    <WhatsAppButton />
+                  </CartProvider>
+                </ReviewProvider>
               </OrderProvider>
             </InventoryProvider>
           </AuthProvider>
