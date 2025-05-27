@@ -4,20 +4,37 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { User, Package, LogOut, Eye, EyeOff } from 'lucide-react'
+import { useAuth } from '@/contexts/AuthContext'
+import { useToast } from '@/contexts/ToastContext'
+import { User, Package, LogOut, Eye, EyeOff, MapPin, Phone, Mail, Edit } from 'lucide-react'
 
 export default function AccountPage() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const { user, isAuthenticated, login, register, logout, updateProfile, isLoading } = useAuth()
+  const { addToast } = useToast()
   const [activeTab, setActiveTab] = useState('login')
   const [showPassword, setShowPassword] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     name: '',
     phone: '',
     confirmPassword: ''
+  })
+
+  const [profileData, setProfileData] = useState({
+    name: user?.name || '',
+    phone: user?.phone || '',
+    address: {
+      street: user?.address?.street || '',
+      city: user?.address?.city || '',
+      district: user?.address?.district || '',
+      postalCode: user?.address?.postalCode || ''
+    }
   })
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,20 +44,99 @@ export default function AccountPage() {
     })
   }
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Burada gerçek login işlemi yapılacak
-    setIsLoggedIn(true)
+  const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    if (name.startsWith('address.')) {
+      const addressField = name.split('.')[1]
+      setProfileData(prev => ({
+        ...prev,
+        address: {
+          ...prev.address,
+          [addressField]: value
+        }
+      }))
+    } else {
+      setProfileData(prev => ({
+        ...prev,
+        [name]: value
+      }))
+    }
   }
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Burada gerçek kayıt işlemi yapılacak
-    setIsLoggedIn(true)
+    
+    if (!formData.email || !formData.password) {
+      addToast({
+        type: 'error',
+        title: 'Eksik Bilgi',
+        description: 'E-posta ve şifre alanları zorunludur'
+      })
+      return
+    }
+
+    const result = await login(formData.email, formData.password)
+    
+    if (result.success) {
+      addToast({
+        type: 'success',
+        title: 'Giriş Başarılı! 🎉',
+        description: result.message
+      })
+    } else {
+      addToast({
+        type: 'error',
+        title: 'Giriş Hatası',
+        description: result.message
+      })
+    }
+  }
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!formData.name || !formData.email || !formData.password) {
+      addToast({
+        type: 'error',
+        title: 'Eksik Bilgi',
+        description: 'Tüm alanları doldurunuz'
+      })
+      return
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      addToast({
+        type: 'error',
+        title: 'Şifre Hatası',
+        description: 'Şifreler eşleşmiyor'
+      })
+      return
+    }
+
+    const result = await register({
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      phone: formData.phone
+    })
+    
+    if (result.success) {
+      addToast({
+        type: 'success',
+        title: 'Kayıt Başarılı! 🎉',
+        description: result.message
+      })
+    } else {
+      addToast({
+        type: 'error',
+        title: 'Kayıt Hatası',
+        description: result.message
+      })
+    }
   }
 
   const handleLogout = () => {
-    setIsLoggedIn(false)
+    logout()
     setFormData({
       email: '',
       password: '',
@@ -48,6 +144,32 @@ export default function AccountPage() {
       phone: '',
       confirmPassword: ''
     })
+    addToast({
+      type: 'info',
+      title: 'Çıkış Yapıldı',
+      description: 'Başarıyla çıkış yaptınız'
+    })
+  }
+
+  const handleProfileUpdate = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    const result = await updateProfile(profileData)
+    
+    if (result.success) {
+      setIsEditing(false)
+      addToast({
+        type: 'success',
+        title: 'Profil Güncellendi! ✅',
+        description: result.message
+      })
+    } else {
+      addToast({
+        type: 'error',
+        title: 'Güncelleme Hatası',
+        description: result.message
+      })
+    }
   }
 
   // Örnek sipariş geçmişi
@@ -68,7 +190,7 @@ export default function AccountPage() {
     }
   ]
 
-  if (!isLoggedIn) {
+  if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
@@ -116,6 +238,7 @@ export default function AccountPage() {
                       value={formData.email}
                       onChange={handleInputChange}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#59af05]"
+                      placeholder="demo@ekartvizit.com"
                       required
                     />
                   </div>
@@ -131,6 +254,7 @@ export default function AccountPage() {
                         value={formData.password}
                         onChange={handleInputChange}
                         className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#59af05]"
+                        placeholder="123456"
                         required
                       />
                       <button
@@ -147,14 +271,26 @@ export default function AccountPage() {
                     </div>
                   </div>
                   
-                  <Button type="submit" className="w-full bg-[#59af05] hover:bg-[#4a9321]">
-                    Giriş Yap
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-[#59af05] hover:bg-[#4a9321]"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
                   </Button>
                   
                   <div className="text-center">
                     <Link href="/sifremi-unuttum" className="text-sm text-[#59af05] hover:underline">
                       Şifremi Unuttum
                     </Link>
+                  </div>
+
+                  <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                    <h4 className="font-medium text-blue-900 mb-2">Demo Hesap:</h4>
+                    <p className="text-sm text-blue-800">
+                      <strong>E-posta:</strong> demo@ekartvizit.com<br />
+                      <strong>Şifre:</strong> 123456
+                    </p>
                   </div>
                 </form>
               ) : (
@@ -229,8 +365,12 @@ export default function AccountPage() {
                     />
                   </div>
                   
-                  <Button type="submit" className="w-full bg-[#59af05] hover:bg-[#4a9321]">
-                    Kayıt Ol
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-[#59af05] hover:bg-[#4a9321]"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? 'Kayıt yapılıyor...' : 'Kayıt Ol'}
                   </Button>
                 </form>
               )}
@@ -248,6 +388,11 @@ export default function AccountPage() {
       <Header />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-900">Hoş Geldiniz, {user?.name}!</h1>
+          <p className="text-gray-600">Hesap bilgilerinizi yönetin ve siparişlerinizi takip edin</p>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sol menü */}
           <div className="lg:col-span-1">
@@ -305,55 +450,134 @@ export default function AccountPage() {
             {activeTab === 'profile' && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Profil Bilgileri</CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle>Profil Bilgileri</CardTitle>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setIsEditing(!isEditing)}
+                    >
+                      <Edit className="w-4 h-4 mr-2" />
+                      {isEditing ? 'İptal' : 'Düzenle'}
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  <form className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Ad Soyad
-                        </label>
-                        <input
-                          type="text"
-                          defaultValue="Ahmet Yılmaz"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#59af05]"
-                        />
+                  {isEditing ? (
+                    <form onSubmit={handleProfileUpdate} className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="name">Ad Soyad</Label>
+                          <Input
+                            id="name"
+                            name="name"
+                            value={profileData.name}
+                            onChange={handleProfileChange}
+                            required
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="phone">Telefon</Label>
+                          <Input
+                            id="phone"
+                            name="phone"
+                            value={profileData.phone}
+                            onChange={handleProfileChange}
+                          />
+                        </div>
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          E-posta
-                        </label>
-                        <input
-                          type="email"
-                          defaultValue="ahmet@example.com"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#59af05]"
-                        />
+                      
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-medium">Adres Bilgileri</h3>
+                        <div>
+                          <Label htmlFor="address.street">Adres</Label>
+                          <Input
+                            id="address.street"
+                            name="address.street"
+                            value={profileData.address.street}
+                            onChange={handleProfileChange}
+                            placeholder="Mahalle, sokak, bina no, daire no"
+                          />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div>
+                            <Label htmlFor="address.city">İl</Label>
+                            <Input
+                              id="address.city"
+                              name="address.city"
+                              value={profileData.address.city}
+                              onChange={handleProfileChange}
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="address.district">İlçe</Label>
+                            <Input
+                              id="address.district"
+                              name="address.district"
+                              value={profileData.address.district}
+                              onChange={handleProfileChange}
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="address.postalCode">Posta Kodu</Label>
+                            <Input
+                              id="address.postalCode"
+                              name="address.postalCode"
+                              value={profileData.address.postalCode}
+                              onChange={handleProfileChange}
+                            />
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Telefon
-                        </label>
-                        <input
-                          type="tel"
-                          defaultValue="0532 123 45 67"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#59af05]"
-                        />
+                      
+                      <div className="flex space-x-3">
+                        <Button type="submit" disabled={isLoading}>
+                          {isLoading ? 'Güncelleniyor...' : 'Güncelle'}
+                        </Button>
+                        <Button type="button" variant="outline" onClick={() => setIsEditing(false)}>
+                          İptal
+                        </Button>
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Doğum Tarihi
-                        </label>
-                        <input
-                          type="date"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#59af05]"
-                        />
+                    </form>
+                  ) : (
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="flex items-center space-x-3">
+                          <User className="w-5 h-5 text-gray-400" />
+                          <div>
+                            <p className="text-sm text-gray-600">Ad Soyad</p>
+                            <p className="font-medium">{user?.name}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <Mail className="w-5 h-5 text-gray-400" />
+                          <div>
+                            <p className="text-sm text-gray-600">E-posta</p>
+                            <p className="font-medium">{user?.email}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <Phone className="w-5 h-5 text-gray-400" />
+                          <div>
+                            <p className="text-sm text-gray-600">Telefon</p>
+                            <p className="font-medium">{user?.phone || 'Belirtilmemiş'}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <MapPin className="w-5 h-5 text-gray-400" />
+                          <div>
+                            <p className="text-sm text-gray-600">Adres</p>
+                            <p className="font-medium">
+                              {user?.address?.street ? 
+                                `${user.address.street}, ${user.address.district}, ${user.address.city}` : 
+                                'Belirtilmemiş'
+                              }
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <Button className="bg-[#59af05] hover:bg-[#4a9321]">
-                      Bilgileri Güncelle
-                    </Button>
-                  </form>
+                  )}
                 </CardContent>
               </Card>
             )}
@@ -370,22 +594,20 @@ export default function AccountPage() {
                   <div className="space-y-4">
                     {orderHistory.map((order) => (
                       <div key={order.id} className="border border-gray-200 rounded-lg p-4">
-                        <div className="flex justify-between items-start mb-2">
+                        <div className="flex justify-between items-start mb-3">
                           <div>
                             <h3 className="font-semibold">Sipariş #{order.id}</h3>
                             <p className="text-sm text-gray-600">{order.date}</p>
                           </div>
                           <div className="text-right">
-                            <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                              order.status === 'Teslim Edildi'
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              order.status === 'Teslim Edildi' 
                                 ? 'bg-green-100 text-green-800'
                                 : 'bg-yellow-100 text-yellow-800'
                             }`}>
                               {order.status}
                             </span>
-                            <p className="text-lg font-bold text-[#59af05] mt-1">
-                              ₺{order.total.toLocaleString()}
-                            </p>
+                            <p className="text-lg font-bold text-[#59af05] mt-1">₺{order.total}</p>
                           </div>
                         </div>
                         <div className="space-y-1">
@@ -393,13 +615,12 @@ export default function AccountPage() {
                             <p key={index} className="text-sm text-gray-600">• {item}</p>
                           ))}
                         </div>
-                        <div className="flex space-x-2 mt-3">
-                          <Button variant="outline" size="sm">
-                            Detayları Gör
-                          </Button>
-                          <Button variant="outline" size="sm">
-                            Tekrar Sipariş Ver
-                          </Button>
+                        <div className="mt-3 pt-3 border-t border-gray-100">
+                          <Link href={`/siparis-takip?order=${order.id}`}>
+                            <Button variant="outline" size="sm">
+                              Detayları Görüntüle
+                            </Button>
+                          </Link>
                         </div>
                       </div>
                     ))}
@@ -411,31 +632,18 @@ export default function AccountPage() {
             {activeTab === 'addresses' && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Adreslerim</CardTitle>
+                  <CardTitle className="flex items-center space-x-2">
+                    <MapPin className="w-5 h-5" />
+                    <span>Adreslerim</span>
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    <div className="border border-gray-200 rounded-lg p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-semibold">Ev Adresi</h3>
-                          <p className="text-sm text-gray-600 mt-1">
-                            Mustafa Kemal Mah. 2139 Sk. No:15/5<br />
-                            Çankaya/Ankara<br />
-                            06420
-                          </p>
-                        </div>
-                        <div className="space-x-2">
-                          <Button variant="outline" size="sm">Düzenle</Button>
-                          <Button variant="outline" size="sm" className="text-red-600 border-red-600">
-                            Sil
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                    
+                  <div className="text-center py-8">
+                    <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">Henüz adres eklenmemiş</h3>
+                    <p className="text-gray-600 mb-4">Hızlı teslimat için adres bilgilerinizi ekleyin</p>
                     <Button className="bg-[#59af05] hover:bg-[#4a9321]">
-                      Yeni Adres Ekle
+                      Adres Ekle
                     </Button>
                   </div>
                 </CardContent>

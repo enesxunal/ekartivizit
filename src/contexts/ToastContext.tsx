@@ -39,10 +39,88 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     }, duration)
   }, [removeToast])
 
+  const getIcon = (type: Toast['type']) => {
+    switch (type) {
+      case 'success':
+        return <CheckCircle className="w-5 h-5" />
+      case 'error':
+        return <AlertCircle className="w-5 h-5" />
+      case 'warning':
+        return <AlertTriangle className="w-5 h-5" />
+      case 'info':
+        return <Info className="w-5 h-5" />
+      default:
+        return <Info className="w-5 h-5" />
+    }
+  }
+
+  const getToastStyles = (type: Toast['type']) => {
+    switch (type) {
+      case 'success':
+        return 'bg-white border-l-4 border-green-500 shadow-lg'
+      case 'error':
+        return 'bg-white border-l-4 border-red-500 shadow-lg'
+      case 'warning':
+        return 'bg-white border-l-4 border-yellow-500 shadow-lg'
+      case 'info':
+        return 'bg-white border-l-4 border-blue-500 shadow-lg'
+      default:
+        return 'bg-white border-l-4 border-gray-500 shadow-lg'
+    }
+  }
+
+  const getIconStyles = (type: Toast['type']) => {
+    switch (type) {
+      case 'success':
+        return 'text-green-500'
+      case 'error':
+        return 'text-red-500'
+      case 'warning':
+        return 'text-yellow-500'
+      case 'info':
+        return 'text-blue-500'
+      default:
+        return 'text-gray-500'
+    }
+  }
+
   return (
     <ToastContext.Provider value={{ toasts, addToast, removeToast }}>
       {children}
-      <ToastContainer toasts={toasts} removeToast={removeToast} />
+      
+      {/* Toast Container */}
+      <div className="fixed top-4 right-4 z-50 space-y-2 max-w-sm w-full">
+        {toasts.map((toast) => (
+          <div
+            key={toast.id}
+            className={`${getToastStyles(toast.type)} rounded-lg p-4 transform transition-all duration-300 ease-in-out animate-in slide-in-from-right-full`}
+          >
+            <div className="flex items-start space-x-3">
+              <div className={`flex-shrink-0 ${getIconStyles(toast.type)}`}>
+                {getIcon(toast.type)}
+              </div>
+              
+              <div className="flex-1 min-w-0">
+                <h4 className="text-sm font-semibold text-gray-900 mb-1">
+                  {toast.title}
+                </h4>
+                {toast.description && (
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    {toast.description}
+                  </p>
+                )}
+              </div>
+              
+              <button
+                onClick={() => removeToast(toast.id)}
+                className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
     </ToastContext.Provider>
   )
 }
@@ -53,75 +131,4 @@ export function useToast() {
     throw new Error('useToast must be used within a ToastProvider')
   }
   return context
-}
-
-// Toast Container Component
-function ToastContainer({ toasts, removeToast }: { toasts: Toast[], removeToast: (id: string) => void }) {
-  if (toasts.length === 0) return null
-
-  return (
-    <div className="fixed top-4 right-4 z-50 space-y-2">
-      {toasts.map((toast) => (
-        <ToastItem key={toast.id} toast={toast} onRemove={removeToast} />
-      ))}
-    </div>
-  )
-}
-
-// Toast Item Component
-function ToastItem({ toast, onRemove }: { toast: Toast, onRemove: (id: string) => void }) {
-  const getIcon = () => {
-    switch (toast.type) {
-      case 'success':
-        return <CheckCircle className="w-5 h-5 text-green-600" />
-      case 'error':
-        return <AlertCircle className="w-5 h-5 text-red-600" />
-      case 'warning':
-        return <AlertTriangle className="w-5 h-5 text-yellow-600" />
-      case 'info':
-        return <Info className="w-5 h-5 text-blue-600" />
-    }
-  }
-
-  const getBgColor = () => {
-    switch (toast.type) {
-      case 'success':
-        return 'bg-green-50 border-green-200'
-      case 'error':
-        return 'bg-red-50 border-red-200'
-      case 'warning':
-        return 'bg-yellow-50 border-yellow-200'
-      case 'info':
-        return 'bg-blue-50 border-blue-200'
-    }
-  }
-
-  return (
-    <div className={`max-w-sm w-full ${getBgColor()} border rounded-lg shadow-lg p-4 animate-in slide-in-from-right-full duration-300`}>
-      <div className="flex items-start">
-        <div className="flex-shrink-0">
-          {getIcon()}
-        </div>
-        <div className="ml-3 w-0 flex-1">
-          <p className="text-sm font-medium text-gray-900">
-            {toast.title}
-          </p>
-          {toast.description && (
-            <p className="mt-1 text-sm text-gray-500">
-              {toast.description}
-            </p>
-          )}
-        </div>
-        <div className="ml-4 flex-shrink-0 flex">
-          <button
-            className="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            onClick={() => onRemove(toast.id)}
-          >
-            <span className="sr-only">Kapat</span>
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
-    </div>
-  )
 } 

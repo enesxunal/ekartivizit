@@ -42,6 +42,24 @@ export default function OdemePage() {
     notes: ''
   })
 
+  // Fatura bilgileri
+  const [invoiceInfo, setInvoiceInfo] = useState({
+    type: 'individual' as 'individual' | 'corporate', // bireysel veya kurumsal
+    name: user?.name || '',
+    email: user?.email || '',
+    phone: '',
+    taxNumber: '', // vergi numarası (kurumsal için)
+    taxOffice: '', // vergi dairesi (kurumsal için)
+    address: {
+      street: '',
+      city: '',
+      district: '',
+      postalCode: ''
+    }
+  })
+
+  const [sameAsShipping, setSameAsShipping] = useState(true)
+
   // Kredi kartı bilgileri
   const [cardInfo, setCardInfo] = useState({
     cardNumber: '',
@@ -97,6 +115,37 @@ export default function OdemePage() {
     }))
   }
 
+  const handleInvoiceInputChange = (field: string, value: string) => {
+    if (field.startsWith('address.')) {
+      const addressField = field.split('.')[1]
+      setInvoiceInfo(prev => ({
+        ...prev,
+        address: {
+          ...prev.address,
+          [addressField]: value
+        }
+      }))
+    } else {
+      setInvoiceInfo(prev => ({
+        ...prev,
+        [field]: value
+      }))
+    }
+  }
+
+  const handleSameAsShippingChange = (checked: boolean) => {
+    setSameAsShipping(checked)
+    if (checked) {
+      setInvoiceInfo(prev => ({
+        ...prev,
+        name: customerInfo.name,
+        email: customerInfo.email,
+        phone: customerInfo.phone,
+        address: { ...customerInfo.address }
+      }))
+    }
+  }
+
   const validateForm = () => {
     if (!customerInfo.name || !customerInfo.email || !customerInfo.phone) {
       addToast({
@@ -131,6 +180,13 @@ export default function OdemePage() {
       const orderData = {
         items: items || [],
         customerInfo,
+        invoiceInfo: sameAsShipping ? {
+          ...invoiceInfo,
+          name: customerInfo.name,
+          email: customerInfo.email,
+          phone: customerInfo.phone,
+          address: customerInfo.address
+        } : invoiceInfo,
         status: 'pending' as const,
         paymentStatus: 'pending' as const,
         paymentMethod: selectedPaymentMethod,
@@ -378,6 +434,160 @@ export default function OdemePage() {
                     rows={2}
                   />
                 </div>
+              </CardContent>
+            </Card>
+
+            {/* Fatura Bilgileri */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Building2 className="w-5 h-5" />
+                  Fatura Bilgileri
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* Fatura Türü */}
+                <div className="space-y-3">
+                  <Label>Fatura Türü</Label>
+                  <div className="flex gap-4">
+                    <label className="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="invoiceType"
+                        value="individual"
+                        checked={invoiceInfo.type === 'individual'}
+                        onChange={(e) => handleInvoiceInputChange('type', e.target.value)}
+                        className="text-[#59af05] focus:ring-[#59af05]"
+                      />
+                      <span>Bireysel</span>
+                    </label>
+                    <label className="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="invoiceType"
+                        value="corporate"
+                        checked={invoiceInfo.type === 'corporate'}
+                        onChange={(e) => handleInvoiceInputChange('type', e.target.value)}
+                        className="text-[#59af05] focus:ring-[#59af05]"
+                      />
+                      <span>Kurumsal</span>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Teslimat adresi ile aynı checkbox */}
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="sameAsShipping"
+                    checked={sameAsShipping}
+                    onChange={(e) => handleSameAsShippingChange(e.target.checked)}
+                    className="text-[#59af05] focus:ring-[#59af05]"
+                  />
+                  <Label htmlFor="sameAsShipping" className="cursor-pointer">
+                    Fatura adresi teslimat adresi ile aynı
+                  </Label>
+                </div>
+
+                {/* Kurumsal fatura için ek alanlar */}
+                {invoiceInfo.type === 'corporate' && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-blue-50 rounded-lg">
+                    <div>
+                      <Label htmlFor="taxNumber">Vergi Numarası *</Label>
+                      <Input
+                        id="taxNumber"
+                        value={invoiceInfo.taxNumber}
+                        onChange={(e) => handleInvoiceInputChange('taxNumber', e.target.value)}
+                        placeholder="1234567890"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="taxOffice">Vergi Dairesi *</Label>
+                      <Input
+                        id="taxOffice"
+                        value={invoiceInfo.taxOffice}
+                        onChange={(e) => handleInvoiceInputChange('taxOffice', e.target.value)}
+                        placeholder="Kadıköy Vergi Dairesi"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Fatura bilgileri (teslimat adresi ile aynı değilse) */}
+                {!sameAsShipping && (
+                  <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+                    <h4 className="font-medium text-gray-900">Fatura Adresi</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="invoiceName">Ad Soyad / Firma Adı *</Label>
+                        <Input
+                          id="invoiceName"
+                          value={invoiceInfo.name}
+                          onChange={(e) => handleInvoiceInputChange('name', e.target.value)}
+                          placeholder={invoiceInfo.type === 'corporate' ? 'Firma Adı' : 'Ad Soyad'}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="invoiceEmail">E-posta</Label>
+                        <Input
+                          id="invoiceEmail"
+                          type="email"
+                          value={invoiceInfo.email}
+                          onChange={(e) => handleInvoiceInputChange('email', e.target.value)}
+                          placeholder="fatura@email.com"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="invoicePhone">Telefon</Label>
+                      <Input
+                        id="invoicePhone"
+                        value={invoiceInfo.phone}
+                        onChange={(e) => handleInvoiceInputChange('phone', e.target.value)}
+                        placeholder="0555 123 45 67"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="invoiceStreet">Fatura Adresi</Label>
+                      <Textarea
+                        id="invoiceStreet"
+                        value={invoiceInfo.address.street}
+                        onChange={(e) => handleInvoiceInputChange('address.street', e.target.value)}
+                        placeholder="Mahalle, sokak, bina no, daire no"
+                        rows={3}
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <Label htmlFor="invoiceCity">İl</Label>
+                        <Input
+                          id="invoiceCity"
+                          value={invoiceInfo.address.city}
+                          onChange={(e) => handleInvoiceInputChange('address.city', e.target.value)}
+                          placeholder="İstanbul"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="invoiceDistrict">İlçe</Label>
+                        <Input
+                          id="invoiceDistrict"
+                          value={invoiceInfo.address.district}
+                          onChange={(e) => handleInvoiceInputChange('address.district', e.target.value)}
+                          placeholder="Kadıköy"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="invoicePostalCode">Posta Kodu</Label>
+                        <Input
+                          id="invoicePostalCode"
+                          value={invoiceInfo.address.postalCode}
+                          onChange={(e) => handleInvoiceInputChange('address.postalCode', e.target.value)}
+                          placeholder="34000"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
 
