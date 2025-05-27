@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Mail, Phone, MapPin, Instagram, Package, User, CreditCard, Truck, FileText } from 'lucide-react'
+import { Mail, Phone, MapPin, Instagram, Package, User, Truck, FileText } from 'lucide-react'
 import { CATEGORIES } from '@/data/products'
 
 export default function Footer() {
