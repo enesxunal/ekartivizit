@@ -10,6 +10,13 @@ import { getProductsByCategory } from '@/data/products'
 export default function ReklamPage() {
   const products = getProductsByCategory('reklam')
 
+  const formatPrice = (price: { min: number; max: number }) => {
+    if (price.min === price.max) {
+      return `${price.min}₺`
+    }
+    return `${price.min}₺ - ${price.max}₺`
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -49,7 +56,7 @@ export default function ReklamPage() {
                   </p>
                   {product.price && (
                     <div className="text-sm text-[#59af05] font-semibold">
-                      {product.price.min}₺ - {product.price.max}₺
+                      {formatPrice(product.price)}
                     </div>
                   )}
                 </div>

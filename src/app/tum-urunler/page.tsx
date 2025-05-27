@@ -16,6 +16,13 @@ export default function TumUrunlerPage() {
     ? PRODUCTS 
     : PRODUCTS.filter(product => product.category === selectedCategory)
 
+  const formatPrice = (price: { min: number; max: number }) => {
+    if (price.min === price.max) {
+      return `${price.min}₺`
+    }
+    return `${price.min}₺ - ${price.max}₺`
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -82,7 +89,7 @@ export default function TumUrunlerPage() {
                   </p>
                   {product.price && (
                     <div className="text-sm text-[#59af05] font-semibold">
-                      {product.price.min}₺ - {product.price.max}₺
+                      {formatPrice(product.price)}
                     </div>
                   )}
                 </div>

@@ -7,6 +7,13 @@ import { getPopularProducts } from '@/data/products'
 export default function PopularProducts() {
   const products = getPopularProducts()
 
+  const formatPrice = (price: { min: number; max: number }) => {
+    if (price.min === price.max) {
+      return `${price.min}₺`
+    }
+    return `${price.min}₺ - ${price.max}₺`
+  }
+
   return (
     <section className="py-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -39,7 +46,7 @@ export default function PopularProducts() {
                   </p>
                   {product.price && (
                     <div className="text-sm text-[#59af05] font-semibold">
-                      {product.price.min}₺ - {product.price.max}₺
+                      {formatPrice(product.price)}
                     </div>
                   )}
                 </div>

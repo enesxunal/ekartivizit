@@ -6,10 +6,12 @@ import { ShoppingCart, User, Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useState } from 'react'
+import { useCart } from '@/contexts/CartContext'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const cartItemCount = 0 // Bu değer daha sonra context'ten gelecek
+  const { getItemCount } = useCart()
+  const cartItemCount = getItemCount()
 
   const menuItems = [
     { name: 'Tüm Ürünler', href: '/tum-urunler' },
@@ -66,9 +68,11 @@ export default function Header() {
             </Link>
 
             {/* Kullanıcı */}
-            <Button variant="ghost" size="sm">
-              <User className="h-5 w-5" />
-            </Button>
+            <Link href="/hesabim">
+              <Button variant="ghost" size="sm">
+                <User className="h-5 w-5" />
+              </Button>
+            </Link>
 
             {/* Mobile Menü Butonu */}
             <Button

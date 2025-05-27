@@ -13,6 +13,13 @@ import { Star, TrendingUp } from 'lucide-react'
 export default function CokSatanlarPage() {
   const popularProducts = getPopularProducts()
 
+  const formatPrice = (price: { min: number; max: number }) => {
+    if (price.min === price.max) {
+      return `${price.min}₺`
+    }
+    return `${price.min}₺ - ${price.max}₺`
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -77,7 +84,7 @@ export default function CokSatanlarPage() {
                   
                   {product.price && (
                     <div className="text-lg text-[#59af05] font-bold">
-                      {product.price.min}₺ - {product.price.max}₺
+                      {formatPrice(product.price)}
                     </div>
                   )}
                 </div>

@@ -6,13 +6,15 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Product } from '@/data/products'
-import { Truck, Shield, Clock, MessageCircle } from 'lucide-react'
+import { useCart } from '@/contexts/CartContext'
+import { Truck, Shield, Clock, MessageCircle, ShoppingCart } from 'lucide-react'
 
 interface ProductContentProps {
   product: Product
 }
 
 export default function ProductContent({ product }: ProductContentProps) {
+  const { addToCart } = useCart()
   const [selectedMaterial, setSelectedMaterial] = useState('')
   const [selectedSize, setSelectedSize] = useState('')
   const [selectedWindow, setSelectedWindow] = useState('')
@@ -96,6 +98,24 @@ export default function ProductContent({ product }: ProductContentProps) {
         ? prev.filter(name => name !== extraName)
         : [...prev, extraName]
     )
+  }
+
+  const handleAddToCart = () => {
+    const price = parseFloat(calculatePrice())
+    addToCart({
+      product,
+      quantity,
+      selectedMaterial,
+      selectedSize,
+      selectedWindow,
+      selectedExtras,
+      customWidth,
+      customHeight,
+      price
+    })
+    
+    // Başarı mesajı gösterebiliriz
+    alert(`${quantity.toLocaleString()} adetlik ${product.name} sepete eklendi!`)
   }
 
   const handleWhatsApp = () => {
@@ -358,8 +378,12 @@ Detaylı bilgi alabilir miyim?`
               <MessageCircle className="w-5 h-5" />
               <span>WhatsApp ile Sipariş Ver</span>
             </Button>
-            <Button className="w-full bg-[#59af05] hover:bg-[#4a9321] text-white py-3 text-lg">
-              Sepete Ekle
+            <Button 
+              onClick={handleAddToCart}
+              className="w-full bg-[#59af05] hover:bg-[#4a9321] text-white py-3 text-lg flex items-center justify-center space-x-2"
+            >
+              <ShoppingCart className="w-5 h-5" />
+              <span>Sepete Ekle</span>
             </Button>
             <Button variant="outline" className="w-full py-3 text-lg border-[#59af05] text-[#59af05] hover:bg-[#59af05]/5">
               Tasarıma Başla
