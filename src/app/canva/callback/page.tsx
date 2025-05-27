@@ -49,7 +49,7 @@ export default function CanvaCallbackPage() {
       <div className="text-center">
         <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-[#59af05]" />
         <h2 className="text-lg font-semibold text-gray-900 mb-2">
-          Canva'ya Bağlanıyor...
+          Canva&apos;ya Bağlanıyor...
         </h2>
         <p className="text-gray-600">
           Lütfen bekleyiniz, yönlendiriliyorsunuz.

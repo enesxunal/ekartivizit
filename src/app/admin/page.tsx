@@ -13,7 +13,7 @@ import {
   Settings,
   BarChart3,
   Eye,
-  Download
+  Mail
 } from 'lucide-react'
 import Link from 'next/link'
 import { useOrders } from '@/contexts/OrderContext'
@@ -24,7 +24,7 @@ export default function AdminDashboard() {
   // İstatistikler
   const totalOrders = orders.length
   const pendingOrders = orders.filter(o => o.status === 'pending').length
-  const completedOrders = orders.filter(o => o.status === 'delivered').length
+  // const completedOrders = orders.filter(o => o.status === 'delivered').length
   const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0)
   
   // Tasarım sayıları
@@ -164,6 +164,13 @@ export default function AdminDashboard() {
                   <Button variant="outline" className="w-full h-20 flex flex-col items-center gap-2">
                     <Settings className="w-6 h-6" />
                     <span>Ayarlar</span>
+                  </Button>
+                </Link>
+
+                <Link href="/admin/email-test">
+                  <Button variant="outline" className="w-full h-20 flex flex-col items-center gap-2">
+                    <Mail className="w-6 h-6" />
+                    <span>E-posta Test</span>
                   </Button>
                 </Link>
               </div>

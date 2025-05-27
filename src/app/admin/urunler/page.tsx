@@ -1,16 +1,15 @@
 'use client'
 
 import React, { useState } from 'react'
+import Image from 'next/image'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { 
   Package, 
   Search,
-  Filter,
   Plus,
   Edit,
-  Trash2,
   Eye,
   Settings,
   Star,
@@ -231,9 +230,11 @@ export default function ProductsPage() {
                           {/* Ürün Görseli */}
                           <div className="md:w-32 h-32 bg-gray-100 rounded-lg flex items-center justify-center">
                             {product.image ? (
-                              <img 
+                              <Image 
                                 src={product.image} 
                                 alt={product.name}
+                                width={128}
+                                height={128}
                                 className="w-full h-full object-cover rounded-lg"
                               />
                             ) : (

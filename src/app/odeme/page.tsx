@@ -15,6 +15,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { useOrders } from '@/contexts/OrderContext'
 import { createToast, useToast } from '@/components/ui/toast'
 import { paymentMethods, processCreditCardPayment, processWhatsAppPayment, processBankTransferPayment } from '@/lib/payment'
+import { emailTemplates } from '@/lib/email'
 import { CreditCard, Smartphone, Building2, Truck, ShoppingCart, User, MapPin } from 'lucide-react'
 
 export default function OdemePage() {
@@ -146,7 +147,7 @@ export default function OdemePage() {
         amount: totalPrice,
         currency: 'TRY',
         customerInfo,
-        items: (items || []).map((item: any) => ({
+        items: (items || []).map((item) => ({
           id: item.product.id,
           name: item.product.name,
           price: item.price,
@@ -171,6 +172,41 @@ export default function OdemePage() {
       }
 
       if (paymentResult.success) {
+        // E-posta gönder - Müşteri
+        try {
+          const customerEmailTemplate = emailTemplates.orderConfirmationCustomer({
+            ...orderData,
+            orderId: orderResult.orderId
+          })
+          
+          await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              to: customerInfo.email,
+              template: customerEmailTemplate
+            })
+          })
+          
+          // E-posta gönder - Admin
+          const adminEmailTemplate = emailTemplates.orderNotificationAdmin({
+            ...orderData,
+            orderId: orderResult.orderId
+          })
+          
+          await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              to: 'info@ekartvizit.co',
+              template: adminEmailTemplate
+            })
+          })
+        } catch (emailError) {
+          console.error('E-posta gönderme hatası:', emailError)
+          // E-posta hatası sipariş işlemini durdurmasın
+        }
+
         // Sepeti temizle
         clearCart()
         
@@ -338,7 +374,7 @@ export default function OdemePage() {
                         ? 'border-[#59af05] bg-[#59af05]/5'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
-                    onClick={() => setSelectedPaymentMethod(key as any)}
+                    onClick={() => setSelectedPaymentMethod(key as 'whatsapp' | 'credit-card' | 'bank-transfer')}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">

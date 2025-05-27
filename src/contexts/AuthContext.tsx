@@ -1,6 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
+import { emailTemplates } from '@/lib/email'
 
 export interface User {
   id: string
@@ -130,9 +131,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
+    // Hoş geldin e-postası gönder
+    try {
+      const welcomeEmailTemplate = emailTemplates.userRegistration(userData.name, userData.email)
+      
+      await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: userData.email,
+          template: welcomeEmailTemplate
+        })
+      })
+    } catch (emailError) {
+      console.error('Hoş geldin e-postası gönderme hatası:', emailError)
+      // E-posta hatası kayıt işlemini durdurmasın
+    }
+
     setUser(newUser)
     setIsLoading(false)
-    return { success: true, message: 'Kayıt başarılı! Hoş geldiniz!' }
+    return { success: true, message: 'Kayıt başarılı! Hoş geldiniz! E-posta adresinizi kontrol edin.' }
   }
 
   const logout = () => {

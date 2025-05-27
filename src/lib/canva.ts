@@ -262,13 +262,13 @@ export class CanvaAPI {
       throw new Error(`Canva API error: ${data.error_description || data.error}`)
     }
 
-    return data.items.map((design: any) => ({
-      id: design.id,
-      title: design.title,
-      urls: design.urls,
-      status: 'draft',
-      createdAt: design.created_at,
-      updatedAt: design.updated_at,
+    return data.items.map((design: Record<string, unknown>) => ({
+      id: design.id as string,
+      title: design.title as string,
+      urls: design.urls as { editUrl: string; viewUrl: string },
+      status: 'draft' as const,
+      createdAt: design.created_at as string,
+      updatedAt: design.updated_at as string,
     }))
   }
 }

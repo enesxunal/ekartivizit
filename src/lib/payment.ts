@@ -51,7 +51,7 @@ export async function processWhatsAppPayment(paymentData: PaymentData): Promise<
       redirectUrl: whatsappUrl,
       paymentId: `wa-${Date.now()}`
     }
-  } catch (error) {
+  } catch {
     return {
       success: false,
       errorMessage: 'WhatsApp ödeme işlemi başlatılamadı'
@@ -77,7 +77,7 @@ export async function processCreditCardPayment(
       success: true,
       paymentId: `tosla-${Date.now()}-${Math.random().toString(36).substring(7)}`
     }
-  } catch (error) {
+  } catch {
     return {
       success: false,
       errorMessage: 'Kredi kartı ödemesi başarısız oldu'
@@ -102,7 +102,7 @@ export async function processBankTransferPayment(paymentData: PaymentData): Prom
       paymentId: `bt-${Date.now()}`,
       redirectUrl: `/odeme/banka-havalesi?ref=${bankInfo.reference}`
     }
-  } catch (error) {
+  } catch {
     return {
       success: false,
       errorMessage: 'Banka havalesi işlemi başlatılamadı'
@@ -161,7 +161,7 @@ export async function checkPaymentStatus(paymentId: string): Promise<{
     }
     
     return { status: 'pending' }
-  } catch (error) {
+  } catch {
     return { status: 'failed' }
   }
 }

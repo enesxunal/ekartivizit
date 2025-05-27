@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { CartItem } from './CartContext'
+import { emailTemplates } from '@/lib/email'
 
 export interface Order {
   id: string
@@ -38,7 +39,7 @@ interface OrderContextType {
   getOrder: (orderId: string) => Order | undefined
   getOrderById: (orderId: string) => Order | undefined // Alias for getOrder
   getUserOrders: (userId: string) => Order[]
-  updateOrderStatus: (orderId: string, status: Order['status']) => void
+  updateOrderStatus: (orderId: string, status: Order['status']) => Promise<void>
   updatePaymentStatus: (orderId: string, status: Order['paymentStatus']) => void
   cancelOrder: (orderId: string, reason?: string) => Promise<{ success: boolean; message: string }>
   getOrdersByStatus: (status: Order['status']) => Order[]
@@ -114,7 +115,41 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
     return orders.filter(order => order.userId === userId)
   }
 
-  const updateOrderStatus = (orderId: string, status: Order['status']) => {
+  const updateOrderStatus = async (orderId: string, status: Order['status']) => {
+    const order = getOrder(orderId)
+    if (!order) return
+
+    // Durum mesajları
+    const statusMessages: Record<Order['status'], string> = {
+      pending: 'Sipariş Alındı',
+      confirmed: 'Sipariş Onaylandı',
+      preparing: 'Sipariş Hazırlanıyor',
+      printing: 'Sipariş Basılıyor',
+      shipping: 'Sipariş Kargoya Verildi',
+      delivered: 'Sipariş Teslim Edildi',
+      cancelled: 'Sipariş İptal Edildi'
+    }
+
+    // E-posta gönder
+    try {
+      const statusUpdateTemplate = emailTemplates.orderStatusUpdate(
+        order,
+        status,
+        statusMessages[status]
+      )
+      
+      await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: order.customerInfo.email,
+          template: statusUpdateTemplate
+        })
+      })
+    } catch (emailError) {
+      console.error('Durum güncelleme e-postası gönderme hatası:', emailError)
+    }
+
     setOrders(prev => prev.map(order => 
       order.id === orderId 
         ? { ...order, status, updatedAt: new Date().toISOString() }

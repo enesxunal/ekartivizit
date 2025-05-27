@@ -1,15 +1,13 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { 
   Package, 
   Eye, 
-  Edit, 
   Search,
-  Filter,
   Download,
   Truck,
   Check,
@@ -20,6 +18,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useOrders } from '@/contexts/OrderContext'
+// Email artık API üzerinden gönderilecek
 
 export default function OrdersPage() {
   const { orders, updateOrderStatus } = useOrders()

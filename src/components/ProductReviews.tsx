@@ -70,7 +70,7 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
       } else {
         toast.error('Hata!', result.message)
       }
-    } catch (error) {
+    } catch {
       toast.error('Bir hata oluştu', 'Lütfen tekrar deneyin')
     } finally {
       setIsSubmitting(false)

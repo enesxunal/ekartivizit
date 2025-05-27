@@ -144,7 +144,7 @@ export function ReviewProvider({ children }: { children: React.ReactNode }) {
         success: true,
         message: 'Yorumunuz başarıyla gönderildi! Onaylandıktan sonra yayınlanacaktır.'
       }
-    } catch (error) {
+    } catch {
       return {
         success: false,
         message: 'Yorum gönderilirken bir hata oluştu.'

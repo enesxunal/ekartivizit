@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useMemo } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { 
@@ -9,13 +9,9 @@ import {
   Search,
   Mail,
   Phone,
-  MapPin,
   Package,
   Eye,
-  Filter,
-  Download,
-  UserCheck,
-  Calendar
+  UserCheck
 } from 'lucide-react'
 import Link from 'next/link'
 import { useOrders } from '@/contexts/OrderContext'
@@ -30,7 +26,7 @@ interface Customer {
   lastOrderDate: string
   status: 'active' | 'inactive'
   joinDate: string
-  orders: any[]
+  orders: unknown[]
 }
 
 export default function CustomersPage() {

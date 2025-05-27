@@ -8,17 +8,15 @@ import {
   Save,
   RefreshCw,
   Bell,
-  Mail,
-  Shield,
   Palette,
   Globe,
-  Package,
   DollarSign,
   Truck,
-  User,
-  Phone,
-  MapPin,
-  Building
+  CreditCard,
+  Eye,
+  EyeOff,
+  Check,
+  X
 } from 'lucide-react'
 import Link from 'next/link'
 

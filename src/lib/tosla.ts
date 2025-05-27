@@ -37,12 +37,12 @@ export interface ToslaPaymentResponse {
 }
 
 // Tosla konfigürasyonu
-const toslaConfig: ToslaConfig = {
-  apiKey: process.env.TOSLA_API_KEY || '',
-  secretKey: process.env.TOSLA_SECRET_KEY || '',
-  baseUrl: process.env.TOSLA_BASE_URL || 'https://api.tosla.com',
-  environment: (process.env.NODE_ENV === 'production' ? 'production' : 'test') as 'test' | 'production'
-}
+// const toslaConfig: ToslaConfig = {
+//   apiKey: process.env.TOSLA_API_KEY || '',
+//   secretKey: process.env.TOSLA_SECRET_KEY || '',
+//   baseUrl: process.env.TOSLA_BASE_URL || 'https://api.tosla.com',
+//   environment: (process.env.NODE_ENV === 'production' ? 'production' : 'test') as 'test' | 'production'
+// }
 
 // Tosla ödeme işlemi
 export async function processToslaPayment(request: ToslaPaymentRequest): Promise<ToslaPaymentResponse> {
@@ -60,8 +60,7 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
       paymentId: `tosla-${Date.now()}`,
       redirectUrl: `/odeme/basarili?payment=${request.orderId}`
     }
-  } catch (error) {
-    console.error('Tosla ödeme hatası:', error)
+  } catch {
     return {
       success: false,
       errorCode: 'PAYMENT_FAILED',
@@ -71,7 +70,7 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
 }
 
 // Ödeme durumu sorgulama
-export async function checkToslaPaymentStatus(paymentId: string): Promise<{
+export async function checkToslaPaymentStatus(_paymentId: string): Promise<{
   status: 'pending' | 'success' | 'failed' | 'cancelled'
   amount?: number
   paidAt?: string
@@ -85,19 +84,19 @@ export async function checkToslaPaymentStatus(paymentId: string): Promise<{
       amount: 100,
       paidAt: new Date().toISOString()
     }
-  } catch (error) {
+  } catch {
     return { status: 'failed' }
   }
 }
 
 // Webhook doğrulama
-export function verifyToslaWebhook(payload: string, signature: string): boolean {
+export function verifyToslaWebhook(_payload: string, _signature: string): boolean {
   try {
     // Tosla webhook imza doğrulaması
     // ZIP dosyasından çıkarılan kod buraya gelecek
     
     return true // Şimdilik true döndür
-  } catch (error) {
+  } catch {
     return false
   }
 } 

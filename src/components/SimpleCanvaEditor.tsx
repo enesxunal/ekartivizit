@@ -147,7 +147,7 @@ export default function SimpleCanvaEditor({
                 {productCategory.charAt(0).toUpperCase() + productCategory.slice(1)} Tasarımı
               </h3>
               <p className="text-gray-600">
-                Canva'da tasarımınızı oluşturun ve PDF olarak indirip yükleyin
+                Canva&apos;da tasarımınızı oluşturun ve PDF olarak indirip yükleyin
               </p>
             </div>
 
@@ -157,7 +157,7 @@ export default function SimpleCanvaEditor({
                 <div className="flex items-start gap-3">
                   <div className="w-6 h-6 bg-[#59af05] text-white rounded-full flex items-center justify-center text-sm font-bold">1</div>
                   <div>
-                    <div className="font-medium">Canva'da Tasarla</div>
+                    <div className="font-medium">Canva&apos;da Tasarla</div>
                     <div className="text-sm text-gray-600">Canva editöründe tasarımınızı oluşturun</div>
                   </div>
                 </div>
@@ -185,7 +185,7 @@ export default function SimpleCanvaEditor({
                 className="bg-[#59af05] hover:bg-[#4a9321] w-full"
               >
                 <ExternalLink className="w-5 h-5 mr-2" />
-                Canva'da Tasarımı Başlat
+                Canva&apos;da Tasarımı Başlat
               </Button>
 
               <Button
@@ -225,7 +225,7 @@ export default function SimpleCanvaEditor({
               <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               <h4 className="text-lg font-medium mb-2">PDF Dosyasını Yükleyin</h4>
               <p className="text-gray-600 mb-4">
-                Canva'dan indirdiğiniz PDF dosyasını buraya sürükleyin veya seçin
+                Canva&apos;dan indirdiğiniz PDF dosyasını buraya sürükleyin veya seçin
               </p>
               
               <input
@@ -282,7 +282,7 @@ export default function SimpleCanvaEditor({
                 className="flex-1"
               >
                 <ExternalLink className="w-4 h-4 mr-2" />
-                Canva'yı Tekrar Aç
+                Canva&apos;yı Tekrar Aç
               </Button>
             </div>
           </CardContent>

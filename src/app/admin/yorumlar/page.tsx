@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Star, Check, X, Eye, Calendar, User, MessageSquare } from 'lucide-react'
+import { Star, Check, X, Eye, User, MessageSquare } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { useReviews } from '@/contexts/ReviewContext'
@@ -12,8 +12,7 @@ export default function AdminReviewsPage() {
     reviews, 
     getPendingReviews, 
     approveReview, 
-    rejectReview,
-    getReviewStats 
+    rejectReview
   } = useReviews()
   const { addToast } = useToast()
   const toast = createToast(addToast)

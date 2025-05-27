@@ -9,7 +9,7 @@ import Footer from '@/components/Footer'
 import SimpleCanvaEditor from '@/components/SimpleCanvaEditor'
 import { templateCategories } from '@/lib/canva'
 import { ArrowLeft, Edit3, Palette, Plus } from 'lucide-react'
-import Link from 'next/link'
+// import Link from 'next/link'
 
 type CategoryType = 'kartvizit' | 'broşür' | 'magnet'
 

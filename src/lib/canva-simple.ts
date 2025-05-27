@@ -20,7 +20,7 @@ export class SimpleCanvaIntegration {
       'magnet': 'sticker'
     }
 
-    const canvaCategory = categoryMapping[category] || 'custom'
+    // const canvaCategory = categoryMapping[category] || 'custom'
     
     if (templateId) {
       // Gerçek template ID'si varsa direkt template URL'si
