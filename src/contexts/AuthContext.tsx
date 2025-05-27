@@ -76,7 +76,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Kayıtlı kullanıcıları localStorage'dan al
     const registeredUsers = JSON.parse(localStorage.getItem('ekartvizit-users') || '[]')
     
-    const foundUser = registeredUsers.find((u: any) => u.email === email && u.password === password)
+    const foundUser = registeredUsers.find((u: { email: string; password: string }) => u.email === email && u.password === password)
     
     if (foundUser) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -100,7 +100,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const existingUsers = JSON.parse(localStorage.getItem('ekartvizit-users') || '[]')
     
     // E-posta kontrolü
-    if (existingUsers.find((u: any) => u.email === userData.email)) {
+    if (existingUsers.find((u: { email: string }) => u.email === userData.email)) {
       setIsLoading(false)
       return { success: false, message: 'Bu e-posta adresi zaten kullanımda!' }
     }

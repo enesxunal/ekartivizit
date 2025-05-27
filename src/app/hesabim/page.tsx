@@ -620,7 +620,7 @@ export default function AccountPage() {
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      {orderHistory.map((order) => (
+                      {orderHistory.map((order: { id: string; date: string; status: string; total: number; items: string[] }) => (
                       <div key={order.id} className="border border-gray-200 rounded-lg p-4">
                         <div className="flex justify-between items-start mb-3">
                           <div>
@@ -639,7 +639,7 @@ export default function AccountPage() {
                           </div>
                         </div>
                         <div className="space-y-1">
-                          {order.items.map((item, index) => (
+                          {order.items.map((item: string, index: number) => (
                             <p key={index} className="text-sm text-gray-600">• {item}</p>
                           ))}
                         </div>
