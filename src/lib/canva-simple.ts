@@ -13,6 +13,14 @@ export class SimpleCanvaIntegration {
 
   // Canva editör URL'si oluştur
   createDesignUrl(category: string, templateId?: string): string {
+    // Kategori bazlı template mapping
+    const categoryMapping: Record<string, string> = {
+      'kartvizit': 'business-card',
+      'broşür': 'flyer', 
+      'magnet': 'sticker'
+    }
+
+    const canvaCategory = categoryMapping[category] || 'custom'
     
     if (templateId) {
       // Gerçek template ID'si varsa direkt template URL'si

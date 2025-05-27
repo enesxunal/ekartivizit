@@ -1,8 +1,4 @@
-// Mail konfigürasyonu (sadece server-side)
-if (typeof window !== 'undefined') {
-  throw new Error('Bu modül sadece server-side kullanılabilir')
-}
-
+// Mail konfigürasyonu (şimdilik simüle edilmiş)
 const mailConfig = {
   host: 'mail.ekartvizit.co',
   port: 465,
@@ -20,7 +16,7 @@ export interface MailOptions {
   text?: string
 }
 
-export async function sendMail({ to, subject }: MailOptions) {
+export async function sendMail({ to, subject, html, text }: MailOptions) {
   try {
     // Şimdilik simüle edilmiş mail gönderimi
     console.log('Mail gönderiliyor:', { to, subject, mailConfig })

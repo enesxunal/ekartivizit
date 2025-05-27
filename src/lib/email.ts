@@ -100,7 +100,7 @@ export const emailTemplates = {
           
           <div style="background-color: #fff; border: 1px solid #eee; border-radius: 8px; margin: 20px 0;">
             <h3 style="color: #333; margin: 0; padding: 15px 20px; border-bottom: 1px solid #eee;">Sipariş İçeriği:</h3>
-            ${orderData.items.map((item: any) => `
+            ${orderData.items.map((item) => `
               <div style="padding: 15px 20px; border-bottom: 1px solid #f5f5f5;">
                 <div style="display: flex; justify-content: space-between; align-items: start;">
                   <div>
@@ -182,7 +182,7 @@ export const emailTemplates = {
           
           <div style="background-color: #fff; border: 1px solid #eee; border-radius: 8px; margin: 20px 0;">
             <h3 style="color: #333; margin: 0; padding: 15px 20px; border-bottom: 1px solid #eee;">Sipariş İçeriği:</h3>
-            ${orderData.items.map((item: any) => `
+            ${orderData.items.map((item) => `
               <div style="padding: 15px 20px; border-bottom: 1px solid #f5f5f5;">
                 <div style="display: flex; justify-content: space-between; align-items: start;">
                   <div>
