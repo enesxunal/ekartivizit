@@ -1,33 +1,4 @@
-// E-posta konfigürasyonu - sadece server-side'da kullanılacak
-const emailConfig = {
-  host: 'mail.ekartvizit.co',
-  port: 465,
-  secure: true, // SSL için true
-  auth: {
-    user: 'info@ekartvizit.co',
-    pass: '?@fKVM9ztz@j'
-  }
-}
-
-// E-posta transporter'ı sadece server-side'da oluştur
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let transporter: any = null
-
-const getTransporter = async () => {
-  if (typeof window !== 'undefined') {
-    // Client-side'da çalışıyorsak null döndür
-    return null
-  }
-  
-  if (!transporter) {
-    const nodemailer = await import('nodemailer')
-    transporter = nodemailer.default.createTransport(emailConfig)
-  }
-  
-  return transporter
-}
-
-// E-posta şablonları
+// E-posta şablonları - Client-side'da da kullanılabilir
 export const emailTemplates = {
   // Kullanıcı kayıt onayı
   userRegistration: (userName: string, userEmail: string) => ({
@@ -200,13 +171,13 @@ export const emailTemplates = {
           </div>
           
           <div style="text-align: center; margin: 30px 0;">
-            <a href="https://ekartvizit.co/admin/siparisler" style="background-color: #59af05; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
-              Admin Paneli
+            <a href="https://admin.ekartvizit.co/siparisler/${orderData.orderId}" style="background-color: #59af05; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+              Siparişi Görüntüle
             </a>
           </div>
           
           <div style="border-top: 1px solid #eee; padding-top: 20px; margin-top: 30px; text-align: center; color: #666; font-size: 14px;">
-            <p>Bu otomatik bir bildirimdir.</p>
+            <p>Bu e-posta otomatik olarak gönderilmiştir.</p>
             <p>E-Kartvizit Admin Paneli</p>
           </div>
         </div>
@@ -218,8 +189,7 @@ export const emailTemplates = {
   orderStatusUpdate: (orderData: {
     orderId: string;
     customerInfo: { name: string };
-    createdAt: string;
-  }, newStatus: string, statusMessage: string) => ({
+  }, statusData: { status: string; message: string }) => ({
     subject: `Sipariş Durumu Güncellendi - #${orderData.orderId}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f9f9f9; padding: 20px;">
@@ -229,72 +199,27 @@ export const emailTemplates = {
             <p style="color: #666; margin: 5px 0;">Sipariş Durum Güncellemesi</p>
           </div>
           
-          <h2 style="color: #333; margin-bottom: 20px;">Siparişinizde Güncelleme! 📦</h2>
+          <h2 style="color: #333; margin-bottom: 20px;">Sipariş Durumu Güncellendi</h2>
           
           <p style="color: #666; line-height: 1.6; margin-bottom: 20px;">
             Sayın ${orderData.customerInfo.name}, siparişinizin durumu güncellendi.
           </p>
           
-          <div style="background-color: #e8f5e8; border: 1px solid #59af05; border-radius: 8px; padding: 20px; margin: 20px 0; text-align: center;">
-            <h3 style="color: #59af05; margin: 0 0 10px 0;">Yeni Durum:</h3>
-            <p style="margin: 0; font-size: 18px; font-weight: bold; color: #333;">${statusMessage}</p>
-          </div>
-          
           <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #59af05; margin-top: 0;">Sipariş Bilgileri:</h3>
+            <h3 style="color: #59af05; margin-top: 0;">Güncel Durum:</h3>
             <p style="margin: 5px 0;"><strong>Sipariş No:</strong> #${orderData.orderId}</p>
-            <p style="margin: 5px 0;"><strong>Sipariş Tarihi:</strong> ${new Date(orderData.createdAt).toLocaleDateString('tr-TR')}</p>
-            <p style="margin: 5px 0;"><strong>Güncelleme Tarihi:</strong> ${new Date().toLocaleDateString('tr-TR')}</p>
+            <p style="margin: 5px 0;"><strong>Durum:</strong> ${statusData.message}</p>
+            <p style="margin: 5px 0;"><strong>Güncelleme Tarihi:</strong> ${new Date().toLocaleDateString('tr-TR')} ${new Date().toLocaleTimeString('tr-TR')}</p>
           </div>
           
           <div style="text-align: center; margin: 30px 0;">
             <a href="https://ekartvizit.co/siparis-takip/${orderData.orderId}" style="background-color: #59af05; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
-              Detaylı Takip
+              Siparişimi Takip Et
             </a>
           </div>
           
           <div style="border-top: 1px solid #eee; padding-top: 20px; margin-top: 30px; text-align: center; color: #666; font-size: 14px;">
-            <p>Sorularınız için: info@ekartvizit.co</p>
-            <p>E-Kartvizit | info@ekartvizit.co | www.ekartvizit.co</p>
-          </div>
-        </div>
-      </div>
-    `
-  }),
-
-  // Şifre sıfırlama
-  passwordReset: (userName: string, resetLink: string) => ({
-    subject: 'Şifre Sıfırlama Talebi - E-Kartvizit',
-    html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f9f9f9; padding: 20px;">
-        <div style="background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-          <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #59af05; margin: 0;">E-Kartvizit</h1>
-            <p style="color: #666; margin: 5px 0;">Şifre Sıfırlama</p>
-          </div>
-          
-          <h2 style="color: #333; margin-bottom: 20px;">Şifre Sıfırlama Talebi 🔐</h2>
-          
-          <p style="color: #666; line-height: 1.6; margin-bottom: 20px;">
-            Merhaba ${userName}, hesabınız için şifre sıfırlama talebi aldık.
-          </p>
-          
-          <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 15px; margin: 20px 0;">
-            <p style="margin: 0; color: #856404;">Bu talebi siz yapmadıysanız, bu e-postayı görmezden gelebilirsiniz.</p>
-          </div>
-          
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${resetLink}" style="background-color: #59af05; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
-              Şifremi Sıfırla
-            </a>
-          </div>
-          
-          <p style="color: #666; font-size: 14px; margin-top: 20px;">
-            Bu link 24 saat geçerlidir. Şifrenizi sıfırladıktan sonra yeni şifrenizle giriş yapabilirsiniz.
-          </p>
-          
-          <div style="border-top: 1px solid #eee; padding-top: 20px; margin-top: 30px; text-align: center; color: #666; font-size: 14px;">
-            <p>Bu e-posta otomatik olarak gönderilmiştir.</p>
+            <p>Siparişinizle ilgili sorularınız için: info@ekartvizit.co</p>
             <p>E-Kartvizit | info@ekartvizit.co | www.ekartvizit.co</p>
           </div>
         </div>
@@ -311,60 +236,6 @@ function getPaymentMethodName(method: string): string {
     'bank-transfer': 'Banka Havalesi'
   }
   return methods[method] || method
-}
-
-// E-posta gönderme fonksiyonu - sadece server-side'da kullanılacak
-export async function sendEmail(to: string, template: { subject: string; html: string }, cc?: string[], bcc?: string[]) {
-  const emailTransporter = await getTransporter()
-  
-  if (!emailTransporter) {
-    throw new Error('E-posta transporter oluşturulamadı - sadece server-side\'da kullanılabilir')
-  }
-
-  try {
-    const mailOptions = {
-      from: `"E-Kartvizit" <${emailConfig.auth.user}>`,
-      to,
-      cc,
-      bcc,
-      subject: template.subject,
-      html: template.html
-    }
-
-    const result = await emailTransporter.sendMail(mailOptions)
-    console.log('E-posta gönderildi:', result.messageId)
-    
-    return {
-      success: true,
-      messageId: result.messageId
-    }
-  } catch (error) {
-    console.error('E-posta gönderme hatası:', error)
-    throw error
-  }
-}
-
-// Toplu e-posta gönderme
-export async function sendBulkEmail(recipients: string[], template: { subject: string; html: string }) {
-  const emailTransporter = await getTransporter()
-  
-  if (!emailTransporter) {
-    throw new Error('E-posta transporter oluşturulamadı - sadece server-side\'da kullanılabilir')
-  }
-
-  const results = []
-  
-  for (const recipient of recipients) {
-    try {
-      const result = await sendEmail(recipient, template)
-      results.push({ recipient, success: true, messageId: result.messageId })
-    } catch (error) {
-      console.error(`E-posta gönderme hatası (${recipient}):`, error)
-      results.push({ recipient, success: false, error: error instanceof Error ? error.message : 'Bilinmeyen hata' })
-    }
-  }
-  
-  return results
 }
 
 // E-posta doğrulama
