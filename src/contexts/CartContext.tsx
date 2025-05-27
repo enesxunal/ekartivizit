@@ -15,6 +15,12 @@ export interface CartItem {
   customWidth?: string
   customHeight?: string
   price: number
+  customDesign?: {
+    designId: string
+    designTitle: string
+    pdfUrl: string
+    createdAt: string
+  }
 }
 
 interface CartContextType {

@@ -19,7 +19,7 @@ import { CreditCard, Smartphone, Building2, Truck, ShoppingCart, User, MapPin } 
 
 export default function OdemePage() {
   const router = useRouter()
-  const { cart, getTotalPrice, clearCart, getDiscountedTotal, appliedDiscount } = useCart()
+  const { items, getTotalPrice, clearCart, getDiscountedTotal, appliedDiscount } = useCart()
   const { user } = useAuth()
   const { createOrder } = useOrders()
   const { addToast } = useToast()
@@ -53,7 +53,7 @@ export default function OdemePage() {
 
   const totalPrice = getDiscountedTotal()
 
-  if (!cart || cart.length === 0) {
+  if (!items || items.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
@@ -121,7 +121,7 @@ export default function OdemePage() {
     try {
       // Sipariş oluştur
       const orderData = {
-        items: cart || [],
+        items: items || [],
         customerInfo,
         status: 'pending' as const,
         paymentStatus: 'pending' as const,
@@ -146,7 +146,7 @@ export default function OdemePage() {
         amount: totalPrice,
         currency: 'TRY',
         customerInfo,
-        items: (cart || []).map(item => ({
+        items: (items || []).map((item: any) => ({
           id: item.product.id,
           name: item.product.name,
           price: item.price,
@@ -426,7 +426,7 @@ export default function OdemePage() {
                 <CardTitle>Sipariş Özeti</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {cart?.map((item) => (
+                {items?.map((item) => (
                   <div key={item.id} className="flex gap-3">
                     <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
                       <Image
