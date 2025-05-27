@@ -68,8 +68,13 @@ export const emailTemplates = {
   }),
 
   // Sipariş onayı - Müşteri
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  orderConfirmationCustomer: (orderData: any) => ({
+  orderConfirmationCustomer: (orderData: {
+    orderId: string;
+    total: number;
+    paymentMethod: string;
+    customerInfo: { name: string; email: string; address: { street: string; district: string; city: string; postalCode: string } };
+    items: Array<{ product: { name: string }; quantity: number; price: number; selectedMaterial?: string; selectedSize?: string }>
+  }) => ({
     subject: `Siparişiniz Alındı - #${orderData.orderId}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f9f9f9; padding: 20px;">
@@ -137,7 +142,13 @@ export const emailTemplates = {
   }),
 
   // Sipariş bildirimi - Admin
-  orderNotificationAdmin: (orderData: any) => ({
+  orderNotificationAdmin: (orderData: {
+    orderId: string;
+    total: number;
+    paymentMethod: string;
+    customerInfo: { name: string; email: string; phone: string; address: { street: string; district: string; city: string } };
+    items: Array<{ product: { name: string }; quantity: number; price: number; selectedMaterial?: string; selectedSize?: string }>
+  }) => ({
     subject: `🔔 Yeni Sipariş Alındı - #${orderData.orderId}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f9f9f9; padding: 20px;">
@@ -204,7 +215,11 @@ export const emailTemplates = {
   }),
 
   // Sipariş durum güncellemesi
-  orderStatusUpdate: (orderData: any, newStatus: string, statusMessage: string) => ({
+  orderStatusUpdate: (orderData: {
+    orderId: string;
+    customerInfo: { name: string };
+    createdAt: string;
+  }, newStatus: string, statusMessage: string) => ({
     subject: `Sipariş Durumu Güncellendi - #${orderData.orderId}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f9f9f9; padding: 20px;">

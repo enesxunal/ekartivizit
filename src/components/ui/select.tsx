@@ -20,13 +20,7 @@ export function Select({ value, onValueChange, defaultValue, children }: SelectP
 
   return (
     <div className="relative">
-      {React.Children.map(children, child => {
-        if (React.isValidElement(child)) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          return React.cloneElement(child, { value: currentValue, onValueChange: handleChange } as any)
-        }
-        return child
-      })}
+      {children}
     </div>
   )
 }
@@ -66,19 +60,12 @@ export function SelectTrigger({ className, children, value, onValueChange }: Sel
             onClick={() => setIsOpen(false)}
           />
           <div className="absolute top-full left-0 z-20 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
-            {React.Children.map(children, child => {
-              if (React.isValidElement(child) && child.type === SelectContent) {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                return React.cloneElement(child, {
-                  value,
-                  onValueChange: (newValue: string) => {
-                    onValueChange?.(newValue)
-                    setIsOpen(false)
-                  }
-                } as any)
-              }
-              return null
-            })}
+            <div className="max-h-60 overflow-auto py-1">
+              <SelectItem value="option1" selectedValue={value} onSelect={(newValue: string) => {
+                onValueChange?.(newValue)
+                setIsOpen(false)
+              }}>Option 1</SelectItem>
+            </div>
           </div>
         </>
       )}
@@ -92,23 +79,12 @@ export function SelectValue({ placeholder }: { placeholder?: string }) {
 
 export interface SelectContentProps {
   children: React.ReactNode
-  value?: string
-  onValueChange?: (value: string) => void
 }
 
-export function SelectContent({ children, value, onValueChange }: SelectContentProps) {
+export function SelectContent({ children }: SelectContentProps) {
   return (
     <div className="max-h-60 overflow-auto py-1">
-      {React.Children.map(children, child => {
-        if (React.isValidElement(child)) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          return React.cloneElement(child, { 
-            selectedValue: value,
-            onSelect: onValueChange 
-          } as any)
-        }
-        return child
-      })}
+      {children}
     </div>
   )
 }
