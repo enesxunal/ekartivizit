@@ -19,7 +19,6 @@ export default function Header() {
     { name: 'Reklam', href: '/reklam' },
     { name: 'Promosyon', href: '/promosyon' },
     { name: 'Çok Satanlar', href: '/cok-satanlar' },
-    { name: 'Sipariş Takip', href: '/siparis-takip' },
   ]
 
   return (

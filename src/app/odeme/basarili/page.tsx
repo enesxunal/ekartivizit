@@ -47,35 +47,40 @@ export default function PaymentSuccessPage() {
       }
 
       try {
-        // Gerçek uygulamada API'den sipariş detaylarını çek
-        // Şimdilik mock data
-        const mockOrderDetails = {
-          orderId: orderId || `ORD-${Date.now()}`,
-          paymentId: paymentId || `PAY-${Date.now()}`,
-          amount: 2500,
-          status: 'confirmed',
-          customerInfo: {
-            name: 'Test Müşteri',
-            email: 'test@example.com',
-            phone: '0555 123 45 67'
-          },
-          items: [
-            {
-              name: 'Antetli Kağıt',
-              quantity: 2000,
-              price: 2500,
-              material: '80 Gram 1. Hamur',
-              size: 'A4 (21x29.7cm)'
-            }
-          ],
-          estimatedDelivery: '2-3 İş Günü',
-          trackingNumber: `TRK${Date.now()}`,
-          createdAt: new Date().toISOString()
+        // localStorage'dan sipariş detaylarını al
+        const allOrders = JSON.parse(localStorage.getItem('ekartvizit-orders') || '[]')
+        const foundOrder = allOrders.find((order: any) => order.id === orderId)
+        
+        if (foundOrder) {
+          const orderDetails = {
+            orderId: foundOrder.id,
+            paymentId: foundOrder.paymentId || `PAY-${Date.now()}`,
+            amount: foundOrder.total,
+            status: foundOrder.status,
+            customerInfo: {
+              name: foundOrder.customerInfo.name,
+              email: foundOrder.customerInfo.email,
+              phone: foundOrder.customerInfo.phone
+            },
+            items: foundOrder.items.map((item: any) => ({
+              name: item.product.name,
+              quantity: item.quantity,
+              price: item.price,
+              material: item.selectedMaterial,
+              size: item.selectedSize
+            })),
+            estimatedDelivery: foundOrder.estimatedDelivery || '2-3 İş Günü',
+            trackingNumber: foundOrder.trackingNumber || `TRK${Date.now()}`,
+            createdAt: foundOrder.createdAt
+          }
+          setOrderDetails(orderDetails)
+        } else {
+          // Sipariş bulunamadı, ana sayfaya yönlendir
+          router.push('/')
         }
-
-        setOrderDetails(mockOrderDetails)
       } catch (error) {
         console.error('Sipariş detayları alınamadı:', error)
+        router.push('/')
       } finally {
         setLoading(false)
       }

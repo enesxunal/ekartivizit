@@ -262,7 +262,6 @@ export default function AccountPage() {
                       value={formData.email}
                       onChange={handleInputChange}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#59af05]"
-                      placeholder="demo@ekartvizit.com"
                       required
                     />
                   </div>
@@ -278,7 +277,6 @@ export default function AccountPage() {
                         value={formData.password}
                         onChange={handleInputChange}
                         className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#59af05]"
-                        placeholder="123456"
                         required
                       />
                       <button
@@ -644,9 +642,9 @@ export default function AccountPage() {
                           ))}
                         </div>
                         <div className="mt-3 pt-3 border-t border-gray-100">
-                          <Link href={`/siparis-takip?order=${order.id}`}>
+                          <Link href={`/siparis/${order.id}`}>
                             <Button variant="outline" size="sm">
-                              Detayları Görüntüle
+                              Sipariş İncele
                             </Button>
                           </Link>
                         </div>
@@ -671,7 +669,10 @@ export default function AccountPage() {
                     <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-900 mb-2">Henüz adres eklenmemiş</h3>
                     <p className="text-gray-600 mb-4">Hızlı teslimat için adres bilgilerinizi ekleyin</p>
-                    <Button className="bg-[#59af05] hover:bg-[#4a9321]">
+                    <Button 
+                      className="bg-[#59af05] hover:bg-[#4a9321]"
+                      onClick={() => setActiveTab('profile')}
+                    >
                       Adres Ekle
                     </Button>
                   </div>

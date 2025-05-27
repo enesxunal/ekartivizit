@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
@@ -30,8 +30,8 @@ export default function OdemePage() {
 
   // Müşteri bilgileri
   const [customerInfo, setCustomerInfo] = useState({
-    name: user?.name || '',
-    email: user?.email || '',
+    name: '',
+    email: '',
     phone: '',
     address: {
       street: '',
@@ -45,8 +45,8 @@ export default function OdemePage() {
   // Fatura bilgileri
   const [invoiceInfo, setInvoiceInfo] = useState({
     type: 'individual' as 'individual' | 'corporate', // bireysel veya kurumsal
-    name: user?.name || '',
-    email: user?.email || '',
+    name: '',
+    email: '',
     phone: '',
     taxNumber: '', // vergi numarası (kurumsal için)
     taxOffice: '', // vergi dairesi (kurumsal için)
@@ -57,6 +57,37 @@ export default function OdemePage() {
       postalCode: ''
     }
   })
+
+  // Kullanıcı bilgilerini otomatik doldur
+  useEffect(() => {
+    if (user) {
+      setCustomerInfo({
+        name: user.name || '',
+        email: user.email || '',
+        phone: user.phone || '',
+        address: {
+          street: user.address?.street || '',
+          city: user.address?.city || '',
+          district: user.address?.district || '',
+          postalCode: user.address?.postalCode || ''
+        },
+        notes: ''
+      })
+
+      setInvoiceInfo(prev => ({
+        ...prev,
+        name: user.name || '',
+        email: user.email || '',
+        phone: user.phone || '',
+        address: {
+          street: user.address?.street || '',
+          city: user.address?.city || '',
+          district: user.address?.district || '',
+          postalCode: user.address?.postalCode || ''
+        }
+      }))
+    }
+  }, [user])
 
   const [sameAsShipping, setSameAsShipping] = useState(true)
 
@@ -151,7 +182,16 @@ export default function OdemePage() {
       addToast({
         type: 'error',
         title: 'Eksik Bilgi',
-        description: 'Lütfen tüm zorunlu alanları doldurun'
+        description: 'Lütfen ad, e-posta ve telefon alanlarını doldurun'
+      })
+      return false
+    }
+
+    if (!customerInfo.address.street || !customerInfo.address.city || !customerInfo.address.district) {
+      addToast({
+        type: 'error',
+        title: 'Eksik Adres Bilgisi',
+        description: 'Lütfen teslimat adres bilgilerini doldurun'
       })
       return false
     }
@@ -371,6 +411,7 @@ export default function OdemePage() {
                     value={customerInfo.phone}
                     onChange={(e) => handleInputChange('phone', e.target.value)}
                     placeholder="0555 123 45 67"
+                    required
                   />
                 </div>
               </CardContent>
@@ -386,32 +427,35 @@ export default function OdemePage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor="street">Adres</Label>
+                  <Label htmlFor="street">Adres *</Label>
                   <Textarea
                     id="street"
                     value={customerInfo.address.street}
                     onChange={(e) => handleInputChange('address.street', e.target.value)}
                     placeholder="Mahalle, sokak, bina no, daire no"
                     rows={3}
+                    required
                   />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <Label htmlFor="city">İl</Label>
+                    <Label htmlFor="city">İl *</Label>
                     <Input
                       id="city"
                       value={customerInfo.address.city}
                       onChange={(e) => handleInputChange('address.city', e.target.value)}
                       placeholder="İstanbul"
+                      required
                     />
                   </div>
                   <div>
-                    <Label htmlFor="district">İlçe</Label>
+                    <Label htmlFor="district">İlçe *</Label>
                     <Input
                       id="district"
                       value={customerInfo.address.district}
                       onChange={(e) => handleInputChange('address.district', e.target.value)}
                       placeholder="Kadıköy"
+                      required
                     />
                   </div>
                   <div>
