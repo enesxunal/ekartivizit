@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import AIFloatingButton from "@/components/AIFloatingButton";
 import { CartProvider } from "@/contexts/CartContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { InventoryProvider } from "@/contexts/InventoryContext";
@@ -104,6 +105,7 @@ export default function RootLayout({
                   <CartProvider>
                     {children}
                     <WhatsAppButton />
+                    <AIFloatingButton />
                   </CartProvider>
                 </ReviewProvider>
               </OrderProvider>
