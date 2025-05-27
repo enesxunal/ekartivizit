@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { ArrowLeft, Package, Truck, CheckCircle, Clock, MapPin, User, Phone, Mail, CreditCard } from 'lucide-react'
+import { ArrowLeft, Package, Truck, Clock, MapPin, User, Phone, Mail, CreditCard } from 'lucide-react'
 
 interface OrderDetails {
   id: string
@@ -73,7 +73,7 @@ export default function OrderDetailPage() {
   useEffect(() => {
     // localStorage'dan sipariş detaylarını al
     const allOrders = JSON.parse(localStorage.getItem('ekartvizit-orders') || '[]')
-    const foundOrder = allOrders.find((o: any) => o.id === orderId)
+    const foundOrder = allOrders.find((o: { id: string }) => o.id === orderId)
     
     if (foundOrder) {
       setOrder(foundOrder)

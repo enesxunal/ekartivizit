@@ -49,7 +49,7 @@ export default function PaymentSuccessPage() {
       try {
         // localStorage'dan sipariş detaylarını al
         const allOrders = JSON.parse(localStorage.getItem('ekartvizit-orders') || '[]')
-        const foundOrder = allOrders.find((order: any) => order.id === orderId)
+        const foundOrder = allOrders.find((order: { id: string }) => order.id === orderId)
         
         if (foundOrder) {
           const orderDetails = {
@@ -62,7 +62,13 @@ export default function PaymentSuccessPage() {
               email: foundOrder.customerInfo.email,
               phone: foundOrder.customerInfo.phone
             },
-            items: foundOrder.items.map((item: any) => ({
+            items: foundOrder.items.map((item: {
+              product: { name: string }
+              quantity: number
+              price: number
+              selectedMaterial?: string
+              selectedSize?: string
+            }) => ({
               name: item.product.name,
               quantity: item.quantity,
               price: item.price,
