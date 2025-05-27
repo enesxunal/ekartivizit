@@ -172,23 +172,47 @@ export default function AccountPage() {
     }
   }
 
-  // Örnek sipariş geçmişi
-  const orderHistory = [
-    {
-      id: '2024001',
-      date: '15 Ocak 2024',
-      status: 'Teslim Edildi',
-      total: 1250,
-      items: ['Kartvizit (1000 adet)', 'Broşür (500 adet)']
-    },
-    {
-      id: '2024002',
-      date: '10 Ocak 2024',
-      status: 'Hazırlanıyor',
-      total: 800,
-      items: ['Magnet (100 adet)']
+  // Kullanıcının sipariş geçmişini al
+  const getUserOrders = () => {
+    if (!user) return []
+    
+    // localStorage'dan tüm siparişleri al
+    const allOrders = JSON.parse(localStorage.getItem('ekartvizit-orders') || '[]')
+    
+    // Sadece bu kullanıcının siparişlerini filtrele
+    return allOrders.filter((order: { customerInfo?: { email?: string } }) => 
+      order.customerInfo?.email === user.email
+    ).map((order: { 
+      id: string; 
+      createdAt: string; 
+      status: string; 
+      total: number; 
+      items?: Array<{ product: { name: string }; quantity: number }> 
+    }) => ({
+      id: order.id,
+      date: new Date(order.createdAt).toLocaleDateString('tr-TR'),
+      status: getOrderStatusText(order.status),
+      total: order.total,
+      items: order.items?.map((item: { product: { name: string }; quantity: number }) => 
+        `${item.product.name} (${item.quantity} adet)`
+      ) || []
+    }))
+  }
+
+  const getOrderStatusText = (status: string) => {
+    const statusMap: Record<string, string> = {
+      'pending': 'Beklemede',
+      'confirmed': 'Onaylandı',
+      'preparing': 'Hazırlanıyor',
+      'printing': 'Basılıyor',
+      'shipping': 'Kargoda',
+      'delivered': 'Teslim Edildi',
+      'cancelled': 'İptal Edildi'
     }
-  ]
+    return statusMap[status] || status
+  }
+
+  const orderHistory = getUserOrders()
 
   if (!isAuthenticated) {
     return (
@@ -283,14 +307,6 @@ export default function AccountPage() {
                     <Link href="/sifremi-unuttum" className="text-sm text-[#59af05] hover:underline">
                       Şifremi Unuttum
                     </Link>
-                  </div>
-
-                  <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                    <h4 className="font-medium text-blue-900 mb-2">Demo Hesap:</h4>
-                    <p className="text-sm text-blue-800">
-                      <strong>E-posta:</strong> demo@ekartvizit.com<br />
-                      <strong>Şifre:</strong> 123456
-                    </p>
                   </div>
                 </form>
               ) : (
@@ -591,8 +607,20 @@ export default function AccountPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    {orderHistory.map((order) => (
+                  {orderHistory.length === 0 ? (
+                    <div className="text-center py-8">
+                      <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">Henüz sipariş yok</h3>
+                      <p className="text-gray-600 mb-4">İlk siparişinizi vererek alışverişe başlayın</p>
+                      <Link href="/">
+                        <Button className="bg-[#59af05] hover:bg-[#4a9321]">
+                          Alışverişe Başla
+                        </Button>
+                      </Link>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {orderHistory.map((order) => (
                       <div key={order.id} className="border border-gray-200 rounded-lg p-4">
                         <div className="flex justify-between items-start mb-3">
                           <div>
@@ -624,7 +652,8 @@ export default function AccountPage() {
                         </div>
                       </div>
                     ))}
-                  </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             )}

@@ -73,27 +73,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Simüle edilmiş API çağrısı
     await new Promise(resolve => setTimeout(resolve, 1000))
     
-    // Demo kullanıcılar
-    const demoUsers = [
-      {
-        id: '1',
-        email: 'demo@ekartvizit.com',
-        password: '123456',
-        name: 'Demo Kullanıcı',
-        phone: '0555 123 45 67',
-        createdAt: new Date().toISOString()
-      },
-      {
-        id: '2',
-        email: 'test@test.com',
-        password: 'test123',
-        name: 'Test Kullanıcı',
-        phone: '0555 987 65 43',
-        createdAt: new Date().toISOString()
-      }
-    ]
-
-    const foundUser = demoUsers.find(u => u.email === email && u.password === password)
+    // Kayıtlı kullanıcıları localStorage'dan al
+    const registeredUsers = JSON.parse(localStorage.getItem('ekartvizit-users') || '[]')
+    
+    const foundUser = registeredUsers.find((u: any) => u.email === email && u.password === password)
     
     if (foundUser) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -113,8 +96,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Simüle edilmiş API çağrısı
     await new Promise(resolve => setTimeout(resolve, 1000))
     
-    // E-posta kontrolü (basit)
-    if (userData.email === 'demo@ekartvizit.com') {
+    // Mevcut kullanıcıları kontrol et
+    const existingUsers = JSON.parse(localStorage.getItem('ekartvizit-users') || '[]')
+    
+    // E-posta kontrolü
+    if (existingUsers.find((u: any) => u.email === userData.email)) {
       setIsLoading(false)
       return { success: false, message: 'Bu e-posta adresi zaten kullanımda!' }
     }
@@ -131,6 +117,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
+    // Kullanıcıyı kayıtlı kullanıcılar listesine ekle (şifre ile birlikte)
+    const userWithPassword = {
+      ...newUser,
+      password: userData.password
+    }
+    
+    const updatedUsers = [...existingUsers, userWithPassword]
+    localStorage.setItem('ekartvizit-users', JSON.stringify(updatedUsers))
+
     // Hoş geldin e-postası gönder
     try {
       await fetch('/api/send-email', {
@@ -139,7 +134,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         body: JSON.stringify({
           to: userData.email,
           emailType: 'userRegistration',
-          userData: { name: userData.name, email: userData.email }
+          orderData: { customerInfo: { name: userData.name, email: userData.email } }
         })
       })
     } catch (emailError) {
