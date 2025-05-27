@@ -64,6 +64,11 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Hızlı Linkler</h3>
             <ul className="space-y-2">
               <li>
+                <Link href="/blog" className="text-gray-300 hover:text-[#59af05] transition-colors">
+                  Blog
+                </Link>
+              </li>
+              <li>
                 <Link href="/hakkimizda" className="text-gray-300 hover:text-[#59af05] transition-colors">
                   Hakkımızda
                 </Link>
@@ -84,13 +89,13 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/gizlilik" className="text-gray-300 hover:text-[#59af05] transition-colors">
+                <Link href="/gizlilik-politikasi" className="text-gray-300 hover:text-[#59af05] transition-colors">
                   Gizlilik Politikası
                 </Link>
               </li>
               <li>
-                <Link href="/kullanim-kosullari" className="text-gray-300 hover:text-[#59af05] transition-colors">
-                  Kullanım Koşulları
+                <Link href="/kullanim-sartlari" className="text-gray-300 hover:text-[#59af05] transition-colors">
+                  Kullanım Şartları
                 </Link>
               </li>
             </ul>

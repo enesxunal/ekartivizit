@@ -1,36 +1,131 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# E-Kartvizit - Profesyonel Baskı Çözümleri
 
-## Getting Started
+Modern ve kullanıcı dostu bir e-ticaret platformu. Kartvizit, broşür, magnet ve diğer kurumsal baskı ürünleri için online tasarım ve sipariş sistemi.
 
-First, run the development server:
+## 🚀 Özellikler
+
+- **Modern UI/UX**: Tailwind CSS ve shadcn/ui ile tasarlanmış
+- **Responsive Tasarım**: Tüm cihazlarda mükemmel görünüm
+- **SEO Optimizasyonu**: Kapsamlı SEO ve performans optimizasyonları
+- **PWA Desteği**: Progressive Web App özellikleri
+- **Analytics**: Google Analytics entegrasyonu
+- **Performance Monitoring**: Core Web Vitals izleme
+
+## 🛠️ Teknolojiler
+
+- **Framework**: Next.js 14 (App Router)
+- **Styling**: Tailwind CSS
+- **UI Components**: shadcn/ui
+- **Icons**: Lucide React
+- **TypeScript**: Tip güvenliği
+- **Analytics**: Google Analytics 4
+
+## 📦 Kurulum
 
 ```bash
+# Projeyi klonlayın
+git clone [repository-url]
+cd ekartvizit
+
+# Bağımlılıkları yükleyin
+npm install
+
+# Environment variables'ları ayarlayın
+cp .env.example .env.local
+# .env.local dosyasını düzenleyin
+
+# Development server'ı başlatın
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🔧 Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```env
+# Google Analytics
+NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Site URL
+NEXT_PUBLIC_SITE_URL=https://e-kartvizit.com
 
-## Learn More
+# WhatsApp
+NEXT_PUBLIC_WHATSAPP_NUMBER=905xxxxxxxxx
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 🎯 SEO ve Performans Optimizasyonları
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Meta Etiketleri
+- Kapsamlı meta description ve keywords
+- Open Graph ve Twitter Card desteği
+- Canonical URL'ler
+- Viewport optimizasyonu
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Sitemap ve Robots
+- Dinamik sitemap.xml oluşturma
+- SEO dostu robots.txt
+- Tüm sayfalar için otomatik URL'ler
 
-## Deploy on Vercel
+### Structured Data
+- JSON-LD ile zengin snippet'ler
+- Organization ve Website schema
+- Ürün sayfaları için Product schema
+- Breadcrumb navigation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Performance
+- Next.js Image optimizasyonu (WebP, AVIF)
+- Bundle splitting ve code splitting
+- Caching stratejileri
+- Core Web Vitals monitoring
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Analytics
+- Google Analytics 4 entegrasyonu
+- E-commerce tracking
+- Custom event tracking
+- Performance metrics
+
+## 📱 PWA Özellikleri
+
+- Offline çalışma desteği
+- App-like deneyim
+- Push notification hazırlığı
+- Install prompt
+
+## 🚀 Deployment
+
+### Vercel (Önerilen)
+```bash
+# Vercel CLI ile deploy
+npm i -g vercel
+vercel
+
+# Veya GitHub entegrasyonu ile otomatik deploy
+```
+
+### Diğer Platformlar
+- Netlify
+- AWS Amplify
+- DigitalOcean App Platform
+
+## 📊 Performance Metrikleri
+
+Proje aşağıdaki performans hedeflerini karşılar:
+- **LCP**: < 2.5s
+- **FID**: < 100ms
+- **CLS**: < 0.1
+- **TTFB**: < 600ms
+
+## 🔍 SEO Checklist
+
+- ✅ Meta etiketleri optimizasyonu
+- ✅ Sitemap.xml
+- ✅ Robots.txt
+- ✅ Structured data
+- ✅ Image alt texts
+- ✅ Semantic HTML
+- ✅ Mobile-first design
+- ✅ Page speed optimization
+
+## 📞 İletişim
+
+Proje hakkında sorularınız için:
+- Email: info@e-kartvizit.com
+- WhatsApp: +90 XXX XXX XXXX

@@ -33,11 +33,11 @@ export default function ReklamPage() {
         </div>
 
         {/* Ürün Listesi */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-8">
           {products.map((product) => (
             <Card key={product.id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
               <CardContent className="p-0">
-                <div className="h-48 bg-white flex items-center justify-center relative overflow-hidden">
+                <div className="h-32 sm:h-40 lg:h-48 bg-white flex items-center justify-center relative overflow-hidden">
                   <Image
                     src={product.image}
                     alt={product.name}
@@ -47,23 +47,23 @@ export default function ReklamPage() {
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors"></div>
                 </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                <div className="p-2 sm:p-3 lg:p-6">
+                  <h3 className="text-xs sm:text-sm lg:text-xl font-semibold text-gray-900 mb-1 sm:mb-2 leading-tight">
                     {product.name}
                   </h3>
-                  <p className="text-gray-600 mb-4">
+                  <p className="text-xs text-gray-600 mb-2 sm:mb-4 line-clamp-2">
                     {product.description}
                   </p>
                   {product.price && (
-                    <div className="text-sm text-[#59af05] font-semibold">
+                    <div className="text-xs sm:text-sm text-[#59af05] font-semibold">
                       {formatPrice(product.price)}
                     </div>
                   )}
                 </div>
               </CardContent>
-              <CardFooter className="px-6 pb-6">
+              <CardFooter className="px-2 sm:px-3 lg:px-6 pb-2 sm:pb-3 lg:pb-6">
                 <Link href={product.href} className="w-full">
-                  <Button className="w-full bg-[#59af05] hover:bg-[#4a9321]">
+                  <Button className="w-full bg-[#59af05] hover:bg-[#4a9321] text-xs sm:text-sm py-1.5 sm:py-2">
                     İncele
                   </Button>
                 </Link>

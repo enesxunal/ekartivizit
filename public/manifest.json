@@ -1,0 +1,80 @@
+{
+  "name": "E-Kartvizit - Profesyonel Baskı Çözümleri",
+  "short_name": "E-Kartvizit",
+  "description": "Kartvizit, broşür, magnet ve kurumsal baskı ürünleri için online tasarım ve baskı hizmetleri",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#59af05",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "tr",
+  "dir": "ltr",
+  "categories": ["business", "productivity", "shopping"],
+  "icons": [
+    {
+      "src": "/fav.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/fav.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/images/screenshot-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/images/screenshot-desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Tüm Ürünler",
+      "short_name": "Ürünler",
+      "description": "Tüm ürünleri görüntüle",
+      "url": "/tum-urunler",
+      "icons": [
+        {
+          "src": "/fav.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Çok Satanlar",
+      "short_name": "Popüler",
+      "description": "En çok satan ürünler",
+      "url": "/cok-satanlar",
+      "icons": [
+        {
+          "src": "/fav.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "İletişim",
+      "short_name": "İletişim",
+      "description": "Bizimle iletişime geç",
+      "url": "/iletisim",
+      "icons": [
+        {
+          "src": "/fav.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
+} 

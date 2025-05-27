@@ -5,35 +5,35 @@ import Link from 'next/link'
 
 export default function HeroSection() {
   return (
-    <section className="bg-gray-50 py-16 lg:py-24">
+    <section className="bg-gray-50 py-12 lg:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12 items-center">
           {/* Sol taraf - Metin içeriği */}
-          <div className="space-y-8">
+          <div className="lg:col-span-3 space-y-6">
             <div className="space-y-4">
-              <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
+              <h1 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 leading-tight">
                 Profesyonel Baskı{' '}
                 <span className="text-[#59af05]">Çözüm Merkezi</span>
               </h1>
-              <p className="text-lg text-gray-600 leading-relaxed">
+              <p className="text-base lg:text-lg text-gray-600 leading-relaxed">
                 Kartvizit, broşür, magnet ve daha fazlası için online tasarım 
-                ve baskı hizmetleri. Ücretsiz tasarım desteği ve hızı teslimat 
+                ve baskı hizmetleri. Ücretsiz tasarım desteği ve hızlı teslimat 
                 garantisi ile yanınızdayız.
               </p>
             </div>
 
             {/* Butonlar */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="bg-[#59af05] hover:bg-[#4a9321] text-white px-8 py-3">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button size="lg" className="bg-[#59af05] hover:bg-[#4a9321] text-white px-6 py-2.5">
                 Hemen Başla
               </Button>
-              <Button variant="outline" size="lg" className="px-8 py-3">
+              <Button variant="outline" size="lg" className="px-6 py-2.5">
                 Nasıl Çalışır?
               </Button>
             </div>
 
             {/* Özellikler */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-8">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-[#59af05]/10 rounded-lg flex items-center justify-center">
                   <svg className="w-5 h-5 text-[#59af05]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -68,67 +68,67 @@ export default function HeroSection() {
           </div>
 
           {/* Sağ taraf - Ürün görselleri */}
-          <div className="grid grid-cols-2 gap-6">
+          <div className="lg:col-span-2 grid grid-cols-2 gap-3 sm:gap-4">
             <Link href="/urun/kartvizit" className="block">
-              <Card className="p-6 bg-white shadow-xl hover:shadow-2xl transition-all duration-300 group border-0 rounded-2xl cursor-pointer">
-                <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center mb-4 overflow-hidden">
+              <Card className="p-3 sm:p-4 bg-white shadow-lg hover:shadow-xl transition-all duration-300 group border-0 rounded-xl cursor-pointer">
+                <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg flex items-center justify-center mb-2 sm:mb-3 overflow-hidden">
                   <Image
                     src="/images/Kartvizit.png"
                     alt="Kartvizit"
-                    width={160}
-                    height={120}
+                    width={120}
+                    height={90}
                     className="object-contain max-h-full max-w-full group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
-                <h3 className="font-bold text-base text-gray-900 text-center">Profesyonel Kartvizit</h3>
+                <h3 className="font-bold text-xs sm:text-sm text-gray-900 text-center leading-tight">Profesyonel Kartvizit</h3>
                 <p className="text-xs text-gray-500 text-center mt-1">800₺&apos;den başlayan fiyatlarla</p>
               </Card>
             </Link>
 
             <Link href="/urun/brosur" className="block">
-              <Card className="p-6 bg-white shadow-xl hover:shadow-2xl transition-all duration-300 group border-0 rounded-2xl cursor-pointer">
-                <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center mb-4 overflow-hidden">
+              <Card className="p-3 sm:p-4 bg-white shadow-lg hover:shadow-xl transition-all duration-300 group border-0 rounded-xl cursor-pointer">
+                <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg flex items-center justify-center mb-2 sm:mb-3 overflow-hidden">
                   <Image
                     src="/images/Brosur-Ekonomik.png"
                     alt="Broşür"
-                    width={160}
-                    height={120}
+                    width={120}
+                    height={90}
                     className="object-contain max-h-full max-w-full group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
-                <h3 className="font-bold text-base text-gray-900 text-center">Reklam Broşürü</h3>
+                <h3 className="font-bold text-xs sm:text-sm text-gray-900 text-center leading-tight">Reklam Broşürü</h3>
                 <p className="text-xs text-gray-500 text-center mt-1">1200₺&apos;den başlayan fiyatlarla</p>
               </Card>
             </Link>
 
             <Link href="/urun/magnet" className="block">
-              <Card className="p-6 bg-white shadow-xl hover:shadow-2xl transition-all duration-300 group border-0 rounded-2xl cursor-pointer">
-                <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center mb-4 overflow-hidden">
+              <Card className="p-3 sm:p-4 bg-white shadow-lg hover:shadow-xl transition-all duration-300 group border-0 rounded-xl cursor-pointer">
+                <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg flex items-center justify-center mb-2 sm:mb-3 overflow-hidden">
                   <Image
                     src="/images/Magnet-800x800.png"
                     alt="Magnet"
-                    width={160}
-                    height={120}
+                    width={120}
+                    height={90}
                     className="object-contain max-h-full max-w-full group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
-                <h3 className="font-bold text-base text-gray-900 text-center">Buzdolabı Magneti</h3>
+                <h3 className="font-bold text-xs sm:text-sm text-gray-900 text-center leading-tight">Buzdolabı Magneti</h3>
                 <p className="text-xs text-gray-500 text-center mt-1">1200₺&apos;den başlayan fiyatlarla</p>
               </Card>
             </Link>
 
             <Link href="/urun/etiket" className="block">
-              <Card className="p-6 bg-white shadow-xl hover:shadow-2xl transition-all duration-300 group border-0 rounded-2xl cursor-pointer">
-                <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center mb-4 overflow-hidden">
+              <Card className="p-3 sm:p-4 bg-white shadow-lg hover:shadow-xl transition-all duration-300 group border-0 rounded-xl cursor-pointer">
+                <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg flex items-center justify-center mb-2 sm:mb-3 overflow-hidden">
                   <Image
                     src="/images/Sticker.png"
                     alt="Etiket"
-                    width={160}
-                    height={120}
+                    width={120}
+                    height={90}
                     className="object-contain max-h-full max-w-full group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
-                <h3 className="font-bold text-base text-gray-900 text-center">Özel Etiket</h3>
+                <h3 className="font-bold text-xs sm:text-sm text-gray-900 text-center leading-tight">Özel Etiket</h3>
                 <p className="text-xs text-gray-500 text-center mt-1">600₺&apos;den başlayan fiyatlarla</p>
               </Card>
             </Link>
