@@ -22,6 +22,7 @@ export function Select({ value, onValueChange, defaultValue, children }: SelectP
     <div className="relative">
       {React.Children.map(children, child => {
         if (React.isValidElement(child)) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           return React.cloneElement(child, { value: currentValue, onValueChange: handleChange } as any)
         }
         return child
@@ -67,6 +68,7 @@ export function SelectTrigger({ className, children, value, onValueChange }: Sel
           <div className="absolute top-full left-0 z-20 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
             {React.Children.map(children, child => {
               if (React.isValidElement(child) && child.type === SelectContent) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 return React.cloneElement(child, {
                   value,
                   onValueChange: (newValue: string) => {
@@ -99,6 +101,7 @@ export function SelectContent({ children, value, onValueChange }: SelectContentP
     <div className="max-h-60 overflow-auto py-1">
       {React.Children.map(children, child => {
         if (React.isValidElement(child)) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           return React.cloneElement(child, { 
             selectedValue: value,
             onSelect: onValueChange 

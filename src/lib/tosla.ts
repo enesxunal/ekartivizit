@@ -70,6 +70,7 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
 }
 
 // Ödeme durumu sorgulama
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function checkToslaPaymentStatus(_paymentId: string): Promise<{
   status: 'pending' | 'success' | 'failed' | 'cancelled'
   amount?: number
@@ -90,6 +91,7 @@ export async function checkToslaPaymentStatus(_paymentId: string): Promise<{
 }
 
 // Webhook doğrulama
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function verifyToslaWebhook(_payload: string, _signature: string): boolean {
   try {
     // Tosla webhook imza doğrulaması

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Star, ThumbsUp, MessageSquare, User, Calendar, CheckCircle } from 'lucide-react'
+import { Star, ThumbsUp, MessageSquare, User, CheckCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { useReviews } from '@/contexts/ReviewContext'

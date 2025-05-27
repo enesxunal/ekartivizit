@@ -183,7 +183,7 @@ export default function TasarimPage() {
             </CardHeader>
             <CardContent>
               <p className="text-gray-600 text-sm">
-                Canva'nın sürükle-bırak editörü ile kolayca tasarım yapın
+                Canva&apos;nın sürükle-bırak editörü ile kolayca tasarım yapın
               </p>
             </CardContent>
           </Card>

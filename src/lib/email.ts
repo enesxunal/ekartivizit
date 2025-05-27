@@ -10,6 +10,7 @@ const emailConfig = {
 }
 
 // E-posta transporter'ı sadece server-side'da oluştur
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let transporter: any = null
 
 const getTransporter = async () => {
@@ -67,6 +68,7 @@ export const emailTemplates = {
   }),
 
   // Sipariş onayı - Müşteri
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   orderConfirmationCustomer: (orderData: any) => ({
     subject: `Siparişiniz Alındı - #${orderData.orderId}`,
     html: `
