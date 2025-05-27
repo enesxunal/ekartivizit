@@ -27,8 +27,8 @@ export class SimpleCanvaIntegration {
       return `https://www.canva.com/design/${templateId}/edit`
     }
     
-    // Boş tasarım için - yeni Canva URL formatı
-    return `https://www.canva.com/create/business-cards/`
+    // Boş tasarım için - kategori bazlı URL
+    return `https://www.canva.com/create/${canvaCategory}/`
   }
 
   // Canva'da tasarım yap ve geri dön URL'si

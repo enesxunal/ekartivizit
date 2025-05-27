@@ -16,7 +16,7 @@ export interface MailOptions {
   text?: string
 }
 
-export async function sendMail({ to, subject, html, text }: MailOptions) {
+export async function sendMail({ to, subject }: MailOptions) {
   try {
     // Şimdilik simüle edilmiş mail gönderimi
     console.log('Mail gönderiliyor:', { to, subject, mailConfig })

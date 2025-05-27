@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { sendEmail, emailTemplates } from '@/lib/email'
+import { sendMail, mailTemplates } from '@/lib/mail'
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,80 +16,37 @@ export async function POST(request: NextRequest) {
     
     switch (type) {
       case 'welcome':
-        template = emailTemplates.userRegistration(
-          data?.name || 'Test Kullanıcı',
-          recipient
-        )
+        template = mailTemplates.welcome(data?.name || 'Test Kullanıcı')
         break
         
       case 'order-confirmation':
-        template = emailTemplates.orderConfirmationCustomer({
+        template = mailTemplates.orderConfirmation({
           orderId: data?.orderId || 'TEST123',
-          customerInfo: {
-            name: data?.name || 'Test Kullanıcı',
-            email: recipient,
-            phone: data?.phone || '0555 123 45 67',
-            address: {
-              street: data?.address?.street || 'Test Sokak No:1',
-              city: data?.address?.city || 'İstanbul',
-              district: data?.address?.district || 'Kadıköy',
-              postalCode: data?.address?.postalCode || '34000'
-            }
-          },
+          customerName: data?.name || 'Test Kullanıcı',
           items: data?.items || [
             {
-              product: { name: 'Test Kartvizit' },
+              name: 'Test Kartvizit',
               quantity: 1000,
-              price: 150,
-              selectedMaterial: 'Mat Kuşe',
-              selectedSize: '9x5 cm'
+              price: 150
             }
           ],
           total: data?.total || 150,
-          paymentMethod: data?.paymentMethod || 'whatsapp'
+          trackingNumber: data?.trackingNumber
         })
         break
         
       case 'order-status':
-        template = emailTemplates.orderStatusUpdate(
-          {
-            orderId: data?.orderId || 'TEST123',
-            customerInfo: {
-              name: data?.name || 'Test Kullanıcı'
-            },
-            createdAt: new Date().toISOString()
-          },
-          data?.status || 'confirmed',
-          data?.statusMessage || 'Sipariş Onaylandı'
-        )
+        template = mailTemplates.orderStatusUpdate({
+          orderId: data?.orderId || 'TEST123',
+          customerName: data?.name || 'Test Kullanıcı',
+          status: data?.status || 'confirmed',
+          trackingNumber: data?.trackingNumber
+        })
         break
         
       case 'admin-notification':
-        template = emailTemplates.orderNotificationAdmin({
-          orderId: data?.orderId || 'TEST123',
-          customerInfo: {
-            name: data?.name || 'Test Kullanıcı',
-            email: recipient,
-            phone: data?.phone || '0555 123 45 67',
-            address: {
-              street: data?.address?.street || 'Test Sokak No:1',
-              city: data?.address?.city || 'İstanbul',
-              district: data?.address?.district || 'Kadıköy',
-              postalCode: data?.address?.postalCode || '34000'
-            }
-          },
-          items: data?.items || [
-            {
-              product: { name: 'Test Kartvizit' },
-              quantity: 1000,
-              price: 150,
-              selectedMaterial: 'Mat Kuşe',
-              selectedSize: '9x5 cm'
-            }
-          ],
-          total: data?.total || 150,
-          paymentMethod: data?.paymentMethod || 'whatsapp'
-        })
+        // Admin notification için welcome template kullanıyoruz (geçici)
+        template = mailTemplates.welcome(data?.name || 'Test Kullanıcı')
         break
         
       default:
@@ -99,7 +56,11 @@ export async function POST(request: NextRequest) {
         )
     }
 
-    const result = await sendEmail(recipient, template)
+    const result = await sendMail({
+      to: recipient,
+      subject: template.subject,
+      html: template.html
+    })
 
     if (result.success) {
       return NextResponse.json({
