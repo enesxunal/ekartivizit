@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Script from 'next/script'
 
 interface StructuredDataProps {
@@ -67,7 +68,6 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
             },
           },
           category: data.category,
-          ...data,
         }
 
       case 'breadcrumb':

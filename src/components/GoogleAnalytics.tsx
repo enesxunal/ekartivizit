@@ -43,7 +43,15 @@ export const trackEvent = (action: string, category: string, label?: string, val
   }
 }
 
-export const trackPurchase = (transactionId: string, value: number, items: any[]) => {
+interface PurchaseItem {
+  item_id: string
+  item_name: string
+  category: string
+  quantity: number
+  price: number
+}
+
+export const trackPurchase = (transactionId: string, value: number, items: PurchaseItem[]) => {
   if (typeof window !== 'undefined' && window.gtag) {
     window.gtag('event', 'purchase', {
       transaction_id: transactionId,
@@ -92,6 +100,7 @@ export const trackAddToCart = (productId: string, productName: string, category:
 // TypeScript için global gtag tanımı
 declare global {
   interface Window {
-    gtag: (...args: any[]) => void
+    gtag: (command: string, targetId: string, config?: Record<string, unknown>) => void
+    dataLayer: unknown[]
   }
 } 

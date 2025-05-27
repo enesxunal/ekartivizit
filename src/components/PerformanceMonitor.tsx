@@ -2,10 +2,16 @@
 
 import { useEffect } from 'react'
 
+interface WebVitalMetric {
+  name: string
+  value: number
+  id: string
+}
+
 export default function PerformanceMonitor() {
   useEffect(() => {
     // Web Vitals metrikleri
-    const reportWebVitals = (metric: any) => {
+    const reportWebVitals = (metric: WebVitalMetric) => {
       // Google Analytics'e gönder
       if (typeof window !== 'undefined' && window.gtag) {
         window.gtag('event', metric.name, {
@@ -39,10 +45,11 @@ export default function PerformanceMonitor() {
       // First Input Delay (FID)
       const fidObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries()
-        entries.forEach((entry: any) => {
+        entries.forEach((entry) => {
+          const performanceEntry = entry as PerformanceEventTiming
           reportWebVitals({
             name: 'FID',
-            value: entry.processingStart - entry.startTime,
+            value: performanceEntry.processingStart - performanceEntry.startTime,
             id: 'fid-' + Date.now(),
           })
         })
@@ -53,9 +60,13 @@ export default function PerformanceMonitor() {
       let clsValue = 0
       const clsObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries()
-        entries.forEach((entry: any) => {
-          if (!entry.hadRecentInput) {
-            clsValue += entry.value
+        entries.forEach((entry) => {
+          const layoutShiftEntry = entry as PerformanceEntry & { 
+            hadRecentInput: boolean
+            value: number 
+          }
+          if (!layoutShiftEntry.hadRecentInput) {
+            clsValue += layoutShiftEntry.value
           }
         })
         reportWebVitals({
@@ -69,10 +80,11 @@ export default function PerformanceMonitor() {
       // Time to First Byte (TTFB)
       const navigationObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries()
-        entries.forEach((entry: any) => {
+        entries.forEach((entry) => {
+          const navigationEntry = entry as PerformanceNavigationTiming
           reportWebVitals({
             name: 'TTFB',
-            value: entry.responseStart - entry.requestStart,
+            value: navigationEntry.responseStart - navigationEntry.requestStart,
             id: 'ttfb-' + Date.now(),
           })
         })
