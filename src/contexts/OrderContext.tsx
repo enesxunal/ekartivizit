@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { CartItem } from './CartContext'
-import { emailTemplates } from '@/lib/email'
+// E-posta şablonları artık API üzerinden kullanılacak
 
 export interface Order {
   id: string
@@ -132,18 +132,14 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
 
     // E-posta gönder
     try {
-      const statusUpdateTemplate = emailTemplates.orderStatusUpdate(
-        order,
-        status,
-        statusMessages[status]
-      )
-      
       await fetch('/api/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           to: order.customerInfo.email,
-          template: statusUpdateTemplate
+          emailType: 'orderStatusUpdate',
+          orderData: order,
+          statusData: { status, message: statusMessages[status] }
         })
       })
     } catch (emailError) {

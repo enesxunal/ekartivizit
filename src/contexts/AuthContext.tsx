@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import { emailTemplates } from '@/lib/email'
+// E-posta şablonları artık API üzerinden kullanılacak
 
 export interface User {
   id: string
@@ -133,14 +133,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Hoş geldin e-postası gönder
     try {
-      const welcomeEmailTemplate = emailTemplates.userRegistration(userData.name, userData.email)
-      
       await fetch('/api/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           to: userData.email,
-          template: welcomeEmailTemplate
+          emailType: 'userRegistration',
+          userData: { name: userData.name, email: userData.email }
         })
       })
     } catch (emailError) {
