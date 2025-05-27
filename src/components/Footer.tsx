@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Mail, Phone, MapPin, Instagram, Package, User, CreditCard, Truck, FileText } from 'lucide-react'
+import { Mail, Phone, MapPin, Instagram, Package, User, CreditCard, Truck, FileText, Bot, MessageCircle } from 'lucide-react'
 import { CATEGORIES } from '@/data/products'
 
 export default function Footer() {
@@ -158,10 +158,34 @@ export default function Footer() {
 
         {/* Alt Bilgi */}
         <div className="border-t border-gray-800 mt-8 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-gray-400 text-sm">
-              © 2024 E-Kartvizit. Tüm hakları saklıdır.
-            </p>
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-6 lg:space-y-0">
+            {/* Sol taraf - Copyright ve AI Badge */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
+              <p className="text-gray-400 text-sm">
+                © {new Date().getFullYear()} E-Kartvizit. Tüm hakları saklıdır.
+              </p>
+              
+              {/* WhatsApp Butonu */}
+              <a 
+                href="https://wa.me/908508403011" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center space-x-2 bg-[#25D366] hover:bg-[#20BA5A] text-white px-4 py-2 rounded-lg transition-colors duration-200 text-sm font-medium"
+              >
+                <MessageCircle className="h-4 w-4" />
+                <span>WhatsApp Destek</span>
+              </a>
+
+              {/* AI Badge */}
+              <div className="flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-lg transition-all duration-200 text-sm font-medium cursor-pointer group">
+                <Bot className="h-4 w-4 group-hover:animate-pulse" />
+                <span className="bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent font-bold">
+                  Bu site tamamen yapay zeka tarafından yapılmıştır
+                </span>
+              </div>
+            </div>
+
+            {/* Sağ taraf - Ödeme Logoları */}
             <div className="flex items-center space-x-6">
               <div className="flex items-center space-x-2">
                 <div className="w-8 h-5 bg-blue-600 rounded flex items-center justify-center">
