@@ -47,6 +47,16 @@ export async function POST(request: NextRequest) {
           emailTemplate = emailTemplates.orderStatusUpdate(orderData, statusData.status, statusData.message)
           break
 
+        case 'orderNotificationAdmin':
+          if (!orderData) {
+            return NextResponse.json(
+              { success: false, error: 'Sipariş bilgileri eksik' },
+              { status: 400 }
+            )
+          }
+          emailTemplate = emailTemplates.orderNotificationAdmin(orderData)
+          break
+
         default:
           return NextResponse.json(
             { success: false, error: 'Geçersiz e-posta türü' },

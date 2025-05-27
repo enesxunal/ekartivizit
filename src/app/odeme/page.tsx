@@ -15,7 +15,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { useOrders } from '@/contexts/OrderContext'
 import { createToast, useToast } from '@/components/ui/toast'
 import { paymentMethods, processCreditCardPayment, processWhatsAppPayment, processBankTransferPayment } from '@/lib/payment'
-import { emailTemplates } from '@/lib/email'
+// E-posta şablonları artık API üzerinden kullanılacak
 import { CreditCard, Smartphone, Building2, Truck, ShoppingCart, User, MapPin } from 'lucide-react'
 
 export default function OdemePage() {
@@ -174,32 +174,30 @@ export default function OdemePage() {
       if (paymentResult.success) {
         // E-posta gönder - Müşteri
         try {
-          const customerEmailTemplate = emailTemplates.orderConfirmationCustomer({
-            ...orderData,
-            orderId: orderResult.orderId
-          })
-          
           await fetch('/api/send-email', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               to: customerInfo.email,
-              template: customerEmailTemplate
+              emailType: 'orderConfirmation',
+              orderData: {
+                ...orderData,
+                orderId: orderResult.orderId
+              }
             })
           })
           
           // E-posta gönder - Admin
-          const adminEmailTemplate = emailTemplates.orderNotificationAdmin({
-            ...orderData,
-            orderId: orderResult.orderId
-          })
-          
           await fetch('/api/send-email', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               to: 'info@ekartvizit.co',
-              template: adminEmailTemplate
+              emailType: 'orderNotificationAdmin',
+              orderData: {
+                ...orderData,
+                orderId: orderResult.orderId
+              }
             })
           })
         } catch (emailError) {
