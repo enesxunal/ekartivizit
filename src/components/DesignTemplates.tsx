@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import Link from 'next/link'
-import { createCanvaUrl, canvaTemplates } from '@/lib/canva-config'
+import { createCanvaUrl } from '@/lib/canva-config'
 
 export default function DesignTemplates() {
   const templates = [

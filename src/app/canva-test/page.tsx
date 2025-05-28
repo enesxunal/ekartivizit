@@ -23,8 +23,6 @@ export default function CanvaTestPage() {
       state: 'test_state_' + Date.now()
     })
 
-    const authUrl = `https://www.canva.com/api/oauth/authorize?${testParams.toString()}`
-    
     // Test callback'i simüle et
     setTimeout(() => {
       setTestStatus('success')
@@ -32,6 +30,7 @@ export default function CanvaTestPage() {
     }, 2000)
 
     // Gerçek test için Canva'ya yönlendir (yorumda)
+    // const authUrl = `https://www.canva.com/api/oauth/authorize?${testParams.toString()}`
     // window.open(authUrl, '_blank')
   }
 
@@ -65,7 +64,7 @@ export default function CanvaTestPage() {
               Canva Entegrasyon Test Sayfası
             </h1>
             <p className="text-gray-600">
-              Canva OAuth flow'unu test etmek için bu sayfayı kullanın
+              Canva OAuth flow&apos;unu test etmek için bu sayfayı kullanın
             </p>
           </div>
 
@@ -117,7 +116,7 @@ export default function CanvaTestPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-sm text-gray-600">
-                  API callback endpoint'inin çalışıp çalışmadığını test eder
+                  API callback endpoint&apos;inin çalışıp çalışmadığını test eder
                 </p>
                 
                 <Button 
@@ -135,7 +134,7 @@ export default function CanvaTestPage() {
           {/* URL Bilgileri */}
           <Card>
             <CardHeader>
-              <CardTitle>Entegrasyon URL'leri</CardTitle>
+              <CardTitle>Entegrasyon URL&apos;leri</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -155,7 +154,7 @@ export default function CanvaTestPage() {
               <div className="bg-yellow-50 p-4 rounded-lg">
                 <h4 className="font-medium text-yellow-800 mb-2">⚠️ Önemli Not:</h4>
                 <p className="text-sm text-yellow-700">
-                  Bu URL'leri Canva geliştirici panelinde tanımladıktan sonra OAuth flow'unu en az bir kez test etmeniz gerekiyor.
+                  Bu URL&apos;leri Canva geliştirici panelinde tanımladıktan sonra OAuth flow&apos;unu en az bir kez test etmeniz gerekiyor.
                   Test etmeden submission yapamazsınız.
                 </p>
               </div>
@@ -169,11 +168,11 @@ export default function CanvaTestPage() {
             </CardHeader>
             <CardContent>
               <ol className="list-decimal list-inside space-y-2 text-sm text-gray-600">
-                <li>Canva geliştirici panelinde yukarıdaki URL'leri ekleyin</li>
-                <li>Client ID ve Client Secret'i alın</li>
-                <li>Bu sayfadaki test butonlarını kullanarak endpoint'leri test edin</li>
-                <li>Gerçek bir OAuth flow'u test edin</li>
-                <li>Canva'da submission'ı tamamlayın</li>
+                <li>Canva geliştirici panelinde yukarıdaki URL&apos;leri ekleyin</li>
+                <li>Client ID ve Client Secret&apos;i alın</li>
+                <li>Bu sayfadaki test butonlarını kullanarak endpoint&apos;leri test edin</li>
+                <li>Gerçek bir OAuth flow&apos;u test edin</li>
+                <li>Canva&apos;da submission&apos;ı tamamlayın</li>
               </ol>
             </CardContent>
           </Card>

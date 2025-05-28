@@ -22,7 +22,6 @@ function URLParamsHandler() {
 
   const urlParams = new URLSearchParams(window.location.search);
   const isTest = urlParams.get('test') === 'true';
-  const isSuccess = urlParams.get('success') === 'true';
   const error = urlParams.get('error');
   const message = urlParams.get('message');
   const source = urlParams.get('source');
@@ -51,7 +50,7 @@ function DefaultContent({ source }: { source?: string | null }) {
         </h1>
         <p className="text-gray-600">
           {source === 'canva' 
-            ? 'Canva\'da oluşturduğunuz tasarım başarıyla kaydedildi.'
+            ? 'Canva&apos;da oluşturduğunuz tasarım başarıyla kaydedildi.'
             : 'Tasarımınız başarıyla kaydedildi.'
           }
         </p>
@@ -139,7 +138,7 @@ function TestContent() {
           Test Başarılı!
         </h1>
         <p className="text-gray-600">
-          Canva callback endpoint'i çalışıyor.
+          Canva callback endpoint&apos;i çalışıyor.
         </p>
       </div>
 
