@@ -145,7 +145,7 @@ function TestContent() {
       <div className="bg-green-50 p-6 rounded-lg mb-6">
         <h3 className="font-semibold text-green-900 mb-2">✅ Test Sonucu</h3>
         <p className="text-green-700 text-sm mb-4">
-          OAuth callback URL'i başarıyla çalışıyor. Artık Canva geliştirici panelinde submission yapabilirsiniz.
+          OAuth callback URL&apos;i başarıyla çalışıyor. Artık Canva geliştirici panelinde submission yapabilirsiniz.
         </p>
         <Link 
           href="/canva-test"

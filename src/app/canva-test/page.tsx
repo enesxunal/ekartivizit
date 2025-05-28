@@ -14,15 +14,6 @@ export default function CanvaTestPage() {
     setTestStatus('testing')
     setTestMessage('Canva OAuth test başlatılıyor...')
 
-    // Test URL'si oluştur
-    const testParams = new URLSearchParams({
-      response_type: 'code',
-      client_id: 'test_client_id', // Gerçek client ID ile değiştirilecek
-      redirect_uri: 'https://ekartivizit.vercel.app/api/canva/callback',
-      scope: 'design:read design:write',
-      state: 'test_state_' + Date.now()
-    })
-
     // Test callback'i simüle et
     setTimeout(() => {
       setTestStatus('success')
@@ -30,6 +21,13 @@ export default function CanvaTestPage() {
     }, 2000)
 
     // Gerçek test için Canva'ya yönlendir (yorumda)
+    // const testParams = new URLSearchParams({
+    //   response_type: 'code',
+    //   client_id: 'test_client_id', // Gerçek client ID ile değiştirilecek
+    //   redirect_uri: 'https://ekartivizit.vercel.app/api/canva/callback',
+    //   scope: 'design:read design:write',
+    //   state: 'test_state_' + Date.now()
+    // })
     // const authUrl = `https://www.canva.com/api/oauth/authorize?${testParams.toString()}`
     // window.open(authUrl, '_blank')
   }
