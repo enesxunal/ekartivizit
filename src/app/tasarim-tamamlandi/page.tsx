@@ -22,6 +22,7 @@ function URLParamsHandler() {
 
   const urlParams = new URLSearchParams(window.location.search);
   const isTest = urlParams.get('test') === 'true';
+  const isOAuthTest = urlParams.get('oauth_test') === 'true';
   const error = urlParams.get('error');
   const message = urlParams.get('message');
   const source = urlParams.get('source');
@@ -32,6 +33,10 @@ function URLParamsHandler() {
 
   if (isTest) {
     return <TestContent />;
+  }
+
+  if (isOAuthTest) {
+    return <OAuthTestContent />;
   }
 
   return <DefaultContent source={source} />;
@@ -146,6 +151,46 @@ function TestContent() {
         <h3 className="font-semibold text-green-900 mb-2">✅ Test Sonucu</h3>
         <p className="text-green-700 text-sm mb-4">
           OAuth callback URL&apos;i başarıyla çalışıyor. Artık Canva geliştirici panelinde submission yapabilirsiniz.
+        </p>
+        <Link 
+          href="/canva-test"
+          className="inline-flex items-center text-blue-600 hover:text-blue-700 text-sm font-medium"
+        >
+          <TestTube className="w-4 h-4 mr-1" />
+          Test Sayfasına Dön
+        </Link>
+      </div>
+
+      <Link 
+        href="/"
+        className="w-full text-center text-gray-500 hover:text-gray-700 font-medium py-2 flex items-center justify-center gap-2"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Ana Sayfaya Dön
+      </Link>
+    </>
+  );
+}
+
+function OAuthTestContent() {
+  return (
+    <>
+      <div className="text-center mb-8">
+        <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-4">
+          <CheckCircle className="w-10 h-10 text-green-600" />
+        </div>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          OAuth Test Başarılı!
+        </h1>
+        <p className="text-gray-600">
+          OAuth testi başarıyla tamamlandı.
+        </p>
+      </div>
+
+      <div className="bg-green-50 p-6 rounded-lg mb-6">
+        <h3 className="font-semibold text-green-900 mb-2">✅ Test Sonucu</h3>
+        <p className="text-green-700 text-sm mb-4">
+          OAuth testi başarıyla tamamlandı.
         </p>
         <Link 
           href="/canva-test"

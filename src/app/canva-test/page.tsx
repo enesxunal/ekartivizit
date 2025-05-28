@@ -9,6 +9,62 @@ export default function CanvaTestPage() {
   const [testStatus, setTestStatus] = useState<'idle' | 'testing' | 'success' | 'error'>('idle')
   const [testMessage, setTestMessage] = useState('')
 
+  // Gerçek OAuth test flow'u
+  const testRealCanvaOAuth = async () => {
+    // PKCE code verifier ve challenge oluştur
+    const codeVerifier = generateCodeVerifier()
+    const codeChallenge = await generateCodeChallenge(codeVerifier)
+    const state = generateState()
+
+    // Code verifier'ı session storage'a kaydet (gerçek uygulamada güvenli storage kullanın)
+    sessionStorage.setItem('canva_code_verifier', codeVerifier)
+    sessionStorage.setItem('canva_state', state)
+
+    // Gerçek Canva OAuth URL'i oluştur
+    const authParams = new URLSearchParams({
+      response_type: 'code',
+      client_id: 'OC-AZcSA-HyneyB', // Gerçek client ID
+      redirect_uri: 'https://ekartivizit.vercel.app/api/canva/callback',
+      scope: 'design:read design:write',
+      state: state,
+      code_challenge: codeChallenge,
+      code_challenge_method: 'S256'
+    })
+
+    const authUrl = `https://www.canva.com/api/oauth/authorize?${authParams.toString()}`
+    window.open(authUrl, '_self') // Aynı pencerede aç
+  }
+
+  // PKCE helper functions
+  function generateCodeVerifier() {
+    const array = new Uint8Array(96)
+    crypto.getRandomValues(array)
+    return btoa(String.fromCharCode.apply(null, Array.from(array)))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '')
+  }
+
+  async function generateCodeChallenge(verifier: string) {
+    const encoder = new TextEncoder()
+    const data = encoder.encode(verifier)
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+    const hashArray = new Uint8Array(hashBuffer)
+    return btoa(String.fromCharCode.apply(null, Array.from(hashArray)))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '')
+  }
+
+  function generateState() {
+    const array = new Uint8Array(32)
+    crypto.getRandomValues(array)
+    return btoa(String.fromCharCode.apply(null, Array.from(array)))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '')
+  }
+
   // Basit OAuth test flow'u
   const testCanvaOAuth = () => {
     setTestStatus('testing')
@@ -81,11 +137,20 @@ export default function CanvaTestPage() {
                 </p>
                 
                 <Button 
+                  onClick={testRealCanvaOAuth}
+                  disabled={testStatus === 'testing'}
+                  className="w-full mb-2"
+                >
+                  🚀 Gerçek Canva OAuth Test Et
+                </Button>
+
+                <Button 
                   onClick={testCanvaOAuth}
                   disabled={testStatus === 'testing'}
+                  variant="outline"
                   className="w-full"
                 >
-                  {testStatus === 'testing' ? 'Test Ediliyor...' : 'OAuth Test Et'}
+                  {testStatus === 'testing' ? 'Test Ediliyor...' : '🧪 Simülasyon Test'}
                 </Button>
 
                 {testStatus !== 'idle' && (
