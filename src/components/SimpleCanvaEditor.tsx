@@ -1,13 +1,13 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { simpleCanva } from '@/lib/canva-simple'
-import { ExternalLink, ArrowLeft, Upload } from 'lucide-react'
+import { ExternalLink, ArrowLeft, Upload, AlertCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/contexts/CartContext'
-import { useToast } from '@/components/ui/toast'
+import { useToast } from '@/contexts/ToastContext'
 
 interface SimpleCanvaEditorProps {
   productCategory: 'kartvizit' | 'broşür' | 'magnet'
@@ -22,112 +22,235 @@ export default function SimpleCanvaEditor({
 }: SimpleCanvaEditorProps) {
   const [step, setStep] = useState<'start' | 'designing' | 'upload'>('start')
   const [designFile, setDesignFile] = useState<File | null>(null)
+  const [error, setError] = useState<string | null>(null)
   
   const router = useRouter()
   const { addToCart } = useCart()
   const { addToast } = useToast()
 
+  // Component mount olduğunda hata kontrolü yap
+  useEffect(() => {
+    try {
+      // Toast context'ini test et
+      if (!addToast) {
+        throw new Error('Toast context bulunamadı')
+      }
+      
+      // Cart context'ini test et
+      if (!addToCart) {
+        throw new Error('Cart context bulunamadı')
+      }
+      
+      setError(null)
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Bilinmeyen hata'
+      setError(errorMessage)
+      console.error('SimpleCanvaEditor initialization error:', err)
+    }
+  }, [addToast, addToCart])
+
   // Canva'da tasarım yap
   const openCanvaDesigner = () => {
-    const canvaUrl = simpleCanva.createDesignUrl(productCategory, templateId)
-    
-    // Yeni sekmede Canva'yı aç
-    window.open(canvaUrl, '_blank', 'width=1200,height=800')
-    
-    setStep('designing')
-    
-    addToast({
-      type: 'info',
-      title: 'Canva Açıldı',
-      description: 'Tasarımınızı tamamladıktan sonra PDF olarak indirin ve yükleyin'
-    })
+    try {
+      const canvaUrl = simpleCanva.createDesignUrl(productCategory, templateId)
+      
+      // Yeni sekmede Canva'yı aç
+      window.open(canvaUrl, '_blank', 'width=1200,height=800')
+      
+      setStep('designing')
+      
+      addToast({
+        type: 'info',
+        title: 'Canva Açıldı',
+        description: 'Tasarımınızı tamamladıktan sonra PDF olarak indirin ve yükleyin'
+      })
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Canva açılırken hata oluştu'
+      setError(errorMessage)
+      console.error('Canva open error:', err)
+      
+      addToast({
+        type: 'error',
+        title: 'Hata',
+        description: errorMessage
+      })
+    }
   }
 
   // Dosya yükleme
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    
-    if (file) {
-      // PDF kontrolü
-      if (file.type !== 'application/pdf') {
-        addToast({
-          type: 'error',
-          title: 'Hatalı Dosya Tipi',
-          description: 'Lütfen PDF formatında dosya yükleyin'
-        })
-        return
-      }
+    try {
+      const file = event.target.files?.[0]
+      
+      if (file) {
+        // PDF kontrolü
+        if (file.type !== 'application/pdf') {
+          addToast({
+            type: 'error',
+            title: 'Hatalı Dosya Tipi',
+            description: 'Lütfen PDF formatında dosya yükleyin'
+          })
+          return
+        }
 
-      // Dosya boyutu kontrolü (10MB)
-      if (file.size > 10 * 1024 * 1024) {
-        addToast({
-          type: 'error',
-          title: 'Dosya Çok Büyük',
-          description: 'Dosya boyutu 10MB\'dan küçük olmalıdır'
-        })
-        return
-      }
+        // Dosya boyutu kontrolü (10MB)
+        if (file.size > 10 * 1024 * 1024) {
+          addToast({
+            type: 'error',
+            title: 'Dosya Çok Büyük',
+            description: 'Dosya boyutu 10MB\'dan küçük olmalıdır'
+          })
+          return
+        }
 
-      setDesignFile(file)
+        setDesignFile(file)
+        addToast({
+          type: 'success',
+          title: 'Dosya Yüklendi',
+          description: 'Tasarım dosyanız başarıyla yüklendi'
+        })
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Dosya yüklenirken hata oluştu'
+      setError(errorMessage)
+      console.error('File upload error:', err)
+      
       addToast({
-        type: 'success',
-        title: 'Dosya Yüklendi',
-        description: 'Tasarım dosyanız başarıyla yüklendi'
+        type: 'error',
+        title: 'Hata',
+        description: errorMessage
       })
     }
   }
 
   // Sepete ekle
   const handleAddToCart = () => {
-    if (!designFile) {
+    try {
+      if (!designFile) {
+        addToast({
+          type: 'error',
+          title: 'Dosya Gerekli',
+          description: 'Lütfen önce tasarım dosyanızı yükleyin'
+        })
+        return
+      }
+
+      // Dosyayı base64'e çevir (gerçek uygulamada dosya upload servisi kullanılmalı)
+      const reader = new FileReader()
+      reader.onload = () => {
+        try {
+          const base64Data = reader.result as string
+
+          addToCart({
+            product: {
+              id: productId,
+              name: `${productCategory.charAt(0).toUpperCase() + productCategory.slice(1)} - Özel Tasarım`,
+              description: 'Canva ile özel tasarladığınız ürün',
+              category: 'kurumsal',
+              image: '/placeholder-design.jpg',
+              href: `/${productCategory}-ozel-tasarim`,
+              gradient: 'from-[#59af05] to-[#4a9321]',
+              price: { min: 0, max: 0 }
+            },
+            quantity: 1000,
+            selectedMaterial: undefined,
+            selectedSize: undefined,
+            selectedWindow: undefined,
+            selectedExtras: undefined,
+            price: 0,
+            customDesign: {
+              designId: `custom-${Date.now()}`,
+              designTitle: designFile.name,
+              pdfUrl: base64Data, // Gerçek uygulamada upload edilmiş dosya URL'i
+              createdAt: new Date().toISOString()
+            }
+          })
+
+          addToast({
+            type: 'success',
+            title: 'Sepete Eklendi',
+            description: 'Özel tasarımınız sepete eklendi'
+          })
+
+          router.push('/sepet')
+        } catch (err) {
+          const errorMessage = err instanceof Error ? err.message : 'Sepete eklenirken hata oluştu'
+          setError(errorMessage)
+          console.error('Add to cart error:', err)
+          
+          addToast({
+            type: 'error',
+            title: 'Hata',
+            description: errorMessage
+          })
+        }
+      }
+      
+      reader.onerror = () => {
+        const errorMessage = 'Dosya okunamadı'
+        setError(errorMessage)
+        addToast({
+          type: 'error',
+          title: 'Hata',
+          description: errorMessage
+        })
+      }
+      
+      reader.readAsDataURL(designFile)
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Sepete eklenirken hata oluştu'
+      setError(errorMessage)
+      console.error('Add to cart error:', err)
+      
       addToast({
         type: 'error',
-        title: 'Dosya Gerekli',
-        description: 'Lütfen önce tasarım dosyanızı yükleyin'
+        title: 'Hata',
+        description: errorMessage
       })
-      return
     }
+  }
 
-    // Dosyayı base64'e çevir (gerçek uygulamada dosya upload servisi kullanılmalı)
-    const reader = new FileReader()
-    reader.onload = () => {
-      const base64Data = reader.result as string
-
-      addToCart({
-        product: {
-          id: productId,
-          name: `${productCategory.charAt(0).toUpperCase() + productCategory.slice(1)} - Özel Tasarım`,
-          description: 'Canva ile özel tasarladığınız ürün',
-          category: 'kurumsal',
-          image: '/placeholder-design.jpg',
-          href: `/${productCategory}-ozel-tasarim`,
-          gradient: 'from-[#59af05] to-[#4a9321]',
-          price: { min: 0, max: 0 }
-        },
-        quantity: 1000,
-        selectedMaterial: undefined,
-        selectedSize: undefined,
-        selectedWindow: undefined,
-        selectedExtras: undefined,
-        price: 0,
-        customDesign: {
-          designId: `custom-${Date.now()}`,
-          designTitle: designFile.name,
-          pdfUrl: base64Data, // Gerçek uygulamada upload edilmiş dosya URL'i
-          createdAt: new Date().toISOString()
-        }
-      })
-
-      addToast({
-        type: 'success',
-        title: 'Sepete Eklendi',
-        description: 'Özel tasarımınız sepete eklendi'
-      })
-
-      router.push('/sepet')
-    }
-    
-    reader.readAsDataURL(designFile)
+  // Hata durumunda gösterilecek UI
+  if (error) {
+    return (
+      <div className="max-w-4xl mx-auto">
+        <Card className="border-red-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-red-600">
+              <AlertCircle className="w-6 h-6" />
+              Hata Oluştu
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="bg-red-50 p-4 rounded-lg">
+              <p className="text-red-800 text-sm">{error}</p>
+            </div>
+            
+            <div className="space-y-2">
+              <Button
+                onClick={() => {
+                  setError(null)
+                  setStep('start')
+                }}
+                variant="outline"
+                className="w-full"
+              >
+                Tekrar Dene
+              </Button>
+              
+              <Button
+                onClick={() => router.back()}
+                variant="outline"
+                className="w-full"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Geri Dön
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   // Başlangıç adımı
