@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import Link from 'next/link'
-import { createCanvaUrl } from '@/lib/canva-config'
 
 export default function DesignTemplates() {
   const templates = [
@@ -10,7 +9,7 @@ export default function DesignTemplates() {
       name: 'Modern Kartvizit',
       description: 'Minimalist ve modern tasarım',
       category: 'Kartvizit',
-      href: createCanvaUrl.editTemplate('DAGZqQqQqQq', 'https://ekartivizit.vercel.app/tasarim-tamamlandi'),
+      href: '/tasarim/kartvizit',
       gradient: 'from-[#59af05] to-[#4a9321]'
     },
     {
@@ -18,7 +17,7 @@ export default function DesignTemplates() {
       name: 'Kurumsal Broşür',
       description: 'Profesyonel kurumsal tasarım',
       category: 'Broşür',
-      href: createCanvaUrl.editTemplate('DAGZqRrRrRr', 'https://ekartivizit.vercel.app/tasarim-tamamlandi'),
+      href: '/tasarim/brosur',
       gradient: 'from-blue-400 to-blue-600'
     },
     {
@@ -26,7 +25,7 @@ export default function DesignTemplates() {
       name: 'Yaratıcı Magnet',
       description: 'Özel tasarım magnet çözümleri',
       category: 'Magnet',
-      href: createCanvaUrl.editTemplate('DAGZqSsSsSs', 'https://ekartivizit.vercel.app/tasarim-tamamlandi'),
+      href: '/tasarim/magnet',
       gradient: 'from-purple-400 to-purple-600'
     }
   ]
@@ -60,16 +59,11 @@ export default function DesignTemplates() {
                   <p className="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-4 line-clamp-2">
                     {template.description}
                   </p>
-                  <a 
-                    href={template.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block"
-                  >
+                  <Link href={template.href}>
                     <Button className="w-full bg-[#59af05] hover:bg-[#4a9321] text-xs sm:text-sm py-2 sm:py-2.5">
-                      Şablonu Özelleştir
+                      Şablonları Gör
                     </Button>
-                  </a>
+                  </Link>
                 </div>
               </CardContent>
             </Card>
