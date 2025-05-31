@@ -10,7 +10,7 @@ import { useCart } from '@/contexts/CartContext'
 import { useToast } from '@/contexts/ToastContext'
 
 interface SimpleCanvaEditorProps {
-  productCategory: 'kartvizit' | 'broşür' | 'magnet'
+  productCategory: 'kartvizit' | 'brosur' | 'magnet'
   productId: string
   templateId?: string
 }

@@ -239,7 +239,7 @@ export class CanvaAPI {
     switch (category.toLowerCase()) {
       case 'kartvizit':
         return 'business_card'
-      case 'broşür':
+      case 'brosur':
         return 'flyer'
       case 'magnet':
         return 'custom'
@@ -307,7 +307,7 @@ export const templateCategories = {
       },
     ],
   },
-  broşür: {
+  brosur: {
     name: 'Broşür',
     dimensions: { width: 2481, height: 3508 }, // A4 at 300 DPI
     templates: [

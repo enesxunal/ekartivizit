@@ -19,7 +19,7 @@ const designCategories = [
     features: ['Çift taraflı tasarım', 'Premium kağıt seçenekleri', 'Hızlı teslimat']
   },
   {
-    id: 'broşür',
+    id: 'brosur',
     name: 'Broşür',
     description: 'Etkileyici broşür ve katalog tasarımları',
     icon: FileText,

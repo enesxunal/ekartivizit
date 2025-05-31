@@ -16,7 +16,7 @@ export class SimpleCanvaIntegration {
     // Kategori bazlı template mapping
     const categoryMapping: Record<string, string> = {
       'kartvizit': 'business-card',
-      'broşür': 'flyer', 
+      'brosur': 'flyer', 
       'magnet': 'sticker'
     }
 

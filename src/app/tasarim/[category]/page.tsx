@@ -11,7 +11,7 @@ import { templateCategories } from '@/lib/canva'
 import { ArrowLeft, Edit3, Palette, Plus } from 'lucide-react'
 // import Link from 'next/link'
 
-type CategoryType = 'kartvizit' | 'broşür' | 'magnet'
+type CategoryType = 'kartvizit' | 'brosur' | 'magnet'
 
 export default function TasarimPage() {
   const params = useParams()
