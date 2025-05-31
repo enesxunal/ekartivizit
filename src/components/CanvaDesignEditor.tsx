@@ -7,10 +7,10 @@ import { canvaAPI, CanvaDesign, templateCategories } from '@/lib/canva'
 import { Loader2, Download, Save, ArrowLeft, Edit3 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/contexts/CartContext'
-import { useToast } from '@/components/ui/toast'
+import { useToast } from '@/contexts/ToastContext'
 
 interface CanvaDesignEditorProps {
-  productCategory: 'kartvizit' | 'broşür' | 'magnet'
+  productCategory: 'kartvizit' | 'brosur' | 'magnet'
   productId: string
   templateId?: string
   onDesignComplete?: (design: CanvaDesign, pdfUrl: string) => void
