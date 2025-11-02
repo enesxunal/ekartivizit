@@ -192,7 +192,7 @@ export default function ProductsPage() {
     
     editedProducts[selectedProduct.id] = {
       ...currentEdited,
-      category: categorySelect.value,
+      category: categorySelect.value as 'kurumsal' | 'reklam' | 'promosyon',
       minQuantity: parseInt(minQuantityInput.value) || 0,
       price: statusSelect.value === 'active' 
         ? (currentEdited.price || selectedProduct.price || { min: 0, max: 0 })
