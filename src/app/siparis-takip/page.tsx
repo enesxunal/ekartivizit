@@ -115,7 +115,7 @@ export default function OrderTrackingPage() {
       return {
         orderId: foundOrder.id,
         trackingNumber: foundOrder.trackingNumber || '',
-        status: foundOrder.status,
+        status: foundOrder.status as 'pending' | 'confirmed' | 'preparing' | 'printing' | 'shipping' | 'delivered',
         customerInfo: {
           name: foundOrder.customerInfo.name,
           email: foundOrder.customerInfo.email,
