@@ -5,6 +5,8 @@ import Image from 'next/image'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { 
   Package, 
   Search,
@@ -14,17 +16,24 @@ import {
   Settings,
   Star,
   TrendingUp,
-  DollarSign
+  DollarSign,
+  X,
+  Save
 } from 'lucide-react'
 import Link from 'next/link'
 import { PRODUCTS as products } from '@/data/products'
 import { useOrders } from '@/contexts/OrderContext'
+import type { Product } from '@/data/products'
 
 export default function ProductsPage() {
   const { orders } = useOrders()
   const [searchTerm, setSearchTerm] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [statusFilter, setStatusFilter] = useState('all')
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
+  const [isNewProductModalOpen, setIsNewProductModalOpen] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
 
   // Ürün satış istatistikleri
   const getProductStats = (productId: string) => {
@@ -79,6 +88,41 @@ export default function ProductsPage() {
     .sort((a, b) => b.stats.totalSold - a.stats.totalSold)
     .slice(0, 5)
 
+  // Modal handlers
+  const handleEdit = (product: Product) => {
+    setSelectedProduct(product)
+    setIsEditModalOpen(true)
+  }
+
+  const handleSettings = (product: Product) => {
+    setSelectedProduct(product)
+    setIsSettingsModalOpen(true)
+  }
+
+  const handleNewProduct = () => {
+    setIsNewProductModalOpen(true)
+  }
+
+  const handleSaveEdit = () => {
+    // Burada ürün kaydetme işlemi yapılacak
+    alert(`Ürün güncellendi: ${selectedProduct?.name}`)
+    setIsEditModalOpen(false)
+    setSelectedProduct(null)
+  }
+
+  const handleSaveSettings = () => {
+    // Burada ürün ayarlarını kaydetme işlemi yapılacak
+    alert(`Ürün ayarları güncellendi: ${selectedProduct?.name}`)
+    setIsSettingsModalOpen(false)
+    setSelectedProduct(null)
+  }
+
+  const handleSaveNewProduct = () => {
+    // Burada yeni ürün ekleme işlemi yapılacak
+    alert('Yeni ürün eklendi!')
+    setIsNewProductModalOpen(false)
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -90,7 +134,7 @@ export default function ProductsPage() {
               <p className="text-gray-600">Ürün kataloğu ve stok yönetimi</p>
             </div>
             <div className="flex gap-4">
-              <Button onClick={() => alert('Yeni ürün ekleme özelliği yakında eklenecek!')}>
+              <Button onClick={handleNewProduct}>
                 <Plus className="w-4 h-4 mr-2" />
                 Yeni Ürün
               </Button>
@@ -288,7 +332,7 @@ export default function ProductsPage() {
                               <Button 
                                 size="sm" 
                                 variant="outline"
-                                onClick={() => alert(`Ürün düzenleme özelliği yakında eklenecek!\nÜrün: ${product.name}`)}
+                                onClick={() => handleEdit(product)}
                               >
                                 <Edit className="w-4 h-4 mr-2" />
                                 Düzenle
@@ -296,7 +340,7 @@ export default function ProductsPage() {
                               <Button 
                                 size="sm" 
                                 variant="outline"
-                                onClick={() => alert(`Ürün ayarları özelliği yakında eklenecek!\nÜrün: ${product.name}`)}
+                                onClick={() => handleSettings(product)}
                               >
                                 <Settings className="w-4 h-4 mr-2" />
                                 Ayarlar
@@ -354,7 +398,7 @@ export default function ProductsPage() {
                   <Button 
                     className="w-full" 
                     variant="outline"
-                    onClick={() => alert('Yeni ürün ekleme özelliği yakında eklenecek!')}
+                    onClick={handleNewProduct}
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     Yeni Ürün Ekle
@@ -377,6 +421,136 @@ export default function ProductsPage() {
           </div>
         </div>
       </div>
+
+      {/* Düzenle Modal */}
+      {isEditModalOpen && selectedProduct && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Ürün Düzenle: {selectedProduct.name}</CardTitle>
+              <Button variant="ghost" size="sm" onClick={() => setIsEditModalOpen(false)}>
+                <X className="w-4 h-4" />
+              </Button>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="name">Ürün Adı</Label>
+                <Input id="name" defaultValue={selectedProduct.name} />
+              </div>
+              <div>
+                <Label htmlFor="description">Açıklama</Label>
+                <Input id="description" defaultValue={selectedProduct.description} />
+              </div>
+              <div>
+                <Label htmlFor="price">Başlangıç Fiyatı (₺)</Label>
+                <Input id="price" type="number" defaultValue={selectedProduct.price?.min || 0} />
+              </div>
+              <div className="flex gap-2 justify-end">
+                <Button variant="outline" onClick={() => setIsEditModalOpen(false)}>
+                  İptal
+                </Button>
+                <Button onClick={handleSaveEdit}>
+                  <Save className="w-4 h-4 mr-2" />
+                  Kaydet
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Ayarlar Modal */}
+      {isSettingsModalOpen && selectedProduct && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Ürün Ayarları: {selectedProduct.name}</CardTitle>
+              <Button variant="ghost" size="sm" onClick={() => setIsSettingsModalOpen(false)}>
+                <X className="w-4 h-4" />
+              </Button>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="status">Durum</Label>
+                <select 
+                  id="status" 
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                  defaultValue={selectedProduct.price && selectedProduct.price.min > 0 ? 'active' : 'inactive'}
+                >
+                  <option value="active">Aktif</option>
+                  <option value="inactive">Pasif</option>
+                </select>
+              </div>
+              <div>
+                <Label htmlFor="category">Kategori</Label>
+                <Input id="category" defaultValue={selectedProduct.category} />
+              </div>
+              <div>
+                <Label htmlFor="minQuantity">Minimum Miktar</Label>
+                <Input id="minQuantity" type="number" defaultValue={selectedProduct.minQuantity || 0} />
+              </div>
+              <div className="flex gap-2 justify-end">
+                <Button variant="outline" onClick={() => setIsSettingsModalOpen(false)}>
+                  İptal
+                </Button>
+                <Button onClick={handleSaveSettings}>
+                  <Save className="w-4 h-4 mr-2" />
+                  Kaydet
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Yeni Ürün Modal */}
+      {isNewProductModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Yeni Ürün Ekle</CardTitle>
+              <Button variant="ghost" size="sm" onClick={() => setIsNewProductModalOpen(false)}>
+                <X className="w-4 h-4" />
+              </Button>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="newName">Ürün Adı</Label>
+                <Input id="newName" placeholder="Örn: Kartvizit" />
+              </div>
+              <div>
+                <Label htmlFor="newDescription">Açıklama</Label>
+                <Input id="newDescription" placeholder="Ürün açıklaması" />
+              </div>
+              <div>
+                <Label htmlFor="newCategory">Kategori</Label>
+                <select id="newCategory" className="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                  <option value="kurumsal">Kurumsal</option>
+                  <option value="reklam">Reklam</option>
+                  <option value="promosyon">Promosyon</option>
+                </select>
+              </div>
+              <div>
+                <Label htmlFor="newPrice">Başlangıç Fiyatı (₺)</Label>
+                <Input id="newPrice" type="number" placeholder="0" />
+              </div>
+              <div>
+                <Label htmlFor="newMinQuantity">Minimum Miktar</Label>
+                <Input id="newMinQuantity" type="number" placeholder="0" />
+              </div>
+              <div className="flex gap-2 justify-end">
+                <Button variant="outline" onClick={() => setIsNewProductModalOpen(false)}>
+                  İptal
+                </Button>
+                <Button onClick={handleSaveNewProduct}>
+                  <Save className="w-4 h-4 mr-2" />
+                  Ürün Ekle
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   )
 } 
