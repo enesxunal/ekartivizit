@@ -35,6 +35,50 @@ export default function ProductsPage() {
   const [isNewProductModalOpen, setIsNewProductModalOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
 
+  // localStorage'dan düzenlenen ürünleri getir
+  const getEditedProducts = (): Record<string, Partial<Product>> => {
+    if (typeof window === 'undefined') return {}
+    try {
+      const edited = localStorage.getItem('ekartvizit-edited-products')
+      return edited ? JSON.parse(edited) : {}
+    } catch {
+      return {}
+    }
+  }
+
+  // localStorage'a düzenlenen ürünleri kaydet
+  const saveEditedProducts = (editedProducts: Record<string, Partial<Product>>) => {
+    if (typeof window === 'undefined') return
+    try {
+      localStorage.setItem('ekartvizit-edited-products', JSON.stringify(editedProducts))
+    } catch (error) {
+      console.error('Ürün kaydetme hatası:', error)
+    }
+  }
+
+  // Düzenlenen ürünleri ana ürün listesiyle birleştir
+  const getMergedProducts = (): Product[] => {
+    const editedProducts = getEditedProducts()
+    const editedIds = new Set(Object.keys(editedProducts))
+    const productIds = new Set(products.map(p => p.id))
+    
+    // Mevcut ürünleri düzenle
+    const merged = products.map(product => {
+      const edited = editedProducts[product.id]
+      return edited ? { ...product, ...edited } : product
+    })
+    
+    // Yeni eklenen ürünleri ekle (products'da olmayan ama editedProducts'da olan)
+    const newProducts = Object.entries(editedProducts)
+      .filter(([id]) => !productIds.has(id))
+      .map(([, product]) => product as Product)
+    
+    return [...merged, ...newProducts]
+  }
+
+  // Birleştirilmiş ürünler (düzenlenen ürünler dahil)
+  const mergedProducts = getMergedProducts()
+
   // Ürün satış istatistikleri
   const getProductStats = (productId: string) => {
     const productOrders = orders.filter(order => 
@@ -57,7 +101,7 @@ export default function ProductsPage() {
   }
 
   // Filtreleme
-  const filteredProducts = products.filter(product => {
+  const filteredProducts = mergedProducts.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          product.description.toLowerCase().includes(searchTerm.toLowerCase())
     
@@ -72,15 +116,15 @@ export default function ProductsPage() {
   })
 
   // Kategorileri belirle
-  const categories = Array.from(new Set(products.map(p => p.category)))
+  const categories = Array.from(new Set(mergedProducts.map(p => p.category)))
 
   // İstatistikler
-  const totalProducts = products.length
-  const activeProducts = products.filter(p => p.price && p.price.min > 0).length
+  const totalProducts = mergedProducts.length
+  const activeProducts = mergedProducts.filter(p => p.price && p.price.min > 0).length
   const totalCategories = categories.length
 
   // En çok satan ürünler
-  const topSellingProducts = products
+  const topSellingProducts = mergedProducts
     .map(product => ({
       ...product,
       stats: getProductStats(product.id)
@@ -104,23 +148,111 @@ export default function ProductsPage() {
   }
 
   const handleSaveEdit = () => {
-    // Burada ürün kaydetme işlemi yapılacak
-    alert(`Ürün güncellendi: ${selectedProduct?.name}`)
+    if (!selectedProduct) return
+
+    const nameInput = document.getElementById('name') as HTMLInputElement
+    const descriptionInput = document.getElementById('description') as HTMLInputElement
+    const priceInput = document.getElementById('price') as HTMLInputElement
+
+    if (!nameInput || !descriptionInput || !priceInput) {
+      alert('Form alanları bulunamadı!')
+      return
+    }
+
+    const editedProducts = getEditedProducts()
+    editedProducts[selectedProduct.id] = {
+      name: nameInput.value,
+      description: descriptionInput.value,
+      price: {
+        min: parseFloat(priceInput.value) || 0,
+        max: selectedProduct.price?.max || parseFloat(priceInput.value) || 0
+      }
+    }
+
+    saveEditedProducts(editedProducts)
+    alert(`Ürün güncellendi: ${nameInput.value}`)
     setIsEditModalOpen(false)
     setSelectedProduct(null)
+    window.location.reload() // Sayfayı yenile
   }
 
   const handleSaveSettings = () => {
-    // Burada ürün ayarlarını kaydetme işlemi yapılacak
-    alert(`Ürün ayarları güncellendi: ${selectedProduct?.name}`)
+    if (!selectedProduct) return
+
+    const statusSelect = document.getElementById('status') as HTMLSelectElement
+    const categorySelect = document.getElementById('category') as HTMLSelectElement
+    const minQuantityInput = document.getElementById('minQuantity') as HTMLInputElement
+
+    if (!statusSelect || !categorySelect || !minQuantityInput) {
+      alert('Form alanları bulunamadı!')
+      return
+    }
+
+    const editedProducts = getEditedProducts()
+    const currentEdited = editedProducts[selectedProduct.id] || {}
+    
+    editedProducts[selectedProduct.id] = {
+      ...currentEdited,
+      category: categorySelect.value,
+      minQuantity: parseInt(minQuantityInput.value) || 0,
+      price: statusSelect.value === 'active' 
+        ? (currentEdited.price || selectedProduct.price || { min: 0, max: 0 })
+        : { min: 0, max: 0 }
+    }
+
+    saveEditedProducts(editedProducts)
+    alert(`Ürün ayarları güncellendi: ${selectedProduct.name}`)
     setIsSettingsModalOpen(false)
     setSelectedProduct(null)
+    window.location.reload() // Sayfayı yenile
   }
 
   const handleSaveNewProduct = () => {
-    // Burada yeni ürün ekleme işlemi yapılacak
-    alert('Yeni ürün eklendi!')
+    const nameInput = document.getElementById('newName') as HTMLInputElement
+    const descriptionInput = document.getElementById('newDescription') as HTMLInputElement
+    const categorySelect = document.getElementById('newCategory') as HTMLSelectElement
+    const priceInput = document.getElementById('newPrice') as HTMLInputElement
+    const minQuantityInput = document.getElementById('newMinQuantity') as HTMLInputElement
+
+    if (!nameInput || !descriptionInput || !categorySelect || !priceInput || !minQuantityInput) {
+      alert('Form alanları bulunamadı!')
+      return
+    }
+
+    if (!nameInput.value || !descriptionInput.value) {
+      alert('Lütfen ürün adı ve açıklamasını doldurun!')
+      return
+    }
+
+    const newProductId = nameInput.value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+    const newProduct: Product = {
+      id: newProductId,
+      name: nameInput.value,
+      description: descriptionInput.value,
+      category: categorySelect.value as 'kurumsal' | 'reklam' | 'promosyon',
+      image: '/images/placeholder.png',
+      href: `/urun/${newProductId}`,
+      gradient: 'from-gray-400 to-gray-600',
+      features: [],
+      sizes: [],
+      materials: [],
+      colors: [],
+      minQuantity: parseInt(minQuantityInput.value) || 1,
+      price: {
+        min: parseFloat(priceInput.value) || 0,
+        max: parseFloat(priceInput.value) || 0
+      },
+      extraOptions: [],
+      quantityPricing: []
+    }
+
+    const editedProducts = getEditedProducts()
+    editedProducts[newProductId] = newProduct
+    saveEditedProducts(editedProducts)
+
+    alert(`Yeni ürün eklendi: ${newProduct.name}`)
     setIsNewProductModalOpen(false)
+    window.location.reload() // Sayfayı yenile
   }
 
   return (
@@ -435,15 +567,30 @@ export default function ProductsPage() {
             <CardContent className="space-y-4">
               <div>
                 <Label htmlFor="name">Ürün Adı</Label>
-                <Input id="name" defaultValue={selectedProduct.name} />
+                <Input 
+                  id="name" 
+                  defaultValue={selectedProduct.name}
+                  placeholder="Ürün adı"
+                />
               </div>
               <div>
                 <Label htmlFor="description">Açıklama</Label>
-                <Input id="description" defaultValue={selectedProduct.description} />
+                <Input 
+                  id="description" 
+                  defaultValue={selectedProduct.description}
+                  placeholder="Ürün açıklaması"
+                />
               </div>
               <div>
                 <Label htmlFor="price">Başlangıç Fiyatı (₺)</Label>
-                <Input id="price" type="number" defaultValue={selectedProduct.price?.min || 0} />
+                <Input 
+                  id="price" 
+                  type="number" 
+                  step="0.01"
+                  min="0"
+                  defaultValue={selectedProduct.price?.min || 0}
+                  placeholder="0"
+                />
               </div>
               <div className="flex gap-2 justify-end">
                 <Button variant="outline" onClick={() => setIsEditModalOpen(false)}>
@@ -483,11 +630,25 @@ export default function ProductsPage() {
               </div>
               <div>
                 <Label htmlFor="category">Kategori</Label>
-                <Input id="category" defaultValue={selectedProduct.category} />
+                <select 
+                  id="category" 
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                  defaultValue={selectedProduct.category}
+                >
+                  <option value="kurumsal">Kurumsal</option>
+                  <option value="reklam">Reklam</option>
+                  <option value="promosyon">Promosyon</option>
+                </select>
               </div>
               <div>
                 <Label htmlFor="minQuantity">Minimum Miktar</Label>
-                <Input id="minQuantity" type="number" defaultValue={selectedProduct.minQuantity || 0} />
+                <Input 
+                  id="minQuantity" 
+                  type="number" 
+                  min="1"
+                  defaultValue={selectedProduct.minQuantity || 0}
+                  placeholder="0"
+                />
               </div>
               <div className="flex gap-2 justify-end">
                 <Button variant="outline" onClick={() => setIsSettingsModalOpen(false)}>
