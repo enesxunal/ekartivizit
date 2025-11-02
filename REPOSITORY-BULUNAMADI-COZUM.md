@@ -30,7 +30,7 @@ Repository private ise, token'ın yeterli yetkileri olmayabilir.
 ### Çözüm: Token Yetkilerini Kontrol Edin
 
 1. **GitHub** → **Settings** → **Developer settings** → **Personal access tokens** → **Tokens (classic)**
-2. **Token'ınızı** bulun (`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`)
+2. **Token'ınızı** bulun (`YOUR_TOKEN_HERE`)
 3. **Yetkileri** kontrol edin:
    - ✅ `repo` yetkisi seçili olmalı
    - ✅ **Tüm repo yetkileri** seçili olmalı (repo:status, repo_deployment, public_repo, repo:invite, vb.)
@@ -77,14 +77,14 @@ GitHub → enesxunal → Repository'ler → **Doğru adı** bulun
 Sunucuda şu komutu yazın:
 
 ```bash
-git clone https://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@github.com/enesxunal/DOGRU_REPOSITORY_ADI.git .
+git clone https://YOUR_TOKEN_HERE@github.com/enesxunal/DOGRU_REPOSITORY_ADI.git .
 ```
 
 **ÖNEMLİ:** `DOGRU_REPOSITORY_ADI` yerine GitHub'dan bulduğunuz gerçek repository adını yazın!
 
 **Örnek:**
 ```bash
-git clone https://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@github.com/enesxunal/e-kartvizit.git .
+git clone https://YOUR_TOKEN_HERE@github.com/enesxunal/e-kartvizit.git .
 ```
 
 ---

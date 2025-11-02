@@ -61,7 +61,7 @@ rm -rf .*
 Şimdi tekrar deneyin:
 
 ```bash
-git clone https://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@github.com/enesxunal/ekartvizit.git .
+git clone https://YOUR_TOKEN_HERE@github.com/enesxunal/ekartvizit.git .
 ```
 
 **Enter** basın.
@@ -99,7 +99,7 @@ cd ekartvizit
 Şimdi klonlayın:
 
 ```bash
-git clone https://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@github.com/enesxunal/ekartvizit.git .
+git clone https://YOUR_TOKEN_HERE@github.com/enesxunal/ekartvizit.git .
 ```
 
 **Enter** basın.
@@ -127,7 +127,7 @@ rm -rf * .*
 
 ### ADIM 4: Klonla
 ```bash
-git clone https://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@github.com/enesxunal/ekartvizit.git .
+git clone https://YOUR_TOKEN_HERE@github.com/enesxunal/ekartvizit.git .
 ```
 
 ---

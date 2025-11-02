@@ -11,7 +11,7 @@ Repository adı: **`ekartivizit`** (i harfi var!)
 Sunucu terminal'inde şu komutu yazın:
 
 ```bash
-git clone https://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@github.com/enesxunal/ekartivizit.git .
+git clone https://YOUR_TOKEN_HERE@github.com/enesxunal/ekartivizit.git .
 ```
 
 **Enter** basın.

@@ -9,7 +9,7 @@ Token'ınız hazır. İşte sunucuda nasıl kullanacağınız:
 Sunucu terminal'inde şu komutu yazın:
 
 ```bash
-git clone https://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@github.com/enesxunal/ekartvizit.git .
+git clone https://YOUR_TOKEN_HERE@github.com/enesxunal/ekartvizit.git .
 ```
 
 **Enter** basın.
