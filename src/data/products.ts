@@ -421,30 +421,6 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
-    id: 'imsakiye',
-    name: 'İmsakiye',
-    description: 'Özel tasarım ramazan imsakiyesi',
-    category: 'kurumsal',
-    image: '/images/imsakiye.png',
-    href: '/urun/imsakiye',
-    gradient: 'from-teal-400 to-teal-600',
-    features: ['230Gr. Kroma', 'Kaliteli Baskı', 'Özel Tasarım'],
-    sizes: ['Standart Boy'],
-    materials: ['230 Gram Kroma'],
-    colors: ['CMYK 4 Renk'],
-    minQuantity: 250,
-    price: { min: 1400, max: 3700 },
-    extraOptions: [
-      { name: 'Logo Tasarımı', price: 250 }
-    ],
-    quantityPricing: [
-      { quantity: 250, price: 1400 },
-      { quantity: 500, price: 1800 },
-      { quantity: 1000, price: 2300 },
-      { quantity: 2000, price: 3700 }
-    ]
-  },
-  {
     id: 'takvim',
     name: 'Takvim',
     description: 'Özel tasarım piramit takvim',

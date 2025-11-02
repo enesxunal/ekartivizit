@@ -90,7 +90,7 @@ export default function ProductsPage() {
               <p className="text-gray-600">Ürün kataloğu ve stok yönetimi</p>
             </div>
             <div className="flex gap-4">
-              <Button>
+              <Button onClick={() => alert('Yeni ürün ekleme özelliği yakında eklenecek!')}>
                 <Plus className="w-4 h-4 mr-2" />
                 Yeni Ürün
               </Button>
@@ -279,15 +279,25 @@ export default function ProductsPage() {
 
                             {/* Aksiyonlar */}
                             <div className="flex gap-2">
-                              <Button size="sm" variant="outline">
-                                <Eye className="w-4 h-4 mr-2" />
-                                Görüntüle
-                              </Button>
-                              <Button size="sm" variant="outline">
+                              <Link href={product.href}>
+                                <Button size="sm" variant="outline">
+                                  <Eye className="w-4 h-4 mr-2" />
+                                  Görüntüle
+                                </Button>
+                              </Link>
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => alert(`Ürün düzenleme özelliği yakında eklenecek!\nÜrün: ${product.name}`)}
+                              >
                                 <Edit className="w-4 h-4 mr-2" />
                                 Düzenle
                               </Button>
-                              <Button size="sm" variant="outline">
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => alert(`Ürün ayarları özelliği yakında eklenecek!\nÜrün: ${product.name}`)}
+                              >
                                 <Settings className="w-4 h-4 mr-2" />
                                 Ayarlar
                               </Button>
@@ -341,7 +351,11 @@ export default function ProductsPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <Button className="w-full" variant="outline">
+                  <Button 
+                    className="w-full" 
+                    variant="outline"
+                    onClick={() => alert('Yeni ürün ekleme özelliği yakında eklenecek!')}
+                  >
                     <Plus className="w-4 h-4 mr-2" />
                     Yeni Ürün Ekle
                   </Button>

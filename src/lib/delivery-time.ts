@@ -89,12 +89,6 @@ export function getDeliveryTimeByProduct(productId: string): DeliveryTimeConfig 
       maxDays: 7,
       description: '5-7 iş günü içinde'
     },
-    // İmsakiye
-    'imsakiye': {
-      minDays: 5,
-      maxDays: 7,
-      description: '5-7 iş günü içinde'
-    },
     // Takvim
     'takvim': {
       minDays: 7,
