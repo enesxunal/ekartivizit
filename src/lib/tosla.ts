@@ -1,5 +1,6 @@
 // Tosla Ödeme Entegrasyonu
 // Tosla Sanal POS API Entegrasyonu
+// https://tosla.com/isim-icin/gelistirici-merkezi
 
 export interface ToslaConfig {
   apiUser: string
@@ -37,7 +38,7 @@ export interface ToslaPaymentResponse {
   errorMessage?: string
 }
 
-// Tosla konfigürasyonu
+// Tosla konfigürasyonu - Güncellenmiş API bilgileri
 export const toslaConfig: ToslaConfig = {
   apiUser: process.env.TOSLA_API_USER || 'apiUser3016658',
   apiPass: process.env.TOSLA_API_PASS || 'YN8L293GPY',
@@ -46,7 +47,7 @@ export const toslaConfig: ToslaConfig = {
   environment: (process.env.NODE_ENV === 'production' ? 'production' : 'test') as 'test' | 'production'
 }
 
-// Tosla ödeme işlemi
+// Tosla ödeme işlemi - Güncellenmiş API entegrasyonu
 export async function processToslaPayment(request: ToslaPaymentRequest): Promise<ToslaPaymentResponse> {
   try {
     console.log('Tosla ödeme başlatılıyor:', request.orderId)
@@ -68,31 +69,35 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
       CustomerEmail: request.customerInfo.email,
       CustomerPhone: request.customerInfo.phone,
       ReturnUrl: request.returnUrl,
-      CancelUrl: request.cancelUrl
+      CancelUrl: request.cancelUrl,
+      Language: 'tr',
+      Installment: 0, // Tek çekim
+      Description: `E-Kartvizit Siparişi - ${request.orderId}`
     }
 
     const response = await fetch(`${toslaConfig.baseUrl}/payment/process`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'User-Agent': 'E-Kartvizit/1.0'
       },
       body: JSON.stringify(paymentData)
     })
 
     const result = await response.json()
 
-    if (result.Success) {
+    if (result.Success || result.success) {
       return {
         success: true,
-        paymentId: result.PaymentId,
-        redirectUrl: result.RedirectUrl || `/odeme/basarili?payment=${request.orderId}`
+        paymentId: result.PaymentId || result.paymentId,
+        redirectUrl: result.RedirectUrl || result.redirectUrl || `/odeme/basarili?payment=${request.orderId}`
       }
     } else {
       return {
         success: false,
-        errorCode: result.ErrorCode || 'PAYMENT_FAILED',
-        errorMessage: result.ErrorMessage || 'Ödeme işlemi başarısız oldu'
+        errorCode: result.ErrorCode || result.errorCode || 'PAYMENT_FAILED',
+        errorMessage: result.ErrorMessage || result.errorMessage || 'Ödeme işlemi başarısız oldu'
       }
     }
   } catch (error) {
@@ -105,7 +110,7 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
   }
 }
 
-// Ödeme durumu sorgulama
+// Ödeme durumu sorgulama - Güncellenmiş
 export async function checkToslaPaymentStatus(paymentId: string): Promise<{
   status: 'pending' | 'success' | 'failed' | 'cancelled'
   amount?: number
@@ -123,28 +128,31 @@ export async function checkToslaPaymentStatus(paymentId: string): Promise<{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'User-Agent': 'E-Kartvizit/1.0'
       },
       body: JSON.stringify(queryData)
     })
 
     const result = await response.json()
 
-    if (result.Success) {
+    if (result.Success || result.success) {
       const statusMapping: Record<string, 'pending' | 'success' | 'failed' | 'cancelled'> = {
         'PENDING': 'pending',
         'SUCCESS': 'success',
         'COMPLETED': 'success',
+        'APPROVED': 'success',
         'FAILED': 'failed',
         'ERROR': 'failed',
+        'DECLINED': 'failed',
         'CANCELLED': 'cancelled',
         'CANCELED': 'cancelled'
       }
 
       return {
-        status: statusMapping[result.Status] || 'failed',
-        amount: result.Amount,
-        paidAt: result.PaidAt
+        status: statusMapping[result.Status || result.status] || 'failed',
+        amount: result.Amount || result.amount,
+        paidAt: result.PaidAt || result.paidAt
       }
     } else {
       return { status: 'failed' }
@@ -154,11 +162,10 @@ export async function checkToslaPaymentStatus(paymentId: string): Promise<{
   }
 }
 
-// Webhook doğrulama
+// Webhook doğrulama - Güncellenmiş
 export async function verifyToslaWebhook(payload: string, signature: string): Promise<boolean> {
   try {
     // Tosla webhook imza doğrulaması
-    // Tosla'nın webhook imza algoritması kullanılacak
     const crypto = await import('crypto')
     
     // Tosla'nın webhook secret key'i ile HMAC-SHA256 hash oluştur
@@ -177,7 +184,7 @@ export async function verifyToslaWebhook(payload: string, signature: string): Pr
   }
 }
 
-// Tosla ödeme formu oluşturma yardımcı fonksiyonu
+// Tosla ödeme formu oluşturma yardımcı fonksiyonu - Güncellenmiş
 export function createToslaPaymentForm(orderData: {
   orderId: string
   amount: number
@@ -193,6 +200,7 @@ export function createToslaPaymentForm(orderData: {
   return `
     <form id="toslaPaymentForm" method="POST" action="${toslaConfig.baseUrl}/payment/form">
       <input type="hidden" name="ApiUser" value="${toslaConfig.apiUser}" />
+      <input type="hidden" name="ApiPass" value="${toslaConfig.apiPass}" />
       <input type="hidden" name="ClientId" value="${toslaConfig.clientId}" />
       <input type="hidden" name="Amount" value="${orderData.amount}" />
       <input type="hidden" name="Currency" value="${orderData.currency}" />
@@ -202,10 +210,60 @@ export function createToslaPaymentForm(orderData: {
       <input type="hidden" name="CustomerPhone" value="${orderData.customerInfo.phone}" />
       <input type="hidden" name="ReturnUrl" value="${orderData.returnUrl}" />
       <input type="hidden" name="CancelUrl" value="${orderData.cancelUrl}" />
+      <input type="hidden" name="Language" value="tr" />
+      <input type="hidden" name="Installment" value="0" />
+      <input type="hidden" name="Description" value="E-Kartvizit Siparişi - ${orderData.orderId}" />
       <button type="submit">Ödeme Yap</button>
     </form>
     <script>
       document.getElementById('toslaPaymentForm').submit();
     </script>
   `
+}
+
+// Tosla test ödeme fonksiyonu
+export async function testToslaConnection(): Promise<{
+  success: boolean
+  message: string
+  details?: unknown
+}> {
+  try {
+    const testData = {
+      ApiUser: toslaConfig.apiUser,
+      ApiPass: toslaConfig.apiPass,
+      ClientId: toslaConfig.clientId,
+      Test: true
+    }
+
+    const response = await fetch(`${toslaConfig.baseUrl}/test/connection`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(testData)
+    })
+
+    const result = await response.json()
+
+    if (result.Success || result.success) {
+      return {
+        success: true,
+        message: 'Tosla bağlantısı başarılı',
+        details: result
+      }
+    } else {
+      return {
+        success: false,
+        message: result.ErrorMessage || result.errorMessage || 'Bağlantı testi başarısız',
+        details: result
+      }
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: 'Bağlantı hatası: ' + (error instanceof Error ? error.message : 'Bilinmeyen hata'),
+      details: error
+    }
+  }
 } 

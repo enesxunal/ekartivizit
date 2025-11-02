@@ -23,64 +23,71 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "E-Kartvizit | Profesyonel Baskı Çözümleri - Online Tasarım ve Baskı",
-  description: "Kartvizit, broşür, magnet, etiket ve kurumsal baskı ürünleri için online tasarım ve baskı hizmetleri. Ücretsiz tasarım desteği, aynı gün teslimat, KDV dahil fiyatlar. 500₺'den başlayan uygun fiyatlarla profesyonel baskı çözümleri.",
-  keywords: "kartvizit baskı, broşür tasarım, magnet baskı, etiket baskı, online baskı, kurumsal baskı, antetli kağıt, zarf baskı, makbuz baskı, cepli dosya, promosyon ürünleri, plastik kalem, çakmak baskı, seramik kupa, yelken bayrak, ücretsiz tasarım, hızlı teslimat, KDV dahil fiyat",
+  title: {
+    default: "E-Kartvizit - Profesyonel Baskı Çözümleri",
+    template: "%s | E-Kartvizit"
+  },
+  description: "Kartvizit, broşür, magnet ve kurumsal baskı ürünleri için online tasarım ve baskı hizmetleri. Ücretsiz tasarım desteği ve hızlı teslimat garantisi.",
+  keywords: [
+    "kartvizit",
+    "broşür",
+    "magnet",
+    "baskı",
+    "tasarım",
+    "online",
+    "profesyonel",
+    "kurumsal",
+    "etiket",
+    "antetli kağıt"
+  ],
   authors: [{ name: "E-Kartvizit" }],
   creator: "E-Kartvizit",
   publisher: "E-Kartvizit",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL('https://ekartvizit.co'),
+  alternates: {
+    canonical: 'https://ekartvizit.co',
+  },
+  openGraph: {
+    type: "website",
+    locale: "tr_TR",
+    url: "https://ekartvizit.co",
+    title: "E-Kartvizit - Profesyonel Baskı Çözümleri",
+    description: "Kartvizit, broşür, magnet ve kurumsal baskı ürünleri için online tasarım ve baskı hizmetleri.",
+    siteName: "E-Kartvizit",
+    images: [
+      {
+        url: "https://ekartvizit.co/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "E-Kartvizit - Profesyonel Baskı Çözümleri",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "E-Kartvizit - Profesyonel Baskı Çözümleri",
+    description: "Kartvizit, broşür, magnet ve kurumsal baskı ürünleri için online tasarım ve baskı hizmetleri.",
+    images: ["https://ekartvizit.co/twitter-image.jpg"],
+  },
   robots: {
     index: true,
     follow: true,
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
-  openGraph: {
-    type: 'website',
-    locale: 'tr_TR',
-    url: 'https://e-kartvizit.com',
-    siteName: 'E-Kartvizit',
-    title: 'E-Kartvizit | Profesyonel Baskı Çözümleri',
-    description: 'Kartvizit, broşür, magnet ve kurumsal baskı ürünleri için online tasarım ve baskı hizmetleri. Ücretsiz tasarım desteği ve hızlı teslimat.',
-    images: [
-      {
-        url: '/images/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'E-Kartvizit - Profesyonel Baskı Çözümleri',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'E-Kartvizit | Profesyonel Baskı Çözümleri',
-    description: 'Online tasarım ve baskı hizmetleri. Ücretsiz tasarım desteği ve hızlı teslimat.',
-    images: ['/images/og-image.png'],
-  },
-  icons: {
-    icon: "/fav.png",
-    shortcut: "/fav.png",
-    apple: "/fav.png",
-  },
   verification: {
-    google: 'google-site-verification-code', // Google Search Console'dan alınacak
+    google: "your-google-verification-code",
   },
-  alternates: {
-    canonical: 'https://e-kartvizit.com',
-  },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 5,
-    userScalable: true,
-  },
-  themeColor: '#59af05',
-  manifest: '/manifest.json',
 };
 
 export default function RootLayout({

@@ -1,95 +1,125 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { verifyToslaWebhook } from '@/lib/tosla'
+import { verifyToslaWebhook, checkToslaPaymentStatus } from '@/lib/tosla'
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.text()
-    const signature = request.headers.get('x-tosla-signature') || ''
+    const signature = request.headers.get('x-tosla-signature') || request.headers.get('tosla-signature')
+    
+    console.log('Tosla webhook alındı:', {
+      body: body.substring(0, 200) + '...',
+      signature: signature?.substring(0, 20) + '...',
+      headers: Object.fromEntries(request.headers.entries())
+    })
 
     // Webhook imzasını doğrula
-    if (!(await verifyToslaWebhook(body, signature))) {
-      console.error('Tosla webhook imza doğrulaması başarısız')
-      return NextResponse.json(
-        { success: false, error: 'Geçersiz imza' },
-        { status: 401 }
-      )
+    if (signature) {
+      const isValid = await verifyToslaWebhook(body, signature)
+      if (!isValid) {
+        console.error('Tosla webhook imza doğrulaması başarısız')
+        return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
+      }
     }
 
-    // Webhook verisini parse et
-    const webhookData = JSON.parse(body)
+    // Webhook verilerini parse et
+    let webhookData
+    try {
+      webhookData = JSON.parse(body)
+    } catch (parseError) {
+      console.error('Webhook JSON parse hatası:', parseError)
+      return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+    }
+
+    // Webhook tipini kontrol et
+    const { PaymentId, OrderId, Status, Amount, Currency } = webhookData
+
+    if (!PaymentId || !OrderId || !Status) {
+      console.error('Webhook eksik veri:', webhookData)
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+    }
+
+    console.log('Tosla webhook işleniyor:', {
+      PaymentId,
+      OrderId,
+      Status,
+      Amount,
+      Currency
+    })
+
+    // Ödeme durumunu güncelle
+    const paymentStatus = await checkToslaPaymentStatus(PaymentId)
     
-    console.log('Tosla webhook alındı:', webhookData)
-
-    // Webhook tipine göre işlem yap
-    switch (webhookData.EventType) {
-      case 'PAYMENT_SUCCESS':
-        await handlePaymentSuccess(webhookData)
-        break
-      case 'PAYMENT_FAILED':
-        await handlePaymentFailed(webhookData)
-        break
-      case 'PAYMENT_CANCELLED':
-        await handlePaymentCancelled(webhookData)
-        break
-      default:
-        console.log('Bilinmeyen webhook tipi:', webhookData.EventType)
+    // LocalStorage'dan siparişi bul ve güncelle
+    try {
+      const allOrders = JSON.parse(localStorage.getItem('ekartvizit-orders') || '[]')
+      const orderIndex = allOrders.findIndex((order: { id: string }) => order.id === OrderId)
+      
+      if (orderIndex !== -1) {
+        const order = allOrders[orderIndex]
+        
+        // Ödeme durumunu güncelle
+        if (paymentStatus.status === 'success') {
+          order.paymentStatus = 'paid'
+          order.status = 'confirmed'
+          order.paidAt = new Date().toISOString()
+        } else if (paymentStatus.status === 'failed' || paymentStatus.status === 'cancelled') {
+          order.paymentStatus = 'failed'
+          order.status = 'cancelled'
+        }
+        
+        order.updatedAt = new Date().toISOString()
+        allOrders[orderIndex] = order
+        
+        // Güncellenmiş siparişleri kaydet
+        localStorage.setItem('ekartvizit-orders', JSON.stringify(allOrders))
+        
+        console.log('Sipariş güncellendi:', {
+          orderId: OrderId,
+          paymentStatus: paymentStatus.status,
+          orderStatus: order.status
+        })
+      } else {
+        console.warn('Sipariş bulunamadı:', OrderId)
+      }
+    } catch (storageError) {
+      console.error('LocalStorage güncelleme hatası:', storageError)
     }
 
-    return NextResponse.json({ success: true, message: 'Webhook işlendi' })
+    // Başarılı yanıt döndür
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Webhook işlendi',
+      orderId: OrderId,
+      paymentId: PaymentId,
+      status: paymentStatus.status
+    })
 
   } catch (error) {
-    console.error('Tosla webhook hatası:', error)
+    console.error('Tosla webhook işleme hatası:', error)
     return NextResponse.json(
       { 
-        success: false, 
-        error: 'Webhook işleme hatası',
-        details: error instanceof Error ? error.message : 'Bilinmeyen hata'
+        error: 'Webhook processing failed',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     )
   }
 }
 
-interface ToslaWebhookData {
-  EventType: string
-  OrderId: string
-  PaymentId: string
-  Amount: number
-  Status: string
-  [key: string]: unknown
-}
+// Webhook test endpoint'i
+export async function GET() {
+  const testData = {
+    PaymentId: 'test-payment-123',
+    OrderId: 'test-order-456',
+    Status: 'SUCCESS',
+    Amount: 100.00,
+    Currency: 'TRY',
+    Timestamp: new Date().toISOString()
+  }
 
-async function handlePaymentSuccess(data: ToslaWebhookData) {
-  console.log('Ödeme başarılı:', data)
-  
-  // Burada sipariş durumunu güncelle
-  // Veritabanında ödeme durumunu 'paid' olarak işaretle
-  // Müşteriye onay maili gönder
-  // Stok güncelle vb.
-  
-  // Örnek:
-  // await updateOrderStatus(data.OrderId, 'paid')
-  // await sendOrderConfirmationEmail(data.OrderId)
-}
-
-async function handlePaymentFailed(data: ToslaWebhookData) {
-  console.log('Ödeme başarısız:', data)
-  
-  // Burada sipariş durumunu güncelle
-  // Veritabanında ödeme durumunu 'failed' olarak işaretle
-  // Müşteriye bilgilendirme maili gönder
-  
-  // Örnek:
-  // await updateOrderStatus(data.OrderId, 'failed')
-  // await sendPaymentFailedEmail(data.OrderId)
-}
-
-async function handlePaymentCancelled(data: ToslaWebhookData) {
-  console.log('Ödeme iptal edildi:', data)
-  
-  // Burada sipariş durumunu güncelle
-  // Veritabanında ödeme durumunu 'cancelled' olarak işaretle
-  
-  // Örnek:
-  // await updateOrderStatus(data.OrderId, 'cancelled')
+  return NextResponse.json({
+    message: 'Tosla webhook test endpoint',
+    testData,
+    instructions: 'POST isteği ile webhook test edebilirsiniz'
+  })
 } 

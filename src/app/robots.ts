@@ -7,26 +7,35 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: '*',
         allow: '/',
         disallow: [
-          '/api/',
           '/admin/',
-          '/sepet/',
-          '/hesabim/',
+          '/api/',
           '/_next/',
           '/private/',
+          '/temp/',
+          '*.json',
+          '*.xml',
         ],
       },
       {
         userAgent: 'Googlebot',
         allow: '/',
         disallow: [
-          '/api/',
           '/admin/',
-          '/sepet/',
-          '/hesabim/',
+          '/api/',
+          '/private/',
+        ],
+      },
+      {
+        userAgent: 'Bingbot',
+        allow: '/',
+        disallow: [
+          '/admin/',
+          '/api/',
+          '/private/',
         ],
       },
     ],
-    sitemap: 'https://e-kartvizit.com/sitemap.xml',
-    host: 'https://e-kartvizit.com',
+    sitemap: 'https://ekartvizit.co/sitemap.xml',
+    host: 'https://ekartvizit.co',
   }
 } 

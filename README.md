@@ -52,14 +52,39 @@ NEXT_PUBLIC_CANVA_REDIRECT_URI=http://localhost:3000/canva/callback
 NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
 
 # Site URL
-NEXT_PUBLIC_SITE_URL=https://e-kartvizit.com
+NEXT_PUBLIC_SITE_URL=https://ekartvizit.co
 
 # WhatsApp
 NEXT_PUBLIC_WHATSAPP_NUMBER=905xxxxxxxxx
 
 # Tosla Payment Gateway
-TOSLA_API_KEY=your_tosla_api_key
-TOSLA_SECRET_KEY=your_tosla_secret_key
+TOSLA_API_USER=apiUser3016658
+TOSLA_API_PASS=YN8L293GPY
+TOSLA_CLIENT_ID=1000002147
+TOSLA_BASE_URL=https://api.tosla.com
+```
+
+## 💳 Tosla Ödeme Entegrasyonu
+
+### API Bilgileri
+- **API User**: `apiUser3016658`
+- **API Pass**: `YN8L293GPY`
+- **Client ID**: `1000002147`
+- **Base URL**: `https://api.tosla.com`
+
+### Özellikler
+- ✅ Kredi kartı ödemeleri
+- ✅ Güvenli ödeme işlemi
+- ✅ Webhook desteği
+- ✅ Ödeme durumu sorgulama
+- ✅ Test modu desteği
+
+### Test Sayfası
+Admin panelinde `/admin/tosla-test` adresinde Tosla entegrasyonunu test edebilirsiniz.
+
+### Webhook URL
+```
+https://ekartvizit.co/api/tosla/webhook
 ```
 
 ## 🎨 Canva Entegrasyonu Kurulumu
@@ -79,7 +104,7 @@ Category: Design Tools
 // OAuth Settings
 Redirect URIs: 
 - http://localhost:3000/canva/callback (development)
-- https://yourdomain.com/canva/callback (production)
+- https://ekartvizit.co/canva/callback (production)
 
 // Scopes
 - design:content:read
@@ -178,5 +203,5 @@ Proje aşağıdaki performans hedeflerini karşılar:
 ## 📞 İletişim
 
 Proje hakkında sorularınız için:
-- Email: info@e-kartvizit.com
-- WhatsApp: +90 XXX XXX XXXX
+- Email: info@ekartvizit.co
+- WhatsApp: +90 850 840 3011

@@ -1,76 +1,68 @@
 import { MetadataRoute } from 'next'
-import { PRODUCTS, CATEGORIES } from '@/data/products'
+
+const baseUrl = 'https://ekartvizit.co'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://e-kartvizit.com'
-  
-  // Ana sayfalar
-  const staticPages = [
+  return [
     {
       url: baseUrl,
       lastModified: new Date(),
-      changeFrequency: 'daily' as const,
+      changeFrequency: 'daily',
       priority: 1,
     },
     {
       url: `${baseUrl}/tum-urunler`,
       lastModified: new Date(),
-      changeFrequency: 'weekly' as const,
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/cok-satanlar`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly' as const,
+      changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/hakkimizda`,
+      url: `${baseUrl}/urun/kartvizit`,
       lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.6,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/urun/brosur`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/urun/magnet`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/urun/etiket`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
     },
     {
       url: `${baseUrl}/iletisim`,
       lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
+      changeFrequency: 'monthly',
       priority: 0.6,
     },
     {
-      url: `${baseUrl}/sss`,
+      url: `${baseUrl}/hakkimizda`,
       lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/siparis-takip`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/hesabim`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
       priority: 0.5,
     },
-    {
-      url: `${baseUrl}/gizlilik-politikasi`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly' as const,
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/kullanim-sartlari`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly' as const,
-      priority: 0.3,
-    },
   ]
-
-  // Kategori sayfaları
-  const categoryPages = CATEGORIES.map((category) => ({
-    url: `${baseUrl}/${category.id}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.8,
-  }))
-
-  // Ürün sayfaları
-  const productPages = PRODUCTS.map((product) => ({
-    url: `${baseUrl}/urun/${product.id}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.7,
-  }))
-
-  return [...staticPages, ...categoryPages, ...productPages]
 } 

@@ -1,169 +1,276 @@
-# Canva Entegrasyonu Rehberi
+# Canva Entegrasyonu - E-Kartvizit
 
-Bu dokümanda E-Kartvizit sitesinin Canva entegrasyonu nasıl çalıştığı açıklanmaktadır.
+Bu dokümantasyon, E-Kartvizit projesinde Canva entegrasyonunun nasıl kurulacağını ve kullanılacağını açıklar.
 
-## 🔗 Oluşturulan URL'ler
+## 🎯 Genel Bakış
 
-### 1. Callback URL (Authorized Redirects)
+Canva entegrasyonu, müşterilerin sitemizden ayrılmadan tasarım yapabilmelerini sağlar. Müşteri Canva hesabıyla giriş yapar ve tasarım editörü sitenizde embed olarak yüklenir.
+
+## 🔧 Kurulum Adımları
+
+### 1. Canva Developer Hesabı Oluşturma
+
+1. [Canva Developers](https://www.canva.com/developers/) adresine gidin
+2. Developer hesabınızı oluşturun
+3. Yeni bir App oluşturun
+
+### 2. App Konfigürasyonu
+
+**App Details:**
+- **App Name:** E-Kartvizit Design Tool
+- **App Description:** Online tasarım editörü
+- **Category:** Design Tools
+
+**OAuth Settings:**
+- **Redirect URIs:** 
+  - `https://ekartvizit.co/api/canva/callback` (production)
+  - `http://localhost:3000/canva/callback` (development)
+
+**Scopes:**
+- `design:read`
+- `design:write`
+
+### 3. Environment Variables
+
+`.env.local` dosyasına aşağıdaki değişkenleri ekleyin:
+
+```env
+NEXT_PUBLIC_CANVA_APP_ID=your_app_id_from_canva_dashboard
+CANVA_CLIENT_SECRET=your_client_secret_from_canva_dashboard
+NEXT_PUBLIC_CANVA_REDIRECT_URI=http://localhost:3000/canva/callback
 ```
-https://ekartivizit.vercel.app/api/canva/callback
+
+### 4. Test Etme
+
+1. https://ekartvizit.co/canva-test sayfasına gidin
+2. "Gerçek OAuth Test" butonuna tıklayın
+3. Canva'ya yönlendirileceksiniz
+4. Giriş yaptıktan sonra callback URL'inize geri döneceksiniz
+
+## 🚀 Kullanım
+
+### Müşteri Akışı
+
+1. Müşteri ürün sayfasından "Tasarım Oluştur" butonuna tıklar
+2. Canva kimlik doğrulama popup'ı açılır
+3. Müşteri Canva hesabıyla giriş yapar
+4. Tasarım editörü sitenizde embed olarak yüklenir
+5. Tasarım tamamlandıktan sonra PDF olarak export edilir
+6. PDF admin panelinde görüntülenebilir ve indirilebilir
+
+### API Endpoints
+
+**Callback Endpoint:**
 ```
-**Kullanım:** Canva geliştirici panelinde "Authorized redirects" bölümüne eklenmeli.
-
-### 2. Return Navigation URL
+POST /api/canva/callback
 ```
-https://ekartivizit.vercel.app/tasarim-tamamlandi
+
+**Test Endpoint:**
 ```
-**Kullanım:** Canva geliştirici panelinde "Return Navigation" bölümüne eklenmeli.
-
-## 🧪 Test Sayfası
+GET /canva-test
 ```
-https://ekartivizit.vercel.app/canva-test
+
+## 🔍 Test Adımları
+
+### 1. OAuth Flow Test
+
+```bash
+# Test URL'ini ziyaret edin
+curl "https://ekartvizit.co/api/canva/callback?code=test_code&state=test_state"
 ```
-**Kullanım:** OAuth flow'unu test etmek için özel olarak oluşturulmuş test sayfası.
 
-## 📁 Oluşturulan Dosyalar
+### 2. Gerçek OAuth Test
 
-### 1. API Route - `/src/app/api/canva/callback/route.ts`
-- Canva'dan gelen callback isteklerini işler
-- Authentication kodunu alır ve token exchange yapar
-- Hata durumlarını yönetir
-- Test modunu destekler
-- CORS headers ekler
+1. https://ekartvizit.co/canva-test sayfasına gidin
+2. "Gerçek OAuth Başlat" butonuna tıklayın
+3. Canva'ya yönlendirileceksiniz
+4. Giriş yaptıktan sonra callback URL'inize geri döneceksiniz
 
-### 2. Tasarım Tamamlandı Sayfası - `/src/app/tasarim-tamamlandi/page.tsx`
-- Kullanıcılar Canva'da tasarım tamamladıktan sonra yönlendirildikleri sayfa
-- Başarı mesajı ve sepete gitme seçenekleri
-- Hata durumlarını gösterir
-- Test modunu destekler
-- Modern ve kullanıcı dostu arayüz
+### 3. Callback URL Test
 
-### 3. Test Sayfası - `/src/app/canva-test/page.tsx`
-- OAuth flow'unu test etmek için özel sayfa
-- Callback URL'ini test etme özelliği
-- Entegrasyon URL'lerini görüntüleme
-- Adım adım test rehberi
+```bash
+# Test callback URL'ini ziyaret edin
+curl "https://ekartvizit.co/api/canva/callback?code=test_code&state=test_state"
+```
 
-### 4. Canva Konfigürasyon - `/src/lib/canva-config.ts`
-- Tüm Canva entegrasyon ayarları
-- Template ID'leri ve URL'leri
-- Ortam bazlı konfigürasyon (dev/prod)
+## 📋 Gereksinimler
 
-### 5. Güncellenmiş Bileşenler
-- `DesignTemplates.tsx` - Ana sayfadaki Canva şablonları bölümü
-- Gerçek Canva template linklerini kullanır
+### Canva Developer Panel
 
-## 🎨 Canva Şablonları
+**App Settings:**
+- **App Name:** E-Kartvizit Design Tool
+- **App Description:** Online tasarım editörü
+- **Category:** Design Tools
 
-### Kartvizit Şablonları
-- **Modern Kartvizit** - Template ID: `DAGZqQqQqQq`
-- **Klasik Kartvizit** - Template ID: `DAGZqQqQqQr`
-- **Yaratıcı Kartvizit** - Template ID: `DAGZqQqQqQs`
+**OAuth Settings:**
+- **Redirect URIs:** 
+  - `https://ekartvizit.co/api/canva/callback` (production)
+  - `http://localhost:3000/canva/callback` (development)
 
-### Broşür Şablonları
-- **Kurumsal Broşür** - Template ID: `DAGZqRrRrRr`
-- **Modern Broşür** - Template ID: `DAGZqRrRrRs`
+**Scopes:**
+- `design:read`
+- `design:write`
 
-### Magnet Şablonları
-- **Yaratıcı Magnet** - Template ID: `DAGZqSsSsSs`
-- **Kare Magnet** - Template ID: `DAGZqSsSsSt`
+### Environment Variables
 
-## ⚙️ Kurulum Adımları
+```env
+NEXT_PUBLIC_CANVA_APP_ID=your_app_id_from_canva_dashboard
+CANVA_CLIENT_SECRET=your_client_secret_from_canva_dashboard
+NEXT_PUBLIC_CANVA_REDIRECT_URI=http://localhost:3000/canva/callback
+```
 
-### 1. Canva Geliştirici Panelinde
-1. [Canva Developers](https://developers.canva.com) sitesine gidin
-2. Yeni bir uygulama oluşturun
-3. **Authorized redirects** bölümüne şu URL'yi ekleyin:
+## 🛠️ Teknik Detaylar
+
+### OAuth Flow
+
+1. **Authorization Request:**
    ```
-   https://ekartivizit.vercel.app/api/canva/callback
-   ```
-4. **Return Navigation** bölümüne şu URL'yi ekleyin:
-   ```
-   https://ekartivizit.vercel.app/tasarim-tamamlandi
+   GET https://www.canva.com/api/oauth/authorize?
+     response_type=code&
+     client_id=YOUR_CLIENT_ID&
+     redirect_uri=https://ekartvizit.co/api/canva/callback&
+     scope=design:read design:write&
+     state=random_state_string
    ```
 
-### 2. OAuth Flow'unu Test Edin
-1. https://ekartivizit.vercel.app/canva-test sayfasına gidin
-2. "Callback Test Et" butonuna tıklayın
-3. Test başarılı ise yeşil onay mesajı görmelisiniz
-4. Herhangi bir hata varsa kırmızı hata mesajı görünecektir
-
-### 3. Gerçek Template ID'lerini Güncelleme
-1. Canva'da istediğiniz şablonları oluşturun
-2. Her şablon için "Paylaş" > "Şablon olarak paylaş" seçin
-3. Oluşan template ID'lerini `/src/lib/canva-config.ts` dosyasında güncelleyin
-
-### 4. Final Test
-1. Ana sayfadaki "Şablonu Özelleştir" butonlarını test edin
-2. Canva'da tasarım yapın
-3. Canva'dan çıkıp siteye döndüğünüzde "Tasarım Tamamlandı" sayfasını görmelisiniz
-
-## 🔧 Troubleshooting
-
-### "Submission incomplete" Hatası
-Bu hata OAuth flow'unun test edilmemiş olmasından kaynaklanır:
-
-1. **Test URL'ini kontrol edin:**
+2. **Token Exchange:**
    ```
-   https://ekartivizit.vercel.app/canva-test
+   POST https://api.canva.com/rest/v1/oauth/token
+   Content-Type: application/x-www-form-urlencoded
+   
+   grant_type=authorization_code&
+   code=AUTHORIZATION_CODE&
+   client_id=YOUR_CLIENT_ID&
+   client_secret=YOUR_CLIENT_SECRET&
+   redirect_uri=https://ekartvizit.co/api/canva/callback
    ```
 
-2. **Callback URL'ini test edin:**
+3. **Design API Calls:**
    ```
-   https://ekartivizit.vercel.app/api/canva/callback?code=test_code&state=test_state
+   GET https://api.canva.com/rest/v1/designs
+   Authorization: Bearer ACCESS_TOKEN
    ```
 
-3. **Test başarılı ise submission'ı tekrar deneyin**
+### Error Handling
 
-### Callback URL Çalışmıyor
-1. Browser konsolu hatalarını kontrol edin
-2. Network sekmesinde request/response'ları inceleyin
-3. Server loglarını kontrol edin
+**Common Errors:**
+- `invalid_client`: Client ID veya Client Secret hatalı
+- `invalid_redirect_uri`: Redirect URI Canva'da tanımlı değil
+- `invalid_scope`: İstenen scope'lar mevcut değil
+- `access_denied`: Kullanıcı izin vermedi
 
-### Template Linkler Çalışmıyor
-1. Template ID'lerinin doğru olduğunu kontrol edin
-2. Return URL'in doğru set edildiğini kontrol edin
-3. Canva'da template'in "public" olduğunu kontrol edin
+**Error Response Format:**
+```json
+{
+  "error": "error_code",
+  "error_description": "Error description",
+  "state": "original_state"
+}
+```
 
-## 🔄 Çalışma Akışı
+## 🔒 Güvenlik
 
-1. **Kullanıcı şablon seçer** → Ana sayfada "Şablonu Özelleştir" butonuna tıklar
-2. **Canva açılır** → Yeni sekmede Canva editörü açılır
-3. **Tasarım yapılır** → Kullanıcı Canva'da tasarımını oluşturur
-4. **Geri dönüş** → Canva'da "Bitir" butonuna tıkladığında otomatik olarak sitemize döner
-5. **Tamamlandı sayfası** → `/tasarim-tamamlandi` sayfası açılır
-6. **Sepete ekleme** → Kullanıcı tasarımını sepete ekleyebilir
+### Best Practices
 
-## 🛠️ Geliştirme Notları
+1. **State Parameter:** Her OAuth isteğinde benzersiz state parametresi kullanın
+2. **HTTPS:** Production'da mutlaka HTTPS kullanın
+3. **Token Storage:** Access token'ları güvenli bir şekilde saklayın
+4. **Scope Validation:** Sadece gerekli scope'ları isteyin
 
-### URL Parametreleri
-Canva URL'lerinde şu parametreler kullanılır:
-- `return_to`: Tasarım tamamlandıktan sonra dönülecek URL
-- `utm_source`: Trafik kaynağı takibi (ekartvizit)
-- `utm_medium`: Entegrasyon türü (integration)
-- `utm_campaign`: Kampanya takibi (template_edit)
+### Security Headers
 
-### Hata Yönetimi
-API route'unda şu hata durumları yönetilir:
-- Authentication hatası (`auth_failed`)
-- Authorization code eksikliği (`no_code`)
-- Server hataları (`server_error`)
+```typescript
+// API response headers
+{
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'X-XSS-Protection': '1; mode=block',
+  'Referrer-Policy': 'origin-when-cross-origin'
+}
+```
 
-### Test Modu
-Callback URL'i test modunu destekler:
-- `code=test_code` parametresi ile test modu aktif olur
-- Test modunda `/tasarim-tamamlandi?test=true` sayfasına yönlendirir
+## 📊 Monitoring
 
-### Responsive Tasarım
-Tüm sayfalar mobil uyumlu olarak tasarlanmıştır.
+### Logs
+
+**OAuth Events:**
+- Authorization request
+- Token exchange
+- Design API calls
+- Error responses
+
+**Log Format:**
+```json
+{
+  "timestamp": "2024-01-01T00:00:00Z",
+  "event": "oauth_authorization",
+  "client_id": "YOUR_CLIENT_ID",
+  "user_id": "USER_ID",
+  "status": "success|error",
+  "error_code": "ERROR_CODE",
+  "error_description": "ERROR_DESCRIPTION"
+}
+```
+
+### Metrics
+
+**Key Metrics:**
+- OAuth success rate
+- Token exchange success rate
+- Design API response time
+- Error rate by error type
+
+## 🚀 Deployment
+
+### Production Checklist
+
+- [ ] Canva Developer Panel'de production URL'leri tanımlı
+- [ ] Environment variables production'da ayarlı
+- [ ] HTTPS sertifikası aktif
+- [ ] Error handling test edildi
+- [ ] Monitoring aktif
+
+### Environment Variables (Production)
+
+```env
+NEXT_PUBLIC_CANVA_APP_ID=your_production_app_id
+CANVA_CLIENT_SECRET=your_production_client_secret
+NEXT_PUBLIC_CANVA_REDIRECT_URI=https://ekartvizit.co/canva/callback
+```
 
 ## 📞 Destek
 
-Herhangi bir sorun yaşarsanız:
-- **E-posta:** info@ekartvizit.co
-- **Telefon:** 0850 840 30 11
-- **Test Sayfası:** https://ekartivizit.vercel.app/canva-test
+### Test Sayfası
+
+**URL:** https://ekartvizit.co/canva-test
+
+**Özellikler:**
+- OAuth flow test
+- Callback URL test
+- Error simulation
+- Configuration display
+
+### Debugging
+
+**Common Issues:**
+1. **Redirect URI Mismatch:** Canva'da tanımlı URL ile kod arasında uyumsuzluk
+2. **Invalid Client:** Client ID veya Client Secret hatalı
+3. **Scope Issues:** İstenen scope'lar mevcut değil
+4. **Network Issues:** API çağrıları başarısız
+
+**Debug Steps:**
+1. Browser console'da hataları kontrol edin
+2. Network tab'da API çağrılarını inceleyin
+3. Canva Developer Panel'de app ayarlarını kontrol edin
+4. Environment variables'ları doğrulayın
+
+## 📚 Kaynaklar
+
+- [Canva Developers Documentation](https://www.canva.com/developers/)
+- [OAuth 2.0 Specification](https://tools.ietf.org/html/rfc6749)
+- [Canva API Reference](https://www.canva.com/developers/api-reference/)
 
 ---
 
-**Not:** Bu entegrasyon Canva Connect API kullanır ve gerçek template ID'leri ile çalışır. Template ID'lerini gerçek Canva şablonlarınızla değiştirmeyi unutmayın. 
+**Son Güncelleme:** 2024-01-01
+**Versiyon:** 1.0.0 

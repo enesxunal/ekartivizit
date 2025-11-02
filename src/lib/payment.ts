@@ -59,7 +59,7 @@ export async function processWhatsAppPayment(paymentData: PaymentData): Promise<
   }
 }
 
-// Kredi kartı ödeme (Tosla entegrasyonu)
+// Kredi kartı ödeme (Tosla entegrasyonu) - Güncellenmiş
 export async function processCreditCardPayment(
   paymentData: PaymentData, 
   cardData: CreditCardData
@@ -67,20 +67,48 @@ export async function processCreditCardPayment(
   try {
     console.log('Tosla ödeme işleniyor:', { paymentData, cardData })
     
-    // Tosla ödeme entegrasyonu burada olacak
-    // const toslaResult = await processToslaPayment(paymentData, cardData)
+    // Tosla ödeme entegrasyonu
+    const { processToslaPayment } = await import('@/lib/tosla')
     
-    // Şimdilik simüle edilmiş başarılı ödeme
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    return {
-      success: true,
-      paymentId: `tosla-${Date.now()}-${Math.random().toString(36).substring(7)}`
+    const toslaRequest = {
+      amount: paymentData.amount,
+      currency: paymentData.currency,
+      orderId: paymentData.orderId,
+      customerInfo: {
+        name: paymentData.customerInfo.name,
+        email: paymentData.customerInfo.email,
+        phone: paymentData.customerInfo.phone
+      },
+      cardInfo: {
+        cardNumber: cardData.cardNumber.replace(/\s/g, ''),
+        expiryMonth: cardData.expiryMonth,
+        expiryYear: cardData.expiryYear,
+        cvc: cardData.cvc,
+        cardHolderName: cardData.cardHolderName
+      },
+      returnUrl: `${window.location.origin}/odeme/basarili?order=${paymentData.orderId}`,
+      cancelUrl: `${window.location.origin}/odeme/iptal?order=${paymentData.orderId}`
     }
-  } catch {
+    
+    const toslaResult = await processToslaPayment(toslaRequest)
+    
+    if (toslaResult.success) {
+      return {
+        success: true,
+        paymentId: toslaResult.paymentId,
+        redirectUrl: toslaResult.redirectUrl
+      }
+    } else {
+      return {
+        success: false,
+        errorMessage: toslaResult.errorMessage || 'Kredi kartı ödemesi başarısız oldu'
+      }
+    }
+  } catch (error) {
+    console.error('Tosla ödeme hatası:', error)
     return {
       success: false,
-      errorMessage: 'Kredi kartı ödemesi başarısız oldu'
+      errorMessage: 'Kredi kartı ödemesi işlenirken hata oluştu: ' + (error instanceof Error ? error.message : 'Bilinmeyen hata')
     }
   }
 }
@@ -116,26 +144,24 @@ export async function processBankTransferPayment(paymentData: PaymentData): Prom
 function createWhatsAppOrderMessage(paymentData: PaymentData): string {
   const { orderId, amount, customerInfo, items } = paymentData
   
-  let message = `🛒 *YENİ SİPARİŞ* 🛒\n\n`
-  message += `📋 *Sipariş No:* ${orderId}\n`
-  message += `👤 *Müşteri:* ${customerInfo.name}\n`
-  message += `📧 *E-posta:* ${customerInfo.email}\n`
-  message += `📱 *Telefon:* ${customerInfo.phone}\n\n`
+  const itemsList = items.map(item => 
+    `• ${item.name} - ${item.quantity} adet - ${item.price}₺`
+  ).join('\n')
   
-  if (customerInfo.address) {
-    message += `📍 *Adres:*\n${customerInfo.address.street}\n${customerInfo.address.district}/${customerInfo.address.city} ${customerInfo.address.postalCode}\n\n`
-  }
-  
-  message += `🛍️ *Sipariş Detayları:*\n`
-  items.forEach((item, index) => {
-    message += `${index + 1}. ${item.name}\n`
-    message += `   Adet: ${item.quantity} | Fiyat: ${item.price}₺\n`
-  })
-  
-  message += `\n💰 *Toplam Tutar:* ${amount}₺\n\n`
-  message += `✅ Siparişi onaylıyorum ve ödeme yapmak istiyorum.`
-  
-  return message
+  return `Merhaba! E-Kartvizit siparişim hakkında bilgi almak istiyorum.
+
+Sipariş No: ${orderId}
+Toplam Tutar: ${amount}₺
+
+Müşteri Bilgileri:
+Ad Soyad: ${customerInfo.name}
+E-posta: ${customerInfo.email}
+Telefon: ${customerInfo.phone}
+
+Sipariş Detayları:
+${itemsList}
+
+Teslimat adresi ve ödeme seçenekleri hakkında bilgi alabilir miyim?`
 }
 
 // Ödeme durumu kontrol
