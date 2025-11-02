@@ -59,7 +59,6 @@ export default function ProductsPage() {
   // Düzenlenen ürünleri ana ürün listesiyle birleştir
   const getMergedProducts = (): Product[] => {
     const editedProducts = getEditedProducts()
-    const editedIds = new Set(Object.keys(editedProducts))
     const productIds = new Set(products.map(p => p.id))
     
     // Mevcut ürünleri düzenle
