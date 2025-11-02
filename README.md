@@ -200,6 +200,72 @@ Proje aşağıdaki performans hedeflerini karşılar:
 - ✅ Mobile-first design
 - ✅ Page speed optimization
 
+## 🖥️ Sunucuya Bağlanma ve Güncelleme
+
+### Sunucu Bağlantı Bilgileri
+
+**Sunucu IP:** `89.252.179.40`  
+**Kullanıcı Adı:** `root`  
+**Şifre:** `5l1B1nJ0auxY2WEuM3`
+
+### Sunucuya Bağlanma
+
+Windows Terminal veya PowerShell'de:
+
+```bash
+ssh root@89.252.179.40
+```
+
+**Şifre:** `5l1B1nJ0auxY2WEuM3`
+
+**Not:** Şifreyi yazarken ekranda görünmez, bu normaldir!
+
+### Proje Güncelleme (Sırayla)
+
+Sunucuya bağlandıktan sonra:
+
+```bash
+# 1. Proje klasörüne git
+cd /var/www/ekartvizit
+
+# 2. GitHub'dan güncellemeleri çek
+git pull origin main
+
+# 3. Paketleri güncelle
+npm install
+
+# 4. Build yap
+npm run build
+
+# 5. Uygulamayı yeniden başlat
+pm2 restart ekartvizit
+
+# 6. Nginx'i yeniden yükle
+systemctl reload nginx
+
+# 7. Durumu kontrol et
+pm2 status
+```
+
+**Her komuttan sonra Enter basın ve bitmesini bekleyin!**
+
+### Tek Komutla Güncelleme
+
+Tüm güncellemeleri tek seferde yapmak için:
+
+```bash
+cd /var/www/ekartvizit && git pull origin main && npm install && npm run build && pm2 restart ekartvizit && systemctl reload nginx && pm2 status
+```
+
+### Deploy Script Kullanma
+
+Alternatif olarak deploy script'ini kullanabilirsiniz:
+
+```bash
+cd /var/www/ekartvizit
+./deploy.sh
+```
+
 ## 📞 İletişim
 
 Proje hakkında sorularınız için:
