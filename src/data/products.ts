@@ -284,7 +284,7 @@ export const PRODUCTS: Product[] = [
     name: 'Araç Magnet',
     description: 'Araç üstü magnet reklam çözümleri',
     category: 'reklam',
-    image: '/images/Magnet-Arac.png',
+    image: '/images/Magnet Arac.png',
     href: '/urun/arac-magnet',
     gradient: 'from-red-400 to-red-600',
     features: ['Güçlü Tutunma', 'Hava Koşullarına Dayanıklı', 'Kolay Uygulama'],
