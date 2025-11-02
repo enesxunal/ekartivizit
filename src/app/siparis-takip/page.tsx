@@ -48,8 +48,29 @@ export default function OrderTrackingPage() {
   // localStorage'dan sipariş verilerini getir
   const getOrderFromStorage = (query: string): OrderStatus | null => {
     try {
-      const allOrders = JSON.parse(localStorage.getItem('ekartvizit-orders') || '[]')
-      const foundOrder = allOrders.find((order: any) => 
+      const allOrders = JSON.parse(localStorage.getItem('ekartvizit-orders') || '[]') as Array<{
+        id: string
+        status: string
+        trackingNumber?: string
+        createdAt: string
+        estimatedDelivery?: string
+        customerInfo: {
+          name: string
+          email: string
+          phone: string
+        }
+        items: Array<{
+          product: {
+            name: string
+          }
+          quantity: number
+          price: number
+          selectedMaterial?: string
+          selectedSize?: string
+        }>
+        total: number
+      }>
+      const foundOrder = allOrders.find((order) => 
         order.id.toLowerCase() === query.toLowerCase() || 
         order.trackingNumber?.toLowerCase() === query.toLowerCase()
       )
@@ -100,7 +121,7 @@ export default function OrderTrackingPage() {
           email: foundOrder.customerInfo.email,
           phone: foundOrder.customerInfo.phone
         },
-        items: foundOrder.items.map((item: any) => ({
+        items: foundOrder.items.map((item) => ({
           name: item.product.name,
           quantity: item.quantity,
           price: item.price,

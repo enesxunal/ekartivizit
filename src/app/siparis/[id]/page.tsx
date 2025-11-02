@@ -54,6 +54,7 @@ interface OrderDetails {
     }
     quantity: number
     price: number
+    cartQuantity?: number
     selectedMaterial?: string
     selectedSize?: string
     selectedWindow?: string
@@ -232,7 +233,7 @@ export default function OrderDetailPage() {
                         <h3 className="font-medium text-gray-900">{item.product.name}</h3>
                         <div className="text-sm text-gray-600 space-y-1">
                           {(() => {
-                            const cartQuantity = (item as any).cartQuantity || 1
+                            const cartQuantity = item.cartQuantity || 1
                             const itemTotal = item.price * cartQuantity
                             return (
                               <>
@@ -255,7 +256,7 @@ export default function OrderDetailPage() {
                       <div className="text-right">
                         <div className="font-medium text-[#59af05]">
                           {(() => {
-                            const cartQuantity = (item as any).cartQuantity || 1
+                            const cartQuantity = item.cartQuantity || 1
                             return `₺${(item.price * cartQuantity).toFixed(0)}`
                           })()}
                         </div>
