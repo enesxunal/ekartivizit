@@ -122,7 +122,7 @@ export default function ProductContent({ product }: ProductContentProps) {
     addToast({
       type: 'success',
       title: 'Sepete Eklendi! 🎉',
-      description: `${quantity.toLocaleString()} adetlik ${product.name} sepetinize eklendi.`,
+      description: `1 paket (${quantity.toLocaleString()} adet) ${product.name} sepetinize eklendi.`,
       duration: 4000
     })
   }

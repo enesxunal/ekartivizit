@@ -25,8 +25,8 @@ export default function CartPage() {
       }
 
       return `• ${item.product.name}
-  - Ürün Adedi: ${item.quantity.toLocaleString()} adet
-  - Sepet Adedi: ${item.cartQuantity} tane
+  - Paket Sayısı: ${item.cartQuantity} paket
+  - Paket İçeriği: ${item.quantity.toLocaleString()} adet
   - Toplam Adet: ${(item.quantity * item.cartQuantity).toLocaleString()} adet
   - Boyut: ${sizeInfo}
   - Malzeme: ${item.selectedMaterial || ''}
@@ -79,7 +79,7 @@ Sipariş detayları hakkında bilgi alabilir miyim?`
             <Link href="/tum-urunler" className="text-[#59af05] hover:text-[#4a9321]">
               <ArrowLeft className="w-6 h-6" />
             </Link>
-            <h1 className="text-3xl font-bold text-gray-900">Sepetim ({getItemCount()} ürün)</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Sepetim ({getItemCount()} paket)</h1>
           </div>
           <Button 
             variant="outline" 
@@ -116,7 +116,7 @@ Sipariş detayları hakkında bilgi alabilir miyim?`
                       </h3>
                       
                       <div className="space-y-1 text-sm text-gray-600 mb-4">
-                        <p><strong>Ürün Adedi:</strong> {item.quantity.toLocaleString()} adet</p>
+                        <p><strong>Paket İçeriği:</strong> {item.quantity.toLocaleString()} adet</p>
                         {item.selectedMaterial && (
                           <p>Malzeme: {item.selectedMaterial}</p>
                         )}

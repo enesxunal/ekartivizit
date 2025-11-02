@@ -196,18 +196,25 @@ export default function OrdersPage() {
                       <div>
                         <h4 className="font-medium text-gray-900 mb-2">Sipariş Detayları</h4>
                         <div className="space-y-2">
-                                                     {order.items.map((item, index) => (
-                             <div key={index} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                               <div>
-                                 <div className="font-medium">{item.product.name}</div>
-                                 <div className="text-sm text-gray-600">
-                                   Adet: {item.quantity} × ₺{item.price}
-                                   {item.customDesign && <span className="ml-2 text-purple-600">(Özel Tasarım)</span>}
-                                 </div>
-                               </div>
-                               <div className="font-medium">₺{item.quantity * item.price}</div>
-                             </div>
-                           ))}
+                          {order.items.map((item, index) => {
+                            const cartQuantity = item.cartQuantity || 1
+                            const itemTotal = item.price * cartQuantity
+                            return (
+                              <div key={index} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                <div>
+                                  <div className="font-medium">{item.product.name}</div>
+                                  <div className="text-sm text-gray-600">
+                                    Paket: {cartQuantity} × ₺{item.price.toLocaleString()} = ₺{itemTotal.toLocaleString()}
+                                    {item.customDesign && <span className="ml-2 text-purple-600">(Özel Tasarım)</span>}
+                                  </div>
+                                  <div className="text-xs text-gray-500 mt-1">
+                                    Paket İçeriği: {item.quantity.toLocaleString()} adet (Toplam: {(item.quantity * cartQuantity).toLocaleString()} adet)
+                                  </div>
+                                </div>
+                                <div className="font-medium">₺{itemTotal.toLocaleString()}</div>
+                              </div>
+                            )
+                          })}
                         </div>
                         <div className="mt-4 pt-4 border-t border-gray-200">
                           <div className="flex justify-between items-center font-semibold text-lg">

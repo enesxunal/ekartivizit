@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -37,10 +38,119 @@ interface OrderStatus {
 }
 
 export default function OrderTrackingPage() {
-  const [searchQuery, setSearchQuery] = useState('')
+  const searchParams = useSearchParams()
+  const orderIdParam = searchParams.get('orderId')
+  const [searchQuery, setSearchQuery] = useState(orderIdParam || '')
   const [orderData, setOrderData] = useState<OrderStatus | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  // localStorage'dan sipariş verilerini getir
+  const getOrderFromStorage = (query: string): OrderStatus | null => {
+    try {
+      const allOrders = JSON.parse(localStorage.getItem('ekartvizit-orders') || '[]')
+      const foundOrder = allOrders.find((order: any) => 
+        order.id.toLowerCase() === query.toLowerCase() || 
+        order.trackingNumber?.toLowerCase() === query.toLowerCase()
+      )
+
+      if (!foundOrder) return null
+
+      // Durum geçmişi oluştur
+      const statusHistory = [
+        {
+          status: 'Sipariş Alındı',
+          message: 'Siparişiniz başarıyla alındı ve işleme konuldu.',
+          date: foundOrder.createdAt
+        }
+      ]
+
+      // Duruma göre ek geçmişler ekle
+      const statusMap: Record<string, { status: string; message: string }> = {
+        'confirmed': { status: 'Sipariş Onaylandı', message: 'Siparişiniz onaylandı ve hazırlanmaya başlandı.' },
+        'preparing': { status: 'Hazırlanıyor', message: 'Siparişiniz hazırlanıyor.' },
+        'printing': { status: 'Basılıyor', message: 'Siparişiniz basım aşamasında.' },
+        'shipping': { status: 'Kargoya Verildi', message: 'Siparişiniz kargoya verildi ve yola çıktı.' },
+        'delivered': { status: 'Teslim Edildi', message: 'Siparişiniz teslim edildi.' }
+      }
+
+      const currentStatusIndex = ['pending', 'confirmed', 'preparing', 'printing', 'shipping', 'delivered'].indexOf(foundOrder.status)
+      if (currentStatusIndex > 0) {
+        for (let i = 1; i <= currentStatusIndex; i++) {
+          const statusKey = ['pending', 'confirmed', 'preparing', 'printing', 'shipping', 'delivered'][i]
+          const statusInfo = statusMap[statusKey]
+          if (statusInfo) {
+            const statusDate = new Date(foundOrder.createdAt)
+            statusDate.setDate(statusDate.getDate() + i - 1)
+            statusHistory.push({
+              status: statusInfo.status,
+              message: statusInfo.message,
+              date: statusDate.toISOString()
+            })
+          }
+        }
+      }
+
+      return {
+        orderId: foundOrder.id,
+        trackingNumber: foundOrder.trackingNumber || '',
+        status: foundOrder.status,
+        customerInfo: {
+          name: foundOrder.customerInfo.name,
+          email: foundOrder.customerInfo.email,
+          phone: foundOrder.customerInfo.phone
+        },
+        items: foundOrder.items.map((item: any) => ({
+          name: item.product.name,
+          quantity: item.quantity,
+          price: item.price,
+          material: item.selectedMaterial,
+          size: item.selectedSize
+        })),
+        total: foundOrder.total,
+        createdAt: foundOrder.createdAt,
+        estimatedDelivery: foundOrder.estimatedDelivery 
+          ? new Date(foundOrder.estimatedDelivery).toLocaleDateString('tr-TR')
+          : 'Hesaplanıyor...',
+        statusHistory
+      }
+    } catch (error) {
+      console.error('Sipariş verisi yüklenirken hata:', error)
+      return null
+    }
+  }
+
+  // Otomatik arama fonksiyonu (URL'den gelen orderId için)
+  const handleSearchAuto = async (query: string) => {
+    setLoading(true)
+    setError('')
+    setOrderData(null)
+
+    try {
+      await new Promise(resolve => setTimeout(resolve, 500))
+
+      const order = getOrderFromStorage(query)
+      
+      if (order) {
+        setOrderData(order)
+      } else {
+        setError('Sipariş bulunamadı. Lütfen sipariş numaranızı kontrol edin.')
+      }
+    } catch {
+      setError('Sipariş bulunamadı. Lütfen sipariş numaranızı kontrol edin.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // URL'de orderId varsa otomatik arama yap
+  useEffect(() => {
+    if (orderIdParam) {
+      setSearchQuery(orderIdParam)
+      handleSearchAuto(orderIdParam)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderIdParam])
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
@@ -53,61 +163,15 @@ export default function OrderTrackingPage() {
     setOrderData(null)
 
     try {
-      // Gerçek uygulamada API çağrısı yapılacak
-      // Şimdilik mock data
-      await new Promise(resolve => setTimeout(resolve, 1500)) // Simüle edilmiş gecikme
+      await new Promise(resolve => setTimeout(resolve, 500))
 
-      const mockOrderData: OrderStatus = {
-        orderId: searchQuery.toUpperCase(),
-        trackingNumber: `TRK${Date.now()}`,
-        status: 'shipping',
-        customerInfo: {
-          name: 'Test Müşteri',
-          email: 'test@example.com',
-          phone: '0555 123 45 67'
-        },
-        items: [
-          {
-            name: 'Antetli Kağıt',
-            quantity: 2000,
-            price: 2500,
-            material: '80 Gram 1. Hamur',
-            size: 'A4 (21x29.7cm)'
-          }
-        ],
-        total: 2500,
-        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 gün önce
-        estimatedDelivery: '1 İş Günü',
-        statusHistory: [
-          {
-            status: 'Sipariş Alındı',
-            message: 'Siparişiniz başarıyla alındı ve işleme konuldu.',
-            date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
-          },
-          {
-            status: 'Sipariş Onaylandı',
-            message: 'Siparişiniz onaylandı ve hazırlanmaya başlandı.',
-            date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 2 * 60 * 60 * 1000).toISOString()
-          },
-          {
-            status: 'Hazırlanıyor',
-            message: 'Siparişiniz hazırlanıyor.',
-            date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
-          },
-          {
-            status: 'Basılıyor',
-            message: 'Siparişiniz basım aşamasında.',
-            date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000 + 4 * 60 * 60 * 1000).toISOString()
-          },
-          {
-            status: 'Kargoya Verildi',
-            message: 'Siparişiniz kargoya verildi ve yola çıktı.',
-            date: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString()
-          }
-        ]
+      const order = getOrderFromStorage(searchQuery)
+      
+      if (order) {
+        setOrderData(order)
+      } else {
+        setError('Sipariş bulunamadı. Lütfen sipariş numaranızı kontrol edin.')
       }
-
-      setOrderData(mockOrderData)
     } catch {
       setError('Sipariş bulunamadı. Lütfen sipariş numaranızı kontrol edin.')
     } finally {

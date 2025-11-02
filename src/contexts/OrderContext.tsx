@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { CartItem } from './CartContext'
+import { calculateEstimatedDelivery } from '@/lib/delivery-time'
 // E-posta şablonları artık API üzerinden kullanılacak
 
 export interface Order {
@@ -83,11 +84,14 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       // Simüle edilmiş API çağrısı
       await new Promise(resolve => setTimeout(resolve, 1000))
 
+      // Ürün kategorisine göre tahmini teslim süresini hesapla
+      const estimatedDeliveryDate = calculateEstimatedDelivery(orderData.items)
+      
       const newOrder: Order = {
         ...orderData,
         id: generateOrderId(),
-        trackingNumber: generateTrackingNumber(),
-        estimatedDelivery: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 gün sonra
+        trackingNumber: undefined, // Kargo takip numarası sadece 'shipping' durumunda oluşturulacak
+        estimatedDelivery: estimatedDeliveryDate.toISOString(),
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       }
@@ -130,6 +134,12 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       cancelled: 'Sipariş İptal Edildi'
     }
 
+    // Eğer durum 'shipping' ise ve kargo takip numarası yoksa oluştur
+    let trackingNumber = order.trackingNumber
+    if (status === 'shipping' && !trackingNumber) {
+      trackingNumber = generateTrackingNumber()
+    }
+
     // E-posta gönder
     try {
       await fetch('/api/send-email', {
@@ -148,7 +158,12 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
 
     setOrders(prev => prev.map(order => 
       order.id === orderId 
-        ? { ...order, status, updatedAt: new Date().toISOString() }
+        ? { 
+            ...order, 
+            status, 
+            trackingNumber: trackingNumber || order.trackingNumber,
+            updatedAt: new Date().toISOString() 
+          }
         : order
     ))
   }

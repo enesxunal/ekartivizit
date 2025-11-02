@@ -191,7 +191,7 @@ export default function OrderDetailPage() {
                   </span>
                 </div>
                 
-                {order.trackingNumber && (
+                {order.status === 'shipping' && order.trackingNumber && (
                   <div className="bg-blue-50 p-4 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
                       <Truck className="w-4 h-4 text-blue-600" />
@@ -231,17 +231,34 @@ export default function OrderDetailPage() {
                       <div className="flex-1">
                         <h3 className="font-medium text-gray-900">{item.product.name}</h3>
                         <div className="text-sm text-gray-600 space-y-1">
-                          <div>Adet: {item.quantity.toLocaleString()}</div>
-                          {item.selectedMaterial && <div>Malzeme: {item.selectedMaterial}</div>}
-                          {item.selectedSize && <div>Boyut: {item.selectedSize}</div>}
-                          {item.selectedWindow && <div>Pencere: {item.selectedWindow}</div>}
-                          {item.selectedExtras && item.selectedExtras.length > 0 && (
-                            <div>Ekstra: {item.selectedExtras.join(', ')}</div>
-                          )}
+                          {(() => {
+                            const cartQuantity = (item as any).cartQuantity || 1
+                            const itemTotal = item.price * cartQuantity
+                            return (
+                              <>
+                                <div>Paket: {cartQuantity} paket (Paket İçeriği: {item.quantity.toLocaleString()} adet)</div>
+                                <div>Toplam Adet: {(item.quantity * cartQuantity).toLocaleString()} adet</div>
+                                {item.selectedMaterial && <div>Malzeme: {item.selectedMaterial}</div>}
+                                {item.selectedSize && <div>Boyut: {item.selectedSize}</div>}
+                                {item.selectedWindow && <div>Pencere: {item.selectedWindow}</div>}
+                                {item.selectedExtras && item.selectedExtras.length > 0 && (
+                                  <div>Ekstra: {item.selectedExtras.join(', ')}</div>
+                                )}
+                                <div className="text-xs text-gray-500 mt-1">
+                                  Birim Fiyat: ₺{item.price.toLocaleString()} × {cartQuantity} = ₺{itemTotal.toLocaleString()}
+                                </div>
+                              </>
+                            )
+                          })()}
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-medium text-[#59af05]">₺{item.price.toFixed(0)}</div>
+                        <div className="font-medium text-[#59af05]">
+                          {(() => {
+                            const cartQuantity = (item as any).cartQuantity || 1
+                            return `₺${(item.price * cartQuantity).toFixed(0)}`
+                          })()}
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -391,7 +408,7 @@ export default function OrderDetailPage() {
                 <CardTitle>İşlemler</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Link href="/siparis-takip" className="block">
+                <Link href={`/siparis-takip?orderId=${order.id}`} className="block">
                   <Button variant="outline" className="w-full">
                     <Truck className="w-4 h-4 mr-2" />
                     Sipariş Takip
