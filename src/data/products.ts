@@ -379,7 +379,7 @@ export const PRODUCTS: Product[] = [
     name: 'Çakmak',
     description: 'Promosyon çakmak baskı hizmetleri',
     category: 'promosyon',
-    image: '/images/gold-kart-800x800.jpg',
+    image: '/images/Çakmak.png',
     href: '/urun/cakmak',
     gradient: 'from-red-400 to-red-600',
     features: ['4 Renk Baskı', 'Plastik Beyaz', 'Dayanıklı'],
@@ -425,7 +425,11 @@ export const PRODUCTS: Product[] = [
     name: 'Takvim',
     description: 'Özel tasarım piramit takvim',
     category: 'kurumsal',
-    image: '/images/takvim.png',
+    image: '/images/takvim-mockup-1.png',
+    images: [
+      '/images/takvim-mockup-1.png',
+      '/images/takvim-mockup-2.1.png'
+    ],
     href: '/urun/takvim',
     gradient: 'from-amber-400 to-amber-600',
     features: ['12 Yaprak', 'Parlak Kuşe', 'Çift Yön Renkli'],
