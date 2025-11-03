@@ -23,9 +23,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const ADMIN_PASSWORD = 'Ekartvizit15..'
 
   useEffect(() => {
-    // Sayfa yüklendiğinde oturum kontrolü yap
-    const isLoggedIn = localStorage.getItem('admin-logged-in') === 'true'
-    setIsAuthenticated(isLoggedIn)
+    // Sayfa yüklendiğinde oturum kontrolü yap - her zaman false başlat
+    setIsAuthenticated(false)
     setIsLoading(false)
   }, [])
 

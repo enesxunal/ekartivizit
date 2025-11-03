@@ -88,6 +88,11 @@ export const metadata: Metadata = {
   verification: {
     google: "your-google-verification-code",
   },
+  icons: {
+    icon: '/images/fav.png',
+    shortcut: '/images/fav.png',
+    apple: '/images/fav.png',
+  },
 };
 
 export default function RootLayout({
