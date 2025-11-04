@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
     let body
     try {
       body = await request.json()
-    } catch (parseError) {
+    } catch {
       return NextResponse.json(
         { success: false, error: 'Geçersiz JSON formatı' },
         { status: 400 }
