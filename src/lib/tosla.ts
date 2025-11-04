@@ -54,25 +54,6 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
   try {
     console.log('Tosla ödeme oturumu oluşturuluyor:', request.orderId)
     
-    // Tosla ödeme oturumu oluştur (Init)
-    // Kart bilgileri Tosla'nın sayfasında girilecek
-    const paymentData = {
-      ApiUser: toslaConfig.apiUser,
-      ApiPass: toslaConfig.apiPass,
-      ClientId: toslaConfig.clientId,
-      Amount: request.amount,
-      Currency: request.currency,
-      OrderId: request.orderId,
-      CustomerName: request.customerInfo.name,
-      CustomerEmail: request.customerInfo.email,
-      CustomerPhone: request.customerInfo.phone,
-      ReturnUrl: request.returnUrl,
-      CancelUrl: request.cancelUrl,
-      Language: 'tr',
-      Installment: 0, // Tek çekim
-      Description: `E-Kartvizit Siparişi - ${request.orderId}`
-    }
-
     // Tosla ödeme sayfasına yönlendirme için form oluştur
     // Kart bilgileri Tosla'nın sayfasında girilecek
     const html = createToslaPaymentForm({
