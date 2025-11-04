@@ -67,6 +67,10 @@ export async function POST(request: NextRequest) {
     const result = await processToslaPayment(paymentRequest)
 
     if (result.success) {
+      // Eğer HTML form döndüyse, client'a ilet
+      if (result.redirectHtml) {
+        return NextResponse.json({ success: true, html: result.redirectHtml })
+      }
       return NextResponse.json({
         success: true,
         paymentId: result.paymentId,

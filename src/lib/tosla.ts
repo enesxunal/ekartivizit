@@ -36,6 +36,8 @@ export interface ToslaPaymentResponse {
   redirectUrl?: string
   errorCode?: string
   errorMessage?: string
+  // 503 vb. durumlarda form ile yönlendirme için HTML dönebilir
+  redirectHtml?: string
 }
 
 // Tosla konfigürasyonu - Güncellenmiş API bilgileri
@@ -89,10 +91,18 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
     if (!response.ok) {
       const errorText = await response.text()
       console.error('Tosla API hata yanıtı:', response.status, errorText)
+      // Fallback: 3D form ile ödeme
+      const html = createToslaPaymentForm({
+        orderId: request.orderId,
+        amount: request.amount,
+        currency: request.currency,
+        customerInfo: request.customerInfo,
+        returnUrl: request.returnUrl,
+        cancelUrl: request.cancelUrl,
+      })
       return {
-        success: false,
-        errorCode: `HTTP_${response.status}`,
-        errorMessage: `Sunucu hatası: ${response.status}. ${errorText || 'Yanıt alınamadı'}`
+        success: true,
+        redirectHtml: html,
       }
     }
 
@@ -101,11 +111,15 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
     
     if (!responseText || responseText.trim() === '') {
       console.error('Tosla API boş yanıt döndü')
-      return {
-        success: false,
-        errorCode: 'EMPTY_RESPONSE',
-        errorMessage: 'Sunucudan boş yanıt alındı'
-      }
+      const html = createToslaPaymentForm({
+        orderId: request.orderId,
+        amount: request.amount,
+        currency: request.currency,
+        customerInfo: request.customerInfo,
+        returnUrl: request.returnUrl,
+        cancelUrl: request.cancelUrl,
+      })
+      return { success: true, redirectHtml: html }
     }
 
     let result
@@ -113,11 +127,15 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
       result = JSON.parse(responseText)
     } catch (parseError) {
       console.error('Tosla API JSON parse hatası:', parseError, 'Yanıt:', responseText)
-      return {
-        success: false,
-        errorCode: 'INVALID_JSON',
-        errorMessage: `Geçersiz yanıt formatı: ${responseText.substring(0, 100)}`
-      }
+      const html = createToslaPaymentForm({
+        orderId: request.orderId,
+        amount: request.amount,
+        currency: request.currency,
+        customerInfo: request.customerInfo,
+        returnUrl: request.returnUrl,
+        cancelUrl: request.cancelUrl,
+      })
+      return { success: true, redirectHtml: html }
     }
 
     if (result.Success || result.success) {

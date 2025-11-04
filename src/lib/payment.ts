@@ -135,6 +135,13 @@ export async function processCreditCardPayment(
     }
 
     if (toslaResult.success) {
+      // Sunucu HTML form döndürdüyse direkt sayfaya yaz ve gönder
+      if (toslaResult.html) {
+        document.open()
+        document.write(toslaResult.html)
+        document.close()
+        return { success: true }
+      }
       return {
         success: true,
         paymentId: toslaResult.paymentId,
