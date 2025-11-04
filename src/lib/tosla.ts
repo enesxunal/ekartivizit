@@ -40,12 +40,12 @@ export interface ToslaPaymentResponse {
   redirectHtml?: string
 }
 
-// Tosla konfigürasyonu - Güncellenmiş API bilgileri
+// Tosla konfigürasyonu - Resmi API URL'i
 export const toslaConfig: ToslaConfig = {
   apiUser: process.env.TOSLA_API_USER || 'apiUser3016658',
   apiPass: process.env.TOSLA_API_PASS || 'YN8L293GPY',
   clientId: process.env.TOSLA_CLIENT_ID || '1000002147',
-  baseUrl: process.env.TOSLA_BASE_URL || 'https://secure.tosla.com/api',
+  baseUrl: process.env.TOSLA_BASE_URL || 'https://entegrasyon.tosla.com/api/Payment',
   environment: (process.env.NODE_ENV === 'production' ? 'production' : 'test') as 'test' | 'production'
 }
 
@@ -54,20 +54,141 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
   try {
     console.log('Tosla ödeme oturumu oluşturuluyor:', request.orderId)
     
-    // Tosla ödeme sayfasına yönlendirme için form oluştur
-    // Kart bilgileri Tosla'nın sayfasında girilecek
-    const html = createToslaPaymentForm({
+    // Tosla API URL'i (sonunda / olmalı)
+    const apiUrl = toslaConfig.baseUrl.endsWith('/') ? toslaConfig.baseUrl : toslaConfig.baseUrl + '/'
+    
+    // Random ve timestamp oluştur (OpenCart eklentisindeki gibi)
+    const rnd = Math.floor(Math.random() * 10000) + 1
+    const timeSpan = new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14) // YYYYMMDDHHmmss formatı
+    
+    // Hash oluştur (SHA512 + Base64) - OpenCart formatına uygun
+    const crypto = await import('crypto')
+    const hashString = toslaConfig.apiPass + toslaConfig.clientId + toslaConfig.apiUser + rnd + timeSpan
+    const hashBytes = crypto.createHash('sha512').update(hashString).digest()
+    const hash = hashBytes.toString('base64')
+    
+    // startPaymentThreeDSession API çağrısı (kart bilgileri olmadan)
+    const sessionData = {
+      clientId: toslaConfig.clientId,
+      apiUser: toslaConfig.apiUser,
+      Rnd: rnd,
+      timeSpan: timeSpan,
+      Hash: hash,
+      callbackUrl: request.returnUrl,
       orderId: request.orderId,
-      amount: request.amount,
-      currency: request.currency,
-      customerInfo: request.customerInfo,
-      returnUrl: request.returnUrl,
-      cancelUrl: request.cancelUrl,
+      amount: Math.round(request.amount * 100), // Kuruş cinsinden (1 TL = 100)
+      currency: 949, // TRY
+      installmentCount: 0
+    }
+
+    const response = await fetch(`${apiUrl}startPaymentThreeDSession`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(sessionData)
     })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error('Tosla session oluşturma hatası:', response.status, errorText)
+      return {
+        success: false,
+        errorCode: `HTTP_${response.status}`,
+        errorMessage: `Session oluşturulamadı: ${errorText || 'Yanıt alınamadı'}`
+      }
+    }
+
+    const responseText = await response.text()
+    if (!responseText || responseText.trim() === '') {
+      return {
+        success: false,
+        errorCode: 'EMPTY_RESPONSE',
+        errorMessage: 'Sunucudan boş yanıt alındı'
+      }
+    }
+
+    let result
+    try {
+      result = JSON.parse(responseText)
+    } catch (parseError) {
+      console.error('Tosla API JSON parse hatası:', parseError, 'Yanıt:', responseText)
+      return {
+        success: false,
+        errorCode: 'INVALID_JSON',
+        errorMessage: `Geçersiz yanıt formatı: ${responseText.substring(0, 100)}`
+      }
+    }
+
+    // ThreeDSessionId kontrolü
+    const threeDSessionId = result.ThreeDSessionId || result.threeDSessionId
+    
+    if (!threeDSessionId) {
+      const errorMsg = result.ErrorMessage || result.errorMessage || 'Session ID alınamadı'
+      return {
+        success: false,
+        errorCode: result.ErrorCode || result.errorCode || 'SESSION_FAILED',
+        errorMessage: errorMsg
+      }
+    }
+
+    // Tosla'nın 3D Secure sayfasına yönlendirme URL'i
+    const threeDSecureUrl = `${apiUrl}threeDSecure/${threeDSessionId}`
+    
+    // HTML form oluştur ve otomatik yönlendir
+    const html = `
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ödeme İşlemi Yapılıyor...</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #f5f5f5;
+        }
+        .loading {
+            text-align: center;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #59af05;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading">
+        <div class="spinner"></div>
+        <p>Tosla ödeme sayfasına yönlendiriliyorsunuz...</p>
+    </div>
+    <script>
+        // Tosla'nın 3D Secure sayfasına yönlendir
+        window.location.href = "${threeDSecureUrl}";
+    </script>
+</body>
+</html>
+    `
 
     return {
       success: true,
-      redirectHtml: html
+      redirectHtml: html,
+      paymentId: threeDSessionId
     }
   } catch (error) {
     console.error('Tosla ödeme hatası:', error)
@@ -79,48 +200,59 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
   }
 }
 
-// Ödeme durumu sorgulama - Güncellenmiş
+// Ödeme durumu sorgulama - OpenCart formatına uygun
 export async function checkToslaPaymentStatus(paymentId: string): Promise<{
   status: 'pending' | 'success' | 'failed' | 'cancelled'
   amount?: number
   paidAt?: string
 }> {
   try {
+    const apiUrl = toslaConfig.baseUrl.endsWith('/') ? toslaConfig.baseUrl : toslaConfig.baseUrl + '/'
+    
+    // Random ve timestamp oluştur
+    const rnd = Math.floor(Math.random() * 10000) + 1
+    const timeSpan = new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14)
+    
+    // Hash oluştur
+    const crypto = await import('crypto')
+    const hashString = toslaConfig.apiPass + toslaConfig.clientId + toslaConfig.apiUser + rnd + timeSpan
+    const hashBytes = crypto.createHash('sha512').update(hashString).digest()
+    const hash = hashBytes.toString('base64')
+    
     const queryData = {
-      ApiUser: toslaConfig.apiUser,
-      ApiPass: toslaConfig.apiPass,
-      ClientId: toslaConfig.clientId,
-      PaymentId: paymentId
+      clientId: toslaConfig.clientId,
+      apiUser: toslaConfig.apiUser,
+      Rnd: rnd,
+      timeSpan: timeSpan,
+      Hash: hash,
+      orderId: paymentId
     }
 
-    const response = await fetch(`${toslaConfig.baseUrl}/payment/status`, {
+    const response = await fetch(`${apiUrl}inquiry`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'User-Agent': 'E-Kartvizit/1.0'
+        'Accept': 'application/json'
       },
       body: JSON.stringify(queryData)
     })
 
-    const result = await response.json()
+    if (!response.ok) {
+      return { status: 'failed' }
+    }
 
-    if (result.Success || result.success) {
-      const statusMapping: Record<string, 'pending' | 'success' | 'failed' | 'cancelled'> = {
-        'PENDING': 'pending',
-        'SUCCESS': 'success',
-        'COMPLETED': 'success',
-        'APPROVED': 'success',
-        'FAILED': 'failed',
-        'ERROR': 'failed',
-        'DECLINED': 'failed',
-        'CANCELLED': 'cancelled',
-        'CANCELED': 'cancelled'
-      }
+    const responseText = await response.text()
+    if (!responseText) {
+      return { status: 'failed' }
+    }
 
+    const result = JSON.parse(responseText)
+
+    // OpenCart eklentisindeki gibi BankResponseCode kontrolü
+    if (result.BankResponseCode === '00') {
       return {
-        status: statusMapping[result.Status || result.status] || 'failed',
-        amount: result.Amount || result.amount,
+        status: 'success',
+        amount: result.Amount ? result.Amount / 100 : undefined, // Kuruştan TL'ye çevir
         paidAt: result.PaidAt || result.paidAt
       }
     } else {
