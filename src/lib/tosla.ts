@@ -40,12 +40,12 @@ export interface ToslaPaymentResponse {
   redirectHtml?: string
 }
 
-// Tosla konfigürasyonu - Resmi API URL'i
+// Tosla konfigürasyonu - Resmi API URL'i (sonunda / olmalı)
 export const toslaConfig: ToslaConfig = {
   apiUser: process.env.TOSLA_API_USER || 'apiUser3016658',
   apiPass: process.env.TOSLA_API_PASS || 'YN8L293GPY',
   clientId: process.env.TOSLA_CLIENT_ID || '1000002147',
-  baseUrl: process.env.TOSLA_BASE_URL || 'https://entegrasyon.tosla.com/api/Payment',
+  baseUrl: process.env.TOSLA_BASE_URL || 'https://entegrasyon.tosla.com/api/Payment/',
   environment: (process.env.NODE_ENV === 'production' ? 'production' : 'test') as 'test' | 'production'
 }
 
@@ -54,7 +54,7 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
   try {
     console.log('Tosla ödeme oturumu oluşturuluyor:', request.orderId)
     
-    // Tosla API URL'i (sonunda / olmalı)
+    // Tosla API URL'i (OpenCart formatına uygun - sonunda / olmalı)
     const apiUrl = toslaConfig.baseUrl.endsWith('/') ? toslaConfig.baseUrl : toslaConfig.baseUrl + '/'
     
     // Random ve timestamp oluştur (OpenCart eklentisindeki gibi)
@@ -81,7 +81,40 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
       installmentCount: 0
     }
 
-    const response = await fetch(`${apiUrl}startPaymentThreeDSession`, {
+    // OpenCart formatında: $this->url . $url
+    // Önce VerifyClient ile bağlantıyı test et
+    const verifyUrl = `${apiUrl}VerifyClient`
+    const verifyData = {
+      clientId: toslaConfig.clientId,
+      apiUser: toslaConfig.apiUser,
+      Rnd: rnd,
+      timeSpan: timeSpan,
+      Hash: hash
+    }
+    
+    console.log('Tosla VerifyClient test:', verifyUrl)
+    
+    try {
+      const verifyResponse = await fetch(verifyUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(verifyData)
+      })
+      
+      const verifyText = await verifyResponse.text()
+      console.log('VerifyClient yanıtı:', verifyResponse.status, verifyText)
+    } catch (verifyError) {
+      console.error('VerifyClient hatası:', verifyError)
+    }
+    
+    const fullUrl = `${apiUrl}startPaymentThreeDSession`
+    
+    console.log('Tosla API çağrısı:', fullUrl, JSON.stringify(sessionData, null, 2))
+
+    const response = await fetch(fullUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
