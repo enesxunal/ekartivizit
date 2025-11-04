@@ -68,6 +68,7 @@ export async function processCreditCardPayment(
     console.log('Tosla ödeme işleniyor:', { paymentData, cardData })
 
     // İstek verisini hazırla (sunucu tarafındaki API route'a gönderilecek)
+    // NOT: Kart bilgileri Tosla'nın sayfasında girilecek, burada gönderilmiyor
     const toslaRequest = {
       amount: paymentData.amount,
       currency: paymentData.currency,
@@ -78,11 +79,12 @@ export async function processCreditCardPayment(
         phone: paymentData.customerInfo.phone
       },
       cardInfo: {
-        cardNumber: cardData.cardNumber.replace(/\s/g, ''),
-        expiryMonth: cardData.expiryMonth,
-        expiryYear: cardData.expiryYear,
-        cvc: cardData.cvc,
-        cardHolderName: cardData.cardHolderName
+        // Kart bilgileri Tosla'nın sayfasında girilecek
+        cardNumber: '',
+        expiryMonth: '',
+        expiryYear: '',
+        cvc: '',
+        cardHolderName: ''
       },
       returnUrl: `${window.location.origin}/odeme/basarili?order=${paymentData.orderId}`,
       cancelUrl: `${window.location.origin}/odeme/iptal?order=${paymentData.orderId}`

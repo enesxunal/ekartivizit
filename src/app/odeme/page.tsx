@@ -196,16 +196,7 @@ export default function OdemePage() {
       return false
     }
 
-    if (selectedPaymentMethod === 'credit-card') {
-      if (!cardInfo.cardNumber || !cardInfo.expiryMonth || !cardInfo.expiryYear || !cardInfo.cvc || !cardInfo.cardHolderName) {
-        addToast({
-          type: 'error',
-          title: 'Eksik Kart Bilgisi',
-          description: 'Lütfen tüm kart bilgilerini doldurun'
-        })
-        return false
-      }
-    }
+    // Kart bilgileri Tosla'nın sayfasında girilecek, burada kontrol gerekmez
 
     return true
   }
@@ -269,7 +260,14 @@ export default function OdemePage() {
           paymentResult = await processWhatsAppPayment(paymentData)
           break
         case 'credit-card':
-          paymentResult = await processCreditCardPayment(paymentData, cardInfo)
+          // Kart bilgileri Tosla'nın sayfasında girilecek, burada boş gönderiyoruz
+          paymentResult = await processCreditCardPayment(paymentData, {
+            cardNumber: '',
+            expiryMonth: '',
+            expiryYear: '',
+            cvc: '',
+            cardHolderName: ''
+          })
           break
         case 'bank-transfer':
           paymentResult = await processBankTransferPayment(paymentData)

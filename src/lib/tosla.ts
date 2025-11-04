@@ -49,12 +49,13 @@ export const toslaConfig: ToslaConfig = {
   environment: (process.env.NODE_ENV === 'production' ? 'production' : 'test') as 'test' | 'production'
 }
 
-// Tosla ödeme işlemi - Güncellenmiş API entegrasyonu
+// Tosla ödeme işlemi - Form tabanlı yönlendirme (Kart bilgileri Tosla sayfasında girilir)
 export async function processToslaPayment(request: ToslaPaymentRequest): Promise<ToslaPaymentResponse> {
   try {
-    console.log('Tosla ödeme başlatılıyor:', request.orderId)
+    console.log('Tosla ödeme oturumu oluşturuluyor:', request.orderId)
     
-    // Tosla API'ye ödeme isteği gönder
+    // Tosla ödeme oturumu oluştur (Init)
+    // Kart bilgileri Tosla'nın sayfasında girilecek
     const paymentData = {
       ApiUser: toslaConfig.apiUser,
       ApiPass: toslaConfig.apiPass,
@@ -62,11 +63,6 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
       Amount: request.amount,
       Currency: request.currency,
       OrderId: request.orderId,
-      CardNumber: request.cardInfo.cardNumber,
-      ExpiryMonth: request.cardInfo.expiryMonth,
-      ExpiryYear: request.cardInfo.expiryYear,
-      CVC: request.cardInfo.cvc,
-      CardHolderName: request.cardInfo.cardHolderName,
       CustomerName: request.customerInfo.name,
       CustomerEmail: request.customerInfo.email,
       CustomerPhone: request.customerInfo.phone,
@@ -77,79 +73,20 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
       Description: `E-Kartvizit Siparişi - ${request.orderId}`
     }
 
-    const response = await fetch(`${toslaConfig.baseUrl}/Payment/Process`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'User-Agent': 'E-Kartvizit/1.0'
-      },
-      body: JSON.stringify(paymentData)
+    // Tosla ödeme sayfasına yönlendirme için form oluştur
+    // Kart bilgileri Tosla'nın sayfasında girilecek
+    const html = createToslaPaymentForm({
+      orderId: request.orderId,
+      amount: request.amount,
+      currency: request.currency,
+      customerInfo: request.customerInfo,
+      returnUrl: request.returnUrl,
+      cancelUrl: request.cancelUrl,
     })
 
-    // Önce yanıtın durumunu kontrol et
-    if (!response.ok) {
-      const errorText = await response.text()
-      console.error('Tosla API hata yanıtı:', response.status, errorText)
-      // Fallback: 3D form ile ödeme
-      const html = createToslaPaymentForm({
-        orderId: request.orderId,
-        amount: request.amount,
-        currency: request.currency,
-        customerInfo: request.customerInfo,
-        returnUrl: request.returnUrl,
-        cancelUrl: request.cancelUrl,
-      })
-      return {
-        success: true,
-        redirectHtml: html,
-      }
-    }
-
-    // Yanıt içeriğini güvenli bir şekilde oku
-    const responseText = await response.text()
-    
-    if (!responseText || responseText.trim() === '') {
-      console.error('Tosla API boş yanıt döndü')
-      const html = createToslaPaymentForm({
-        orderId: request.orderId,
-        amount: request.amount,
-        currency: request.currency,
-        customerInfo: request.customerInfo,
-        returnUrl: request.returnUrl,
-        cancelUrl: request.cancelUrl,
-      })
-      return { success: true, redirectHtml: html }
-    }
-
-    let result
-    try {
-      result = JSON.parse(responseText)
-    } catch (parseError) {
-      console.error('Tosla API JSON parse hatası:', parseError, 'Yanıt:', responseText)
-      const html = createToslaPaymentForm({
-        orderId: request.orderId,
-        amount: request.amount,
-        currency: request.currency,
-        customerInfo: request.customerInfo,
-        returnUrl: request.returnUrl,
-        cancelUrl: request.cancelUrl,
-      })
-      return { success: true, redirectHtml: html }
-    }
-
-    if (result.Success || result.success) {
-      return {
-        success: true,
-        paymentId: result.PaymentId || result.paymentId,
-        redirectUrl: result.RedirectUrl || result.redirectUrl || `/odeme/basarili?payment=${request.orderId}`
-      }
-    } else {
-      return {
-        success: false,
-        errorCode: result.ErrorCode || result.errorCode || 'PAYMENT_FAILED',
-        errorMessage: result.ErrorMessage || result.errorMessage || 'Ödeme işlemi başarısız oldu'
-      }
+    return {
+      success: true,
+      redirectHtml: html
     }
   } catch (error) {
     console.error('Tosla ödeme hatası:', error)
@@ -235,7 +172,7 @@ export async function verifyToslaWebhook(payload: string, signature: string): Pr
   }
 }
 
-// Tosla ödeme formu oluşturma yardımcı fonksiyonu - Güncellenmiş
+// Tosla ödeme formu oluşturma yardımcı fonksiyonu - Tosla'nın gerçek ödeme sayfasına yönlendirme
 export function createToslaPaymentForm(orderData: {
   orderId: string
   amount: number
@@ -248,27 +185,73 @@ export function createToslaPaymentForm(orderData: {
   returnUrl: string
   cancelUrl: string
 }): string {
+  // Tosla'nın gerçek ödeme sayfası URL'i
+  const toslaPaymentUrl = 'https://secure.tosla.com/payment'
+  
   return `
-    <form id="toslaPaymentForm" method="POST" action="${toslaConfig.baseUrl}/payment/form">
-      <input type="hidden" name="ApiUser" value="${toslaConfig.apiUser}" />
-      <input type="hidden" name="ApiPass" value="${toslaConfig.apiPass}" />
-      <input type="hidden" name="ClientId" value="${toslaConfig.clientId}" />
-      <input type="hidden" name="Amount" value="${orderData.amount}" />
-      <input type="hidden" name="Currency" value="${orderData.currency}" />
-      <input type="hidden" name="OrderId" value="${orderData.orderId}" />
-      <input type="hidden" name="CustomerName" value="${orderData.customerInfo.name}" />
-      <input type="hidden" name="CustomerEmail" value="${orderData.customerInfo.email}" />
-      <input type="hidden" name="CustomerPhone" value="${orderData.customerInfo.phone}" />
-      <input type="hidden" name="ReturnUrl" value="${orderData.returnUrl}" />
-      <input type="hidden" name="CancelUrl" value="${orderData.cancelUrl}" />
-      <input type="hidden" name="Language" value="tr" />
-      <input type="hidden" name="Installment" value="0" />
-      <input type="hidden" name="Description" value="E-Kartvizit Siparişi - ${orderData.orderId}" />
-      <button type="submit">Ödeme Yap</button>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ödeme İşlemi Yapılıyor...</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #f5f5f5;
+        }
+        .loading {
+            text-align: center;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #59af05;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading">
+        <div class="spinner"></div>
+        <p>Tosla ödeme sayfasına yönlendiriliyorsunuz...</p>
+    </div>
+    <form id="toslaPaymentForm" method="POST" action="${toslaPaymentUrl}">
+        <input type="hidden" name="ApiUser" value="${toslaConfig.apiUser}" />
+        <input type="hidden" name="ApiPass" value="${toslaConfig.apiPass}" />
+        <input type="hidden" name="ClientId" value="${toslaConfig.clientId}" />
+        <input type="hidden" name="Amount" value="${orderData.amount}" />
+        <input type="hidden" name="Currency" value="${orderData.currency}" />
+        <input type="hidden" name="OrderId" value="${orderData.orderId}" />
+        <input type="hidden" name="CustomerName" value="${orderData.customerInfo.name}" />
+        <input type="hidden" name="CustomerEmail" value="${orderData.customerInfo.email}" />
+        <input type="hidden" name="CustomerPhone" value="${orderData.customerInfo.phone}" />
+        <input type="hidden" name="ReturnUrl" value="${orderData.returnUrl}" />
+        <input type="hidden" name="CancelUrl" value="${orderData.cancelUrl}" />
+        <input type="hidden" name="Language" value="tr" />
+        <input type="hidden" name="Installment" value="0" />
+        <input type="hidden" name="Description" value="E-Kartvizit Siparişi - ${orderData.orderId}" />
     </form>
     <script>
-      document.getElementById('toslaPaymentForm').submit();
+        // Formu otomatik gönder
+        setTimeout(function() {
+            document.getElementById('toslaPaymentForm').submit();
+        }, 500);
     </script>
+</body>
+</html>
   `
 }
 
