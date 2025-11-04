@@ -13,8 +13,8 @@ export async function POST(request: NextRequest) {
       )
     }
     
-    // Gerekli alanları kontrol et
-    const requiredFields = ['amount', 'currency', 'orderId', 'customerInfo', 'cardInfo', 'returnUrl', 'cancelUrl']
+    // Gerekli alanları kontrol et (kart bilgileri Tosla'da girilecek, burada gerekmez)
+    const requiredFields = ['amount', 'currency', 'orderId', 'customerInfo', 'returnUrl', 'cancelUrl']
     for (const field of requiredFields) {
       if (!body[field]) {
         return NextResponse.json(
@@ -22,15 +22,6 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         )
       }
-    }
-
-    // Kart bilgilerini kontrol et
-    const { cardNumber, expiryMonth, expiryYear, cvc, cardHolderName } = body.cardInfo
-    if (!cardNumber || !expiryMonth || !expiryYear || !cvc || !cardHolderName) {
-      return NextResponse.json(
-        { success: false, error: 'Kart bilgileri eksik' },
-        { status: 400 }
-      )
     }
 
     // Müşteri bilgilerini kontrol et
@@ -42,7 +33,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Tosla ödeme isteği oluştur
+    // Tosla ödeme isteği oluştur (kart bilgileri Tosla'da girilecek)
     const paymentRequest: ToslaPaymentRequest = {
       amount: parseFloat(body.amount),
       currency: body.currency || 'TRY',
@@ -53,11 +44,12 @@ export async function POST(request: NextRequest) {
         phone
       },
       cardInfo: {
-        cardNumber: cardNumber.replace(/\s/g, ''), // Boşlukları kaldır
-        expiryMonth,
-        expiryYear,
-        cvc,
-        cardHolderName
+        // Kart bilgileri Tosla'nın sayfasında girilecek
+        cardNumber: '',
+        expiryMonth: '',
+        expiryYear: '',
+        cvc: '',
+        cardHolderName: ''
       },
       returnUrl: body.returnUrl,
       cancelUrl: body.cancelUrl
