@@ -43,7 +43,7 @@ export const toslaConfig: ToslaConfig = {
   apiUser: process.env.TOSLA_API_USER || 'apiUser3016658',
   apiPass: process.env.TOSLA_API_PASS || 'YN8L293GPY',
   clientId: process.env.TOSLA_CLIENT_ID || '1000002147',
-  baseUrl: process.env.TOSLA_BASE_URL || 'https://api.tosla.com',
+  baseUrl: process.env.TOSLA_BASE_URL || 'https://secure.tosla.com/api',
   environment: (process.env.NODE_ENV === 'production' ? 'production' : 'test') as 'test' | 'production'
 }
 
@@ -75,7 +75,7 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
       Description: `E-Kartvizit Siparişi - ${request.orderId}`
     }
 
-    const response = await fetch(`${toslaConfig.baseUrl}/payment/process`, {
+    const response = await fetch(`${toslaConfig.baseUrl}/Payment/Process`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -85,7 +85,40 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
       body: JSON.stringify(paymentData)
     })
 
-    const result = await response.json()
+    // Önce yanıtın durumunu kontrol et
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error('Tosla API hata yanıtı:', response.status, errorText)
+      return {
+        success: false,
+        errorCode: `HTTP_${response.status}`,
+        errorMessage: `Sunucu hatası: ${response.status}. ${errorText || 'Yanıt alınamadı'}`
+      }
+    }
+
+    // Yanıt içeriğini güvenli bir şekilde oku
+    const responseText = await response.text()
+    
+    if (!responseText || responseText.trim() === '') {
+      console.error('Tosla API boş yanıt döndü')
+      return {
+        success: false,
+        errorCode: 'EMPTY_RESPONSE',
+        errorMessage: 'Sunucudan boş yanıt alındı'
+      }
+    }
+
+    let result
+    try {
+      result = JSON.parse(responseText)
+    } catch (parseError) {
+      console.error('Tosla API JSON parse hatası:', parseError, 'Yanıt:', responseText)
+      return {
+        success: false,
+        errorCode: 'INVALID_JSON',
+        errorMessage: `Geçersiz yanıt formatı: ${responseText.substring(0, 100)}`
+      }
+    }
 
     if (result.Success || result.success) {
       return {

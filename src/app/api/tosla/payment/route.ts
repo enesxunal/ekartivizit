@@ -3,7 +3,15 @@ import { processToslaPayment, ToslaPaymentRequest } from '@/lib/tosla'
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
+    let body
+    try {
+      body = await request.json()
+    } catch (parseError) {
+      return NextResponse.json(
+        { success: false, error: 'Geçersiz JSON formatı' },
+        { status: 400 }
+      )
+    }
     
     // Gerekli alanları kontrol et
     const requiredFields = ['amount', 'currency', 'orderId', 'customerInfo', 'cardInfo', 'returnUrl', 'cancelUrl']

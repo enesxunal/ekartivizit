@@ -95,9 +95,46 @@ export async function processCreditCardPayment(
       body: JSON.stringify(toslaRequest)
     })
 
-    const toslaResult = await response.json()
+    // Önce yanıtın durumunu kontrol et
+    if (!response.ok) {
+      let errorMessage = 'Sunucu hatası'
+      try {
+        const errorText = await response.text()
+        if (errorText) {
+          const errorJson = JSON.parse(errorText)
+          errorMessage = errorJson.error || errorJson.errorMessage || errorText
+        }
+      } catch {
+        errorMessage = `HTTP ${response.status} hatası`
+      }
+      return {
+        success: false,
+        errorMessage: `Kredi kartı ödemesi başarısız: ${errorMessage}`
+      }
+    }
 
-    if (response.ok && toslaResult.success) {
+    // Yanıt içeriğini güvenli bir şekilde oku
+    const responseText = await response.text()
+    
+    if (!responseText || responseText.trim() === '') {
+      return {
+        success: false,
+        errorMessage: 'Sunucudan boş yanıt alındı'
+      }
+    }
+
+    let toslaResult
+    try {
+      toslaResult = JSON.parse(responseText)
+    } catch (parseError) {
+      console.error('JSON parse hatası:', parseError, 'Yanıt:', responseText)
+      return {
+        success: false,
+        errorMessage: `Geçersiz yanıt formatı: ${responseText.substring(0, 100)}`
+      }
+    }
+
+    if (toslaResult.success) {
       return {
         success: true,
         paymentId: toslaResult.paymentId,
