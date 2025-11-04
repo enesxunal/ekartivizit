@@ -66,10 +66,8 @@ export async function processCreditCardPayment(
 ): Promise<PaymentResult> {
   try {
     console.log('Tosla ödeme işleniyor:', { paymentData, cardData })
-    
-    // Tosla ödeme entegrasyonu
-    const { processToslaPayment } = await import('@/lib/tosla')
-    
+
+    // İstek verisini hazırla (sunucu tarafındaki API route'a gönderilecek)
     const toslaRequest = {
       amount: paymentData.amount,
       currency: paymentData.currency,
@@ -89,10 +87,17 @@ export async function processCreditCardPayment(
       returnUrl: `${window.location.origin}/odeme/basarili?order=${paymentData.orderId}`,
       cancelUrl: `${window.location.origin}/odeme/iptal?order=${paymentData.orderId}`
     }
-    
-    const toslaResult = await processToslaPayment(toslaRequest)
-    
-    if (toslaResult.success) {
+
+    // Sunucuya isteği gönder (CORS ve gizli anahtarlar için güvenli yol)
+    const response = await fetch('/api/tosla/payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(toslaRequest)
+    })
+
+    const toslaResult = await response.json()
+
+    if (response.ok && toslaResult.success) {
       return {
         success: true,
         paymentId: toslaResult.paymentId,
@@ -101,7 +106,7 @@ export async function processCreditCardPayment(
     } else {
       return {
         success: false,
-        errorMessage: toslaResult.errorMessage || 'Kredi kartı ödemesi başarısız oldu'
+        errorMessage: toslaResult.error || toslaResult.errorMessage || 'Kredi kartı ödemesi başarısız oldu'
       }
     }
   } catch (error) {
