@@ -67,6 +67,23 @@ export const CATEGORIES: Category[] = [
 ];
 
 export const PRODUCTS: Product[] = [
+  // TEST ÜRÜNÜ (Ödeme testi için 1 TL)
+  {
+    id: 'test-odeme-1tl',
+    name: 'Test Ürünü (1 TL)',
+    description: 'Ödeme akışını test etmek için örnek ürün',
+    category: 'kurumsal',
+    image: '/images/Kartvizit.png',
+    href: '/urun/test-odeme-1tl',
+    gradient: 'from-[#59af05] to-[#4a9321]',
+    features: ['Test amaçlı ürün'],
+    sizes: ['Standart'],
+    minQuantity: 1,
+    price: { min: 1, max: 1 },
+    quantityPricing: [
+      { quantity: 1, price: 1 }
+    ]
+  },
   // KURUMSAL ÜRÜNLER
   {
     id: 'kartvizit',
