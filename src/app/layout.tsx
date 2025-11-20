@@ -87,11 +87,14 @@ export const metadata: Metadata = {
   },
   verification: {
     google: "your-google-verification-code",
+    other: {
+      "facebook-domain-verification": "yp476bq60jobeyrubku1znmgzvn9rp",
+    },
   },
   icons: {
-    icon: '/icon.png',
-    shortcut: '/icon.png',
-    apple: '/icon.png',
+    icon: '/images/fav.png',
+    shortcut: '/images/fav.png',
+    apple: '/images/fav.png',
   },
 };
 
