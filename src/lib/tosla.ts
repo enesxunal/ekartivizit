@@ -36,6 +36,7 @@ export interface ToslaPaymentResponse {
   redirectUrl?: string
   errorCode?: string
   errorMessage?: string
+  errorEndpoint?: string
   // 503 vb. durumlarda form ile yönlendirme için HTML dönebilir
   redirectHtml?: string
 }
@@ -140,12 +141,14 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
     })
 
     if (!response.ok) {
+      const errorEndpoint = fullUrl
       const errorText = await response.text()
       console.error('Tosla session oluşturma hatası:', response.status, errorText)
       return {
         success: false,
         errorCode: `HTTP_${response.status}`,
-        errorMessage: `Session oluşturulamadı: ${errorText || 'Yanıt alınamadı'}`
+        errorEndpoint,
+        errorMessage: `Session oluşturulamadı (${errorEndpoint}): ${errorText || 'Yanıt alınamadı'}`
       }
     }
 
@@ -154,7 +157,8 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
       return {
         success: false,
         errorCode: 'EMPTY_RESPONSE',
-        errorMessage: 'Sunucudan boş yanıt alındı'
+        errorEndpoint: fullUrl,
+        errorMessage: `Sunucudan boş yanıt alındı (${fullUrl})`
       }
     }
 
@@ -166,7 +170,8 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
       return {
         success: false,
         errorCode: 'INVALID_JSON',
-        errorMessage: `Geçersiz yanıt formatı: ${responseText.substring(0, 100)}`
+        errorEndpoint: fullUrl,
+        errorMessage: `Geçersiz yanıt formatı (${fullUrl}): ${responseText.substring(0, 100)}`
       }
     }
 
@@ -178,7 +183,8 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
       return {
         success: false,
         errorCode: result.ErrorCode || result.errorCode || 'SESSION_FAILED',
-        errorMessage: errorMsg
+        errorEndpoint: fullUrl,
+        errorMessage: `${errorMsg} (${fullUrl})`
       }
     }
 
