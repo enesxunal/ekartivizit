@@ -41,11 +41,27 @@ export interface ToslaPaymentResponse {
 }
 
 // Tosla konfigürasyonu - Resmi API URL'i (sonunda / olmalı)
+const normalizeToslaBaseUrl = (url?: string) => {
+  const fallback = 'https://entegrasyon.tosla.com/api/Payment/'
+  if (!url) return fallback
+
+  const trimmed = url.trim()
+  if (!trimmed) return fallback
+
+  const lower = trimmed.toLowerCase()
+  if (lower.includes('/api/payment')) {
+    return trimmed.endsWith('/') ? trimmed : `${trimmed}/`
+  }
+
+  const sanitized = trimmed.endsWith('/') ? trimmed.slice(0, -1) : trimmed
+  return `${sanitized}/api/Payment/`
+}
+
 export const toslaConfig: ToslaConfig = {
   apiUser: process.env.TOSLA_API_USER || 'apiUser3016658',
   apiPass: process.env.TOSLA_API_PASS || 'YN8L293GPY',
   clientId: process.env.TOSLA_CLIENT_ID || '1000002147',
-  baseUrl: process.env.TOSLA_BASE_URL || 'https://entegrasyon.tosla.com/api/Payment/',
+  baseUrl: normalizeToslaBaseUrl(process.env.TOSLA_BASE_URL),
   environment: (process.env.NODE_ENV === 'production' ? 'production' : 'test') as 'test' | 'production'
 }
 
