@@ -1,6 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Environment variables - Server-side için runtime'da okunur
+  env: {
+    TOSLA_BASE_URL: process.env.TOSLA_BASE_URL || 'https://entegrasyon.tosla.com/api/Payment/',
+    TOSLA_API_USER: process.env.TOSLA_API_USER || 'apiUser3016658',
+    TOSLA_API_PASS: process.env.TOSLA_API_PASS || 'YN8L293GPY',
+    TOSLA_CLIENT_ID: process.env.TOSLA_CLIENT_ID || '1000002147',
+  },
+  
   // Performans optimizasyonları
   compress: true,
   poweredByHeader: false,
