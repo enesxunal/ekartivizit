@@ -49,25 +49,57 @@ const normalizeToslaBaseUrl = (url?: string) => {
   const trimmed = url.trim()
   if (!trimmed) return fallback
 
-  const lower = trimmed.toLowerCase()
-  if (lower.includes('/api/payment')) {
-    return trimmed.endsWith('/') ? trimmed : `${trimmed}/`
+  // Eğer api.tosla.com içeriyorsa, entegrasyon.tosla.com ile değiştir
+  let normalized = trimmed
+  if (normalized.toLowerCase().includes('api.tosla.com')) {
+    normalized = normalized.replace(/api\.tosla\.com/gi, 'entegrasyon.tosla.com')
   }
 
-  const sanitized = trimmed.endsWith('/') ? trimmed.slice(0, -1) : trimmed
+  const lower = normalized.toLowerCase()
+  if (lower.includes('/api/payment')) {
+    return normalized.endsWith('/') ? normalized : `${normalized}/`
+  }
+
+  const sanitized = normalized.endsWith('/') ? normalized.slice(0, -1) : normalized
   return `${sanitized}/api/Payment/`
 }
 
 // Tosla config'i dinamik olarak oku (her çağrıda güncel değerleri alsın)
 export const getToslaConfig = (): ToslaConfig => {
-  const baseUrl = normalizeToslaBaseUrl(process.env.TOSLA_BASE_URL)
-  console.log('Tosla Config - TOSLA_BASE_URL:', process.env.TOSLA_BASE_URL)
-  console.log('Tosla Config - Normalized baseUrl:', baseUrl)
+  // Environment variable'ları kontrol et
+  const envBaseUrl = process.env.TOSLA_BASE_URL
+  const envApiUser = process.env.TOSLA_API_USER
+  const envApiPass = process.env.TOSLA_API_PASS
+  const envClientId = process.env.TOSLA_CLIENT_ID
+  
+  console.log('=== Tosla Config Debug ===')
+  console.log('TOSLA_BASE_URL (env):', envBaseUrl || 'UNDEFINED')
+  console.log('TOSLA_API_USER (env):', envApiUser || 'UNDEFINED')
+  console.log('TOSLA_CLIENT_ID (env):', envClientId || 'UNDEFINED')
+  
+  const baseUrl = normalizeToslaBaseUrl(envBaseUrl)
+  console.log('Normalized baseUrl:', baseUrl)
+  
+  // URL'in doğru olduğunu kontrol et
+  if (baseUrl.includes('api.tosla.com')) {
+    console.error('HATA: baseUrl hala api.tosla.com içeriyor! Fallback kullanılıyor.')
+    const fallbackUrl = 'https://entegrasyon.tosla.com/api/Payment/'
+    console.log('Fallback URL kullanılıyor:', fallbackUrl)
+    return {
+      apiUser: envApiUser || 'apiUser3016658',
+      apiPass: envApiPass || 'YN8L293GPY',
+      clientId: envClientId || '1000002147',
+      baseUrl: fallbackUrl,
+      environment: (process.env.NODE_ENV === 'production' ? 'production' : 'test') as 'test' | 'production'
+    }
+  }
+  
+  console.log('=== Config OK ===')
   
   return {
-    apiUser: process.env.TOSLA_API_USER || 'apiUser3016658',
-    apiPass: process.env.TOSLA_API_PASS || 'YN8L293GPY',
-    clientId: process.env.TOSLA_CLIENT_ID || '1000002147',
+    apiUser: envApiUser || 'apiUser3016658',
+    apiPass: envApiPass || 'YN8L293GPY',
+    clientId: envClientId || '1000002147',
     baseUrl: baseUrl,
     environment: (process.env.NODE_ENV === 'production' ? 'production' : 'test') as 'test' | 'production'
   }
@@ -80,11 +112,24 @@ export const toslaConfig: ToslaConfig = getToslaConfig()
 export async function processToslaPayment(request: ToslaPaymentRequest): Promise<ToslaPaymentResponse> {
   try {
     const config = getToslaConfig() // Her çağrıda güncel config'i al
-    console.log('Tosla ödeme oturumu oluşturuluyor:', request.orderId)
-    console.log('Tosla baseUrl:', config.baseUrl)
+    console.log('=== Tosla Payment Başlatılıyor ===')
+    console.log('OrderId:', request.orderId)
+    console.log('Amount:', request.amount)
+    console.log('Config baseUrl:', config.baseUrl)
+    
+    // URL kontrolü - kesinlikle api.tosla.com içermemeli
+    if (config.baseUrl.toLowerCase().includes('api.tosla.com')) {
+      console.error('KRİTİK HATA: baseUrl hala api.tosla.com içeriyor!')
+      return {
+        success: false,
+        errorCode: 'INVALID_URL',
+        errorMessage: 'Tosla API URL yapılandırması hatalı. Lütfen sistem yöneticisine başvurun.'
+      }
+    }
     
     // Tosla API URL'i (OpenCart formatına uygun - sonunda / olmalı)
     const apiUrl = config.baseUrl.endsWith('/') ? config.baseUrl : config.baseUrl + '/'
+    console.log('Final API URL:', apiUrl)
     
     // Random ve timestamp oluştur (OpenCart eklentisindeki gibi)
     const rnd = Math.floor(Math.random() * 10000) + 1
@@ -141,7 +186,18 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
     
     const fullUrl = `${apiUrl}startPaymentThreeDSession`
     
-    console.log('Tosla API çağrısı:', fullUrl, JSON.stringify(sessionData, null, 2))
+    // Son kontrol - URL kesinlikle doğru olmalı
+    if (fullUrl.toLowerCase().includes('api.tosla.com')) {
+      console.error('KRİTİK HATA: fullUrl hala api.tosla.com içeriyor!', fullUrl)
+      return {
+        success: false,
+        errorCode: 'INVALID_URL',
+        errorMessage: 'Tosla API URL yapılandırması hatalı. Lütfen sistem yöneticisine başvurun.'
+      }
+    }
+    
+    console.log('Tosla API çağrısı yapılıyor:', fullUrl)
+    console.log('Session Data:', JSON.stringify(sessionData, null, 2))
 
     const response = await fetch(fullUrl, {
       method: 'POST',
