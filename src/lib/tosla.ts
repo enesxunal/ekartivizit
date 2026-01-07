@@ -58,21 +58,33 @@ const normalizeToslaBaseUrl = (url?: string) => {
   return `${sanitized}/api/Payment/`
 }
 
-export const toslaConfig: ToslaConfig = {
-  apiUser: process.env.TOSLA_API_USER || 'apiUser3016658',
-  apiPass: process.env.TOSLA_API_PASS || 'YN8L293GPY',
-  clientId: process.env.TOSLA_CLIENT_ID || '1000002147',
-  baseUrl: normalizeToslaBaseUrl(process.env.TOSLA_BASE_URL),
-  environment: (process.env.NODE_ENV === 'production' ? 'production' : 'test') as 'test' | 'production'
+// Tosla config'i dinamik olarak oku (her çağrıda güncel değerleri alsın)
+export const getToslaConfig = (): ToslaConfig => {
+  const baseUrl = normalizeToslaBaseUrl(process.env.TOSLA_BASE_URL)
+  console.log('Tosla Config - TOSLA_BASE_URL:', process.env.TOSLA_BASE_URL)
+  console.log('Tosla Config - Normalized baseUrl:', baseUrl)
+  
+  return {
+    apiUser: process.env.TOSLA_API_USER || 'apiUser3016658',
+    apiPass: process.env.TOSLA_API_PASS || 'YN8L293GPY',
+    clientId: process.env.TOSLA_CLIENT_ID || '1000002147',
+    baseUrl: baseUrl,
+    environment: (process.env.NODE_ENV === 'production' ? 'production' : 'test') as 'test' | 'production'
+  }
 }
+
+// Backward compatibility için
+export const toslaConfig: ToslaConfig = getToslaConfig()
 
 // Tosla ödeme işlemi - Form tabanlı yönlendirme (Kart bilgileri Tosla sayfasında girilir)
 export async function processToslaPayment(request: ToslaPaymentRequest): Promise<ToslaPaymentResponse> {
   try {
+    const config = getToslaConfig() // Her çağrıda güncel config'i al
     console.log('Tosla ödeme oturumu oluşturuluyor:', request.orderId)
+    console.log('Tosla baseUrl:', config.baseUrl)
     
     // Tosla API URL'i (OpenCart formatına uygun - sonunda / olmalı)
-    const apiUrl = toslaConfig.baseUrl.endsWith('/') ? toslaConfig.baseUrl : toslaConfig.baseUrl + '/'
+    const apiUrl = config.baseUrl.endsWith('/') ? config.baseUrl : config.baseUrl + '/'
     
     // Random ve timestamp oluştur (OpenCart eklentisindeki gibi)
     const rnd = Math.floor(Math.random() * 10000) + 1
@@ -80,14 +92,14 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
     
     // Hash oluştur (SHA512 + Base64) - OpenCart formatına uygun
     const crypto = await import('crypto')
-    const hashString = toslaConfig.apiPass + toslaConfig.clientId + toslaConfig.apiUser + rnd + timeSpan
+    const hashString = config.apiPass + config.clientId + config.apiUser + rnd + timeSpan
     const hashBytes = crypto.createHash('sha512').update(hashString).digest()
     const hash = hashBytes.toString('base64')
     
     // startPaymentThreeDSession API çağrısı (kart bilgileri olmadan)
     const sessionData = {
-      clientId: toslaConfig.clientId,
-      apiUser: toslaConfig.apiUser,
+      clientId: config.clientId,
+      apiUser: config.apiUser,
       Rnd: rnd,
       timeSpan: timeSpan,
       Hash: hash,
@@ -102,8 +114,8 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
     // Önce VerifyClient ile bağlantıyı test et
     const verifyUrl = `${apiUrl}VerifyClient`
     const verifyData = {
-      clientId: toslaConfig.clientId,
-      apiUser: toslaConfig.apiUser,
+      clientId: config.clientId,
+      apiUser: config.apiUser,
       Rnd: rnd,
       timeSpan: timeSpan,
       Hash: hash
@@ -262,7 +274,8 @@ export async function checkToslaPaymentStatus(paymentId: string): Promise<{
   paidAt?: string
 }> {
   try {
-    const apiUrl = toslaConfig.baseUrl.endsWith('/') ? toslaConfig.baseUrl : toslaConfig.baseUrl + '/'
+    const config = getToslaConfig()
+    const apiUrl = config.baseUrl.endsWith('/') ? config.baseUrl : config.baseUrl + '/'
     
     // Random ve timestamp oluştur
     const rnd = Math.floor(Math.random() * 10000) + 1
@@ -270,13 +283,13 @@ export async function checkToslaPaymentStatus(paymentId: string): Promise<{
     
     // Hash oluştur
     const crypto = await import('crypto')
-    const hashString = toslaConfig.apiPass + toslaConfig.clientId + toslaConfig.apiUser + rnd + timeSpan
+    const hashString = config.apiPass + config.clientId + config.apiUser + rnd + timeSpan
     const hashBytes = crypto.createHash('sha512').update(hashString).digest()
     const hash = hashBytes.toString('base64')
     
     const queryData = {
-      clientId: toslaConfig.clientId,
-      apiUser: toslaConfig.apiUser,
+      clientId: config.clientId,
+      apiUser: config.apiUser,
       Rnd: rnd,
       timeSpan: timeSpan,
       Hash: hash,
@@ -321,12 +334,13 @@ export async function checkToslaPaymentStatus(paymentId: string): Promise<{
 // Webhook doğrulama - Güncellenmiş
 export async function verifyToslaWebhook(payload: string, signature: string): Promise<boolean> {
   try {
+    const config = getToslaConfig()
     // Tosla webhook imza doğrulaması
     const crypto = await import('crypto')
     
     // Tosla'nın webhook secret key'i ile HMAC-SHA256 hash oluştur
     const expectedSignature = crypto
-      .createHmac('sha256', toslaConfig.apiPass)
+      .createHmac('sha256', config.apiPass)
       .update(payload)
       .digest('hex')
     
@@ -353,6 +367,7 @@ export function createToslaPaymentForm(orderData: {
   returnUrl: string
   cancelUrl: string
 }): string {
+  const config = getToslaConfig()
   // Tosla'nın gerçek ödeme sayfası URL'i
   const toslaPaymentUrl = 'https://secure.tosla.com/payment'
   
@@ -397,9 +412,9 @@ export function createToslaPaymentForm(orderData: {
         <p>Tosla ödeme sayfasına yönlendiriliyorsunuz...</p>
     </div>
     <form id="toslaPaymentForm" method="POST" action="${toslaPaymentUrl}">
-        <input type="hidden" name="ApiUser" value="${toslaConfig.apiUser}" />
-        <input type="hidden" name="ApiPass" value="${toslaConfig.apiPass}" />
-        <input type="hidden" name="ClientId" value="${toslaConfig.clientId}" />
+        <input type="hidden" name="ApiUser" value="${config.apiUser}" />
+        <input type="hidden" name="ApiPass" value="${config.apiPass}" />
+        <input type="hidden" name="ClientId" value="${config.clientId}" />
         <input type="hidden" name="Amount" value="${orderData.amount}" />
         <input type="hidden" name="Currency" value="${orderData.currency}" />
         <input type="hidden" name="OrderId" value="${orderData.orderId}" />
@@ -430,14 +445,15 @@ export async function testToslaConnection(): Promise<{
   details?: unknown
 }> {
   try {
+    const config = getToslaConfig()
     const testData = {
-      ApiUser: toslaConfig.apiUser,
-      ApiPass: toslaConfig.apiPass,
-      ClientId: toslaConfig.clientId,
+      ApiUser: config.apiUser,
+      ApiPass: config.apiPass,
+      ClientId: config.clientId,
       Test: true
     }
 
-    const response = await fetch(`${toslaConfig.baseUrl}/test/connection`, {
+    const response = await fetch(`${config.baseUrl}/test/connection`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
