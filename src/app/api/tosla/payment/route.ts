@@ -3,10 +3,15 @@ import { processToslaPayment, ToslaPaymentRequest } from '@/lib/tosla'
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('Tosla payment API çağrıldı')
+    console.log('TOSLA_BASE_URL:', process.env.TOSLA_BASE_URL)
+    
     let body
     try {
       body = await request.json()
+      console.log('Request body:', JSON.stringify(body, null, 2))
     } catch {
+      console.error('JSON parse hatası')
       return NextResponse.json(
         { success: false, error: 'Geçersiz JSON formatı' },
         { status: 400 }
@@ -56,7 +61,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Ödeme işlemini başlat
+    console.log('processToslaPayment çağrılıyor...')
     const result = await processToslaPayment(paymentRequest)
+    console.log('processToslaPayment sonucu:', JSON.stringify(result, null, 2))
 
     if (result.success) {
       // Eğer HTML form döndüyse, client'a ilet
