@@ -198,6 +198,8 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
     }
 
     const responseText = await response.text()
+    console.log('Tosla API yanıtı (raw):', responseText)
+    
     if (!responseText || responseText.trim() === '') {
       return {
         success: false,
@@ -210,6 +212,7 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
     let result
     try {
       result = JSON.parse(responseText)
+      console.log('Tosla API yanıtı (parsed):', JSON.stringify(result, null, 2))
     } catch (parseError) {
       console.error('Tosla API JSON parse hatası:', parseError, 'Yanıt:', responseText)
       return {
@@ -220,14 +223,19 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
       }
     }
 
-    // ThreeDSessionId kontrolü
-    const threeDSessionId = result.ThreeDSessionId || result.threeDSessionId
+    // ThreeDSessionId kontrolü - farklı case'leri dene
+    const threeDSessionId = result.ThreeDSessionId || result.threeDSessionId || result.threeDSessionID || result.ThreeDSessionID
+    console.log('ThreeDSessionId bulundu mu?', !!threeDSessionId)
+    console.log('Tüm result keys:', Object.keys(result))
     
     if (!threeDSessionId) {
-      const errorMsg = result.ErrorMessage || result.errorMessage || 'Session ID alınamadı'
+      const errorMsg = result.ErrorMessage || result.errorMessage || result.message || result.Message || 'Session ID alınamadı'
+      const errorCode = result.ErrorCode || result.errorCode || result.code || result.Code || 'SESSION_FAILED'
+      console.error('Session ID alınamadı. Hata:', errorMsg, 'Kod:', errorCode)
+      console.error('Tüm yanıt:', JSON.stringify(result, null, 2))
       return {
         success: false,
-        errorCode: result.ErrorCode || result.errorCode || 'SESSION_FAILED',
+        errorCode: errorCode,
         errorEndpoint: fullUrl,
         errorMessage: `${errorMsg} (${fullUrl})`
       }
