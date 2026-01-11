@@ -110,44 +110,56 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
     console.log('Final API URL:', apiUrl)
     
     // Random ve timestamp oluştur (OpenCart eklentisindeki gibi)
+    // KRİTİK: Hash hesaplanırken kullanılan değerler, request'te gönderilen değerlerle TAM OLARAK AYNI olmalı
     const rnd = Math.floor(Math.random() * 10000) + 1
     const timeSpan = new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14) // YYYYMMDDHHmmss formatı
     
     // Hash oluştur (SHA512 + Base64) - OpenCart formatına uygun
-    // ÖNEMLİ: Hash string'de tüm değerler string olarak birleştirilmeli
+    // PHP'de: $apiPass . $clientId . $apiUser . $rnd . $timeSpan
+    // Tüm değerler string concatenation ile birleştiriliyor
     const crypto = await import('crypto')
-    const hashString = String(config.apiPass) + String(config.clientId) + String(config.apiUser) + String(rnd) + String(timeSpan)
+    // Hash hesaplamasında kullanılan değerler (string olarak birleştirilecek)
+    const hashApiPass = String(config.apiPass)
+    const hashClientId = String(config.clientId)
+    const hashApiUser = String(config.apiUser)
+    const hashRnd = String(rnd) // Hash için string, request için number
+    const hashTimeSpan = String(timeSpan) // Hash için string, request için string
+    const hashString = hashApiPass + hashClientId + hashApiUser + hashRnd + hashTimeSpan
     const hashBytes = crypto.createHash('sha512').update(hashString).digest()
     const hash = hashBytes.toString('base64')
     
-    console.log('Hash Debug:')
-    console.log('  apiPass:', config.apiPass)
-    console.log('  clientId:', config.clientId)
-    console.log('  apiUser:', config.apiUser)
-    console.log('  rnd:', rnd, '(type:', typeof rnd, ')')
-    console.log('  timeSpan:', timeSpan, '(type:', typeof timeSpan, ')')
-    console.log('  hashString:', hashString)
-    console.log('  hash:', hash)
+    console.log('=== Hash Debug ===')
+    console.log('Hash için kullanılan değerler:')
+    console.log('  apiPass:', hashApiPass, '(length:', hashApiPass.length, ')')
+    console.log('  clientId:', hashClientId, '(length:', hashClientId.length, ')')
+    console.log('  apiUser:', hashApiUser, '(length:', hashApiUser.length, ')')
+    console.log('  rnd:', hashRnd, '(type: string, length:', hashRnd.length, ')')
+    console.log('  timeSpan:', hashTimeSpan, '(type: string, length:', hashTimeSpan.length, ')')
+    console.log('  hashString:', hashString, '(total length:', hashString.length, ')')
+    console.log('  hash (base64):', hash)
     
     // startPaymentThreeDSession API çağrısı (kart bilgileri olmadan)
-    // OpenCart formatına göre field isimleri
-    // ÖNEMLİ: PHP'de json_encode() yapıldığında:
+    // OpenCart formatına göre field isimleri - TAM OLARAK AYNI FORMAT
+    // PHP'de json_encode() yapıldığında:
     // - Rnd: number olarak gönderilmeli (PHP'de rand() integer döndürüyor)
     // - timeSpan: string olarak gönderilmeli (PHP'de date() string döndürüyor)
     // - amount, currency, installmentCount: number olarak gönderilmeli
     // - clientId, apiUser, Hash: string olarak gönderilmeli
     const sessionData = {
-      clientId: String(config.clientId),
-      apiUser: String(config.apiUser),
-      Rnd: rnd, // NUMBER olarak - PHP'de rand() integer döndürüyor
-      timeSpan: String(timeSpan), // STRING olarak - PHP'de date() string döndürüyor
-      Hash: String(hash),
+      clientId: hashClientId, // Hash'te kullanılan aynı değer
+      apiUser: hashApiUser, // Hash'te kullanılan aynı değer
+      Rnd: rnd, // NUMBER - Hash'te String(rnd) kullanıldı ama request'te number gönderiliyor
+      timeSpan: hashTimeSpan, // STRING - Hash'te kullanılan aynı değer
+      Hash: hash, // Hesaplanan hash
       callbackUrl: String(request.returnUrl),
       orderId: String(request.orderId),
       amount: Math.round(request.amount * 100), // Kuruş cinsinden (1 TL = 100) - Number
       currency: 949, // TRY - Number
       installmentCount: 0 // Number
     }
+    
+    console.log('=== Request Data ===')
+    console.log(JSON.stringify(sessionData, null, 2))
     
     console.log('Tosla request data:', JSON.stringify(sessionData, null, 2))
 
