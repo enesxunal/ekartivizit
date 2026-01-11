@@ -45,11 +45,6 @@ export interface ToslaPaymentResponse {
 // KRİTİK: Tosla SMS'ine göre artık sadece https://entegrasyon.tosla.com kullanılmalı
 const TOSLA_BASE_URL = 'https://entegrasyon.tosla.com/api/Payment/'
 
-const normalizeToslaBaseUrl = (url?: string) => {
-  // Her durumda entegrasyon.tosla.com kullan
-  return TOSLA_BASE_URL
-}
-
 // Tosla config'i dinamik olarak oku (her çağrıda güncel değerleri alsın)
 export const getToslaConfig = (): ToslaConfig => {
   // Environment variable'ları kontrol et
