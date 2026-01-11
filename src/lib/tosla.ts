@@ -37,6 +37,7 @@ export interface ToslaPaymentResponse {
   errorCode?: string
   errorMessage?: string
   errorEndpoint?: string
+  errorDetails?: unknown // Tosla'dan gelen detaylı hata bilgisi
   // 503 vb. durumlarda form ile yönlendirme için HTML dönebilir
   redirectHtml?: string
 }
