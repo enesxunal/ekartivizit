@@ -114,24 +114,37 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
     const timeSpan = new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14) // YYYYMMDDHHmmss formatı
     
     // Hash oluştur (SHA512 + Base64) - OpenCart formatına uygun
+    // ÖNEMLİ: Hash string'de tüm değerler string olarak birleştirilmeli
     const crypto = await import('crypto')
-    const hashString = config.apiPass + config.clientId + config.apiUser + rnd + timeSpan
+    const hashString = String(config.apiPass) + String(config.clientId) + String(config.apiUser) + String(rnd) + String(timeSpan)
     const hashBytes = crypto.createHash('sha512').update(hashString).digest()
     const hash = hashBytes.toString('base64')
     
+    console.log('Hash Debug:')
+    console.log('  apiPass:', config.apiPass)
+    console.log('  clientId:', config.clientId)
+    console.log('  apiUser:', config.apiUser)
+    console.log('  rnd:', rnd, '(type:', typeof rnd, ')')
+    console.log('  timeSpan:', timeSpan, '(type:', typeof timeSpan, ')')
+    console.log('  hashString:', hashString)
+    console.log('  hash:', hash)
+    
     // startPaymentThreeDSession API çağrısı (kart bilgileri olmadan)
+    // OpenCart formatına göre field isimleri - TÜM DEĞERLER STRING OLMALI
     const sessionData = {
-      clientId: config.clientId,
-      apiUser: config.apiUser,
-      Rnd: rnd,
-      timeSpan: timeSpan,
-      Hash: hash,
-      callbackUrl: request.returnUrl,
-      orderId: request.orderId,
-      amount: Math.round(request.amount * 100), // Kuruş cinsinden (1 TL = 100)
-      currency: 949, // TRY
-      installmentCount: 0
+      clientId: String(config.clientId),
+      apiUser: String(config.apiUser),
+      Rnd: String(rnd),
+      timeSpan: String(timeSpan),
+      Hash: String(hash),
+      callbackUrl: String(request.returnUrl),
+      orderId: String(request.orderId),
+      amount: Math.round(request.amount * 100), // Kuruş cinsinden (1 TL = 100) - Number olarak kalmalı
+      currency: 949, // TRY - Number olarak kalmalı
+      installmentCount: 0 // Number olarak kalmalı
     }
+    
+    console.log('Tosla request data:', JSON.stringify(sessionData, null, 2))
 
     // OpenCart formatında: $this->url . $url
     // Önce VerifyClient ile bağlantıyı test et
