@@ -305,12 +305,26 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
       console.error('Tüm yanıt:', JSON.stringify(result, null, 2))
       
       // Tüm yanıtı error message'a ekle ki görebilelim
+      // Debug bilgilerini de ekle (tarayıcıda görünsün)
       return {
         success: false,
         errorCode: errorCode,
         errorEndpoint: fullUrl,
         errorMessage: `${errorMsg} (${fullUrl})`,
-        errorDetails: result // Tüm yanıtı ekle
+        errorDetails: result, // Tüm yanıtı ekle
+        debugInfo: {
+          hashString: hashString,
+          hashStringLength: hashString.length,
+          requestData: sessionData,
+          apiUrl: fullUrl,
+          hashComponents: {
+            apiPass: hashApiPass,
+            clientId: hashClientId,
+            apiUser: hashApiUser,
+            rnd: hashRnd,
+            timeSpan: hashTimeSpan
+          }
+        }
       }
     }
 
