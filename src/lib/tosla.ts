@@ -126,7 +126,16 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
     // Random ve timestamp oluştur (OpenCart eklentisindeki gibi)
     // KRİTİK: Hash hesaplanırken kullanılan değerler, request'te gönderilen değerlerle TAM OLARAK AYNI olmalı
     const rnd = Math.floor(Math.random() * 10000) + 1
-    const timeSpan = new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14) // YYYYMMDDHHmmss formatı
+    // PHP'deki date("YmdHis") local timezone kullanıyor, UTC değil
+    // JavaScript'te de local timezone kullanmalıyız
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = String(now.getMonth() + 1).padStart(2, '0')
+    const day = String(now.getDate()).padStart(2, '0')
+    const hours = String(now.getHours()).padStart(2, '0')
+    const minutes = String(now.getMinutes()).padStart(2, '0')
+    const seconds = String(now.getSeconds()).padStart(2, '0')
+    const timeSpan = `${year}${month}${day}${hours}${minutes}${seconds}` // YYYYMMDDHHmmss formatı (local timezone)
     
     // Hash oluştur (SHA512 + Base64) - OpenCart formatına uygun
     // PHP'de: $apiPass . $clientId . $apiUser . $rnd . $timeSpan
