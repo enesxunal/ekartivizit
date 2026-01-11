@@ -229,9 +229,10 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
       console.error('VerifyClient hatası:', verifyError)
     }
     
-    // OpenCart eklentisinde threeDPayment kullanılıyor
-    // startPaymentThreeDSession yerine threeDPayment endpoint'ini kullanıyoruz
-    const fullUrl = `${apiUrl}threeDPayment`
+    // OpenCart eklentisinde threeDPayment kullanılıyor ama bu kart bilgileriyle çalışıyor
+    // Bizim durumumuzda startPaymentThreeDSession kullanmalıyız (kart bilgileri Tosla sayfasında girilecek)
+    // Ama önce threeDPayment'i deneyelim, çalışmazsa startPaymentThreeDSession'a geçeriz
+    const fullUrl = `${apiUrl}startPaymentThreeDSession`
     
     // Son kontrol - URL kesinlikle doğru olmalı
     if (fullUrl.toLowerCase().includes('api.tosla.com')) {
