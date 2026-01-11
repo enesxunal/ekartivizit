@@ -157,7 +157,7 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
     }
     
     // 2. callbackUrl geçerli bir URL olmalı
-    let callbackUrl = String(request.returnUrl).trim()
+    const callbackUrl = String(request.returnUrl).trim()
     if (!callbackUrl || !callbackUrl.startsWith('http')) {
       return {
         success: false,
