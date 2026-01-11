@@ -81,7 +81,8 @@ export async function POST(request: NextRequest) {
           success: false,
           error: result.errorMessage,
           errorCode: result.errorCode,
-          errorDetails: result.errorDetails || null // Tosla'dan gelen detaylı hata
+          errorDetails: result.errorDetails || null, // Tosla'dan gelen detaylı hata
+          debugInfo: result.debugInfo || null // Debug bilgileri (hash, request data, vb.)
         },
         { status: 400 }
       )

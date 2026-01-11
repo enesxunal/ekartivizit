@@ -40,6 +40,12 @@ export interface ToslaPaymentResponse {
   errorDetails?: unknown // Tosla'dan gelen detaylı hata bilgisi
   // 503 vb. durumlarda form ile yönlendirme için HTML dönebilir
   redirectHtml?: string
+  // Debug bilgileri (tarayıcıda görünsün)
+  debugInfo?: {
+    hashString?: string
+    requestData?: unknown
+    apiUrl?: string
+  }
 }
 
 // Tosla konfigürasyonu - Resmi API URL'i
