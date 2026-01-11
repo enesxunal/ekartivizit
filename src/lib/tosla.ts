@@ -41,43 +41,13 @@ export interface ToslaPaymentResponse {
   redirectHtml?: string
 }
 
-// Tosla konfigürasyonu - Resmi API URL'i (sonunda / olmalı)
+// Tosla konfigürasyonu - Resmi API URL'i
+// KRİTİK: Tosla SMS'ine göre artık sadece https://entegrasyon.tosla.com kullanılmalı
+const TOSLA_BASE_URL = 'https://entegrasyon.tosla.com/api/Payment/'
+
 const normalizeToslaBaseUrl = (url?: string) => {
-  // Kesinlikle entegrasyon.tosla.com kullan
-  const fallback = 'https://entegrasyon.tosla.com/api/Payment/'
-  
-  // Eğer URL yoksa veya boşsa, direkt fallback döndür
-  if (!url || !url.trim()) {
-    return fallback
-  }
-
-  const trimmed = url.trim()
-  
-  // Eğer api.tosla.com içeriyorsa, kesinlikle entegrasyon.tosla.com ile değiştir
-  if (trimmed.toLowerCase().includes('api.tosla.com')) {
-    // Tüm api.tosla.com referanslarını entegrasyon.tosla.com ile değiştir
-    const normalized = trimmed.replace(/api\.tosla\.com/gi, 'entegrasyon.tosla.com')
-    
-    // Eğer /api/Payment/ içermiyorsa ekle
-    if (!normalized.toLowerCase().includes('/api/payment')) {
-      const sanitized = normalized.endsWith('/') ? normalized.slice(0, -1) : normalized
-      return `${sanitized}/api/Payment/`
-    }
-    
-    return normalized.endsWith('/') ? normalized : `${normalized}/`
-  }
-
-  // Eğer zaten entegrasyon.tosla.com içeriyorsa, sadece formatı kontrol et
-  if (trimmed.toLowerCase().includes('entegrasyon.tosla.com')) {
-    if (trimmed.toLowerCase().includes('/api/payment')) {
-      return trimmed.endsWith('/') ? trimmed : `${trimmed}/`
-    }
-    const sanitized = trimmed.endsWith('/') ? trimmed.slice(0, -1) : trimmed
-    return `${sanitized}/api/Payment/`
-  }
-
-  // Diğer durumlarda fallback kullan (güvenli tarafta ol)
-  return fallback
+  // Her durumda entegrasyon.tosla.com kullan
+  return TOSLA_BASE_URL
 }
 
 // Tosla config'i dinamik olarak oku (her çağrıda güncel değerleri alsın)
@@ -93,22 +63,11 @@ export const getToslaConfig = (): ToslaConfig => {
   console.log('TOSLA_API_USER (env):', envApiUser || 'UNDEFINED')
   console.log('TOSLA_CLIENT_ID (env):', envClientId || 'UNDEFINED')
   
-  let baseUrl = normalizeToslaBaseUrl(envBaseUrl)
-  console.log('Normalized baseUrl:', baseUrl)
+  // KRİTİK: Tosla SMS'ine göre sadece entegrasyon.tosla.com kullanılmalı
+  // Her durumda hardcoded URL kullan
+  const baseUrl = TOSLA_BASE_URL
   
-  // SON KONTROL - Kesinlikle api.tosla.com içermemeli
-  if (baseUrl.toLowerCase().includes('api.tosla.com')) {
-    console.error('KRİTİK HATA: baseUrl hala api.tosla.com içeriyor! Fallback kullanılıyor.')
-    baseUrl = 'https://entegrasyon.tosla.com/api/Payment/'
-    console.log('Fallback URL kullanılıyor:', baseUrl)
-  }
-  
-  // Bir kez daha kontrol et - kesinlikle entegrasyon.tosla.com olmalı
-  if (!baseUrl.toLowerCase().includes('entegrasyon.tosla.com')) {
-    console.error('KRİTİK HATA: baseUrl entegrasyon.tosla.com içermiyor! Fallback kullanılıyor.')
-    baseUrl = 'https://entegrasyon.tosla.com/api/Payment/'
-  }
-  
+  console.log('Final baseUrl (hardcoded):', baseUrl)
   console.log('=== Config OK ===')
   
   return {
@@ -143,7 +102,15 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
     }
     
     // Tosla API URL'i (OpenCart formatına uygun - sonunda / olmalı)
-    const apiUrl = config.baseUrl.endsWith('/') ? config.baseUrl : config.baseUrl + '/'
+    // KRİTİK: Kesinlikle entegrasyon.tosla.com kullan
+    let apiUrl = config.baseUrl.endsWith('/') ? config.baseUrl : config.baseUrl + '/'
+    
+    // SON KONTROL - Eğer hala api.tosla.com içeriyorsa, direkt değiştir
+    if (apiUrl.toLowerCase().includes('api.tosla.com')) {
+      console.error('KRİTİK: apiUrl hala api.tosla.com içeriyor! Direkt değiştiriliyor.')
+      apiUrl = 'https://entegrasyon.tosla.com/api/Payment/'
+    }
+    
     console.log('Final API URL:', apiUrl)
     
     // Random ve timestamp oluştur (OpenCart eklentisindeki gibi)
