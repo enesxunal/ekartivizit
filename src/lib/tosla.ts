@@ -130,18 +130,23 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
     console.log('  hash:', hash)
     
     // startPaymentThreeDSession API çağrısı (kart bilgileri olmadan)
-    // OpenCart formatına göre field isimleri - TÜM DEĞERLER STRING OLMALI
+    // OpenCart formatına göre field isimleri
+    // ÖNEMLİ: PHP'de json_encode() yapıldığında:
+    // - Rnd: number olarak gönderilmeli (PHP'de rand() integer döndürüyor)
+    // - timeSpan: string olarak gönderilmeli (PHP'de date() string döndürüyor)
+    // - amount, currency, installmentCount: number olarak gönderilmeli
+    // - clientId, apiUser, Hash: string olarak gönderilmeli
     const sessionData = {
       clientId: String(config.clientId),
       apiUser: String(config.apiUser),
-      Rnd: String(rnd),
-      timeSpan: String(timeSpan),
+      Rnd: rnd, // NUMBER olarak - PHP'de rand() integer döndürüyor
+      timeSpan: String(timeSpan), // STRING olarak - PHP'de date() string döndürüyor
       Hash: String(hash),
       callbackUrl: String(request.returnUrl),
       orderId: String(request.orderId),
-      amount: Math.round(request.amount * 100), // Kuruş cinsinden (1 TL = 100) - Number olarak kalmalı
-      currency: 949, // TRY - Number olarak kalmalı
-      installmentCount: 0 // Number olarak kalmalı
+      amount: Math.round(request.amount * 100), // Kuruş cinsinden (1 TL = 100) - Number
+      currency: 949, // TRY - Number
+      installmentCount: 0 // Number
     }
     
     console.log('Tosla request data:', JSON.stringify(sessionData, null, 2))
