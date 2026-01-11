@@ -43,8 +43,16 @@ export interface ToslaPaymentResponse {
   // Debug bilgileri (tarayıcıda görünsün)
   debugInfo?: {
     hashString?: string
+    hashStringLength?: number
     requestData?: unknown
     apiUrl?: string
+    hashComponents?: {
+      apiPass?: string
+      clientId?: string
+      apiUser?: string
+      rnd?: string
+      timeSpan?: string
+    }
   }
 }
 
