@@ -229,15 +229,18 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
     console.log('Tüm result keys:', Object.keys(result))
     
     if (!threeDSessionId) {
-      const errorMsg = result.ErrorMessage || result.errorMessage || result.message || result.Message || 'Session ID alınamadı'
+      const errorMsg = result.ErrorMessage || result.errorMessage || result.message || result.Message || result.error || 'Session ID alınamadı'
       const errorCode = result.ErrorCode || result.errorCode || result.code || result.Code || 'SESSION_FAILED'
       console.error('Session ID alınamadı. Hata:', errorMsg, 'Kod:', errorCode)
       console.error('Tüm yanıt:', JSON.stringify(result, null, 2))
+      
+      // Tüm yanıtı error message'a ekle ki görebilelim
       return {
         success: false,
         errorCode: errorCode,
         errorEndpoint: fullUrl,
-        errorMessage: `${errorMsg} (${fullUrl})`
+        errorMessage: `${errorMsg} (${fullUrl})`,
+        errorDetails: result // Tüm yanıtı ekle
       }
     }
 

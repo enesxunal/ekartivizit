@@ -80,7 +80,8 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           error: result.errorMessage,
-          errorCode: result.errorCode
+          errorCode: result.errorCode,
+          errorDetails: result.errorDetails || null // Tosla'dan gelen detaylı hata
         },
         { status: 400 }
       )
@@ -88,11 +89,15 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Tosla ödeme API hatası:', error)
+    // Hata mesajını response'a ekle ki görebilelim
+    const errorMessage = error instanceof Error ? error.message : 'Bilinmeyen hata'
+    const errorStack = error instanceof Error ? error.stack : undefined
     return NextResponse.json(
       { 
         success: false, 
         error: 'Sunucu hatası',
-        details: error instanceof Error ? error.message : 'Bilinmeyen hata'
+        details: errorMessage,
+        stack: errorStack
       },
       { status: 500 }
     )
