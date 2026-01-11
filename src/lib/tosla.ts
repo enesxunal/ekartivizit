@@ -145,15 +145,46 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
     // - timeSpan: string olarak gönderilmeli (PHP'de date() string döndürüyor)
     // - amount, currency, installmentCount: number olarak gönderilmeli
     // - clientId, apiUser, Hash: string olarak gönderilmeli
+    
+    // KRİTİK KONTROLLER:
+    // 1. orderId boş olamaz - Tosla API boş orderId kabul etmiyor
+    if (!request.orderId || request.orderId.trim() === '') {
+      return {
+        success: false,
+        errorCode: 'INVALID_ORDER_ID',
+        errorMessage: 'OrderId boş olamaz'
+      }
+    }
+    
+    // 2. callbackUrl geçerli bir URL olmalı
+    let callbackUrl = String(request.returnUrl).trim()
+    if (!callbackUrl || !callbackUrl.startsWith('http')) {
+      return {
+        success: false,
+        errorCode: 'INVALID_CALLBACK_URL',
+        errorMessage: 'CallbackUrl geçerli bir URL olmalı (http veya https ile başlamalı)'
+      }
+    }
+    
+    // 3. amount 0'dan büyük olmalı
+    const amountInKurus = Math.round(request.amount * 100)
+    if (amountInKurus <= 0) {
+      return {
+        success: false,
+        errorCode: 'INVALID_AMOUNT',
+        errorMessage: 'Amount 0\'dan büyük olmalı'
+      }
+    }
+    
     const sessionData = {
       clientId: hashClientId, // Hash'te kullanılan aynı değer
       apiUser: hashApiUser, // Hash'te kullanılan aynı değer
       Rnd: rnd, // NUMBER - Hash'te String(rnd) kullanıldı ama request'te number gönderiliyor
       timeSpan: hashTimeSpan, // STRING - Hash'te kullanılan aynı değer
       Hash: hash, // Hesaplanan hash
-      callbackUrl: String(request.returnUrl),
-      orderId: String(request.orderId),
-      amount: Math.round(request.amount * 100), // Kuruş cinsinden (1 TL = 100) - Number
+      callbackUrl: callbackUrl, // Geçerli URL
+      orderId: String(request.orderId).trim(), // Boş olamaz
+      amount: amountInKurus, // Kuruş cinsinden (1 TL = 100) - Number, 0'dan büyük olmalı
       currency: 949, // TRY - Number
       installmentCount: 0 // Number
     }
