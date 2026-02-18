@@ -46,44 +46,14 @@ export async function POST(request: NextRequest) {
       Currency
     })
 
-    // Ödeme durumunu güncelle
+    // Ödeme durumunu Tosla'dan al (sunucuda localStorage yok - sipariş durumu client tarafında güncellenir)
     const paymentStatus = await checkToslaPaymentStatus(PaymentId)
-    
-    // LocalStorage'dan siparişi bul ve güncelle
-    try {
-      const allOrders = JSON.parse(localStorage.getItem('ekartvizit-orders') || '[]')
-      const orderIndex = allOrders.findIndex((order: { id: string }) => order.id === OrderId)
-      
-      if (orderIndex !== -1) {
-        const order = allOrders[orderIndex]
-        
-        // Ödeme durumunu güncelle
-        if (paymentStatus.status === 'success') {
-          order.paymentStatus = 'paid'
-          order.status = 'confirmed'
-          order.paidAt = new Date().toISOString()
-        } else if (paymentStatus.status === 'failed' || paymentStatus.status === 'cancelled') {
-          order.paymentStatus = 'failed'
-          order.status = 'cancelled'
-        }
-        
-        order.updatedAt = new Date().toISOString()
-        allOrders[orderIndex] = order
-        
-        // Güncellenmiş siparişleri kaydet
-        localStorage.setItem('ekartvizit-orders', JSON.stringify(allOrders))
-        
-        console.log('Sipariş güncellendi:', {
-          orderId: OrderId,
-          paymentStatus: paymentStatus.status,
-          orderStatus: order.status
-        })
-      } else {
-        console.warn('Sipariş bulunamadı:', OrderId)
-      }
-    } catch (storageError) {
-      console.error('LocalStorage güncelleme hatası:', storageError)
-    }
+
+    console.log('Webhook ödeme durumu:', {
+      orderId: OrderId,
+      paymentId: PaymentId,
+      status: paymentStatus.status
+    })
 
     // Başarılı yanıt döndür
     return NextResponse.json({ 

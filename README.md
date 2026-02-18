@@ -220,6 +220,107 @@ ssh root@89.252.179.40
 
 **Not:** Şifreyi yazarken ekranda görünmez, bu normaldir!
 
+### ⚠️ SSH Bağlantı Sorunu (Connection Refused)
+
+Eğer `ssh: connect to host 89.252.179.40 port 22: Connection refused` hatası alıyorsanız:
+
+**Bu durum şunları gösterebilir:**
+- SSH servisi kapalı olabilir
+- Firewall SSH portunu engelliyor olabilir
+- Sunucu tamamen kapalı olabilir
+- IP adresi değişmiş olabilir
+
+**Çözüm Adımları:**
+
+1. **VPS/Hosting Panelinden Kontrol:**
+   - VPS sağlayıcınızın kontrol panelinden (örn: DigitalOcean, Vultr, Hetzner) sunucu durumunu kontrol edin
+   - Sunucunun çalışıyor olduğundan emin olun
+   - VNC/KVM konsoluna erişim varsa oradan kontrol edin
+
+2. **Sunucu Sağlayıcısıyla İletişim:**
+   - Hosting sağlayıcınızla iletişime geçin
+   - SSH servisinin çalışıp çalışmadığını kontrol ettirin
+   - Firewall ayarlarını kontrol ettirin
+
+3. **Alternatif Port Deneyin:**
+   ```bash
+   ssh -p 2222 root@89.252.179.40
+   # veya
+   ssh -p 22022 root@89.252.179.40
+   ```
+
+4. **Sunucu IP'sini Kontrol Edin:**
+   - VPS panelinden sunucu IP adresinin değişmediğinden emin olun
+
+5. **VNC/KVM Konsol Erişimi:**
+   - VPS sağlayıcınızın panelinden VNC veya KVM konsoluna erişin
+   - Konsoldan SSH servisini başlatın:
+     ```bash
+     systemctl start ssh
+     systemctl enable ssh
+     ```
+
+**ÖNEMLİ:** SSH erişimi yoksa, sunucuya fiziksel erişim (VNC/KVM konsol) veya hosting sağlayıcısı desteği gerekir!
+
+### 💾 Disk Dolu (HDD %90+ – Site Neden Patlıyor?)
+
+Disk neredeyse doluysa (ör. %92, 3–4 GB boş) uygulama yazamaz, log tutamaz; PM2 ve site sürekli çökebilir.
+
+**Önce ne kadar yer kapladığını görün:**
+
+```bash
+# Hangi klasörler çok yer kaplıyor?
+du -sh /var/* 2>/dev/null | sort -hr | head -15
+
+# Loglar ne kadar?
+du -sh /var/log/* 2>/dev/null | sort -hr | head -10
+
+# Proje ve cache
+du -sh /var/www/ekartvizit/* 2>/dev/null
+du -sh /var/www/ekartvizit/.next 2>/dev/null
+```
+
+**Güvenle temizleyebileceğiniz yerler:**
+
+```bash
+# 1. Eski logları temizle (PM2 + Nginx)
+pm2 flush
+> /var/log/ekartvizit/out.log
+> /var/log/ekartvizit/err.log
+> /var/log/ekartvizit/combined.log
+truncate -s 0 /var/log/nginx/access.log
+truncate -s 0 /var/log/nginx/error.log
+
+# 2. Eski apt paket listesi ve cache
+apt-get clean
+apt-get autoclean
+
+# 3. npm cache (sunucuda)
+npm cache clean --force
+
+# 4. Eski journal logları (sadece eskileri siler)
+journalctl --vacuum-time=7d
+# veya
+journalctl --vacuum-size=100M
+```
+
+**Proje içi (dikkatli):**
+
+- `.next` silinirse `npm run build` tekrar gerekir.
+- `node_modules` silinirse `npm install` tekrar gerekir.
+
+```bash
+cd /var/www/ekartvizit
+
+# Sadece Next.js cache (build’i silmez)
+rm -rf .next/cache
+
+# Temizlikten sonra yer kontrolü
+df -h /
+```
+
+**Öneri:** Disk %85’in üzerindeyse önce log + apt + npm cache temizliği yapın; hâlâ doluyorsa `du -sh` ile büyük klasörleri bulup ona göre silin. Disk rahatlayınca site ve SSH daha stabil çalışır.
+
 ### Proje Güncelleme (Sırayla)
 
 Sunucuya bağlandıktan sonra:
@@ -254,7 +355,156 @@ pm2 status
 Tüm güncellemeleri tek seferde yapmak için:
 
 ```bash
-cd /var/www/ekartvizit && git pull origin main && npm install && npm run build && pm2 restart ekartvizit && systemctl reload nginx && pm2 status
+cd /var/www/ekartvizit && git pull origin main && npm install && npm run build && pm2 restart ekartvizit --update-env && systemctl reload nginx && pm2 status
+```
+
+### 🚨 Hızlı Sorun Giderme (Site Kapalıysa)
+
+Site sürekli kapanıyorsa, önce bu adımları deneyin:
+
+```bash
+# Sunucuya bağlan
+ssh root@89.252.179.40
+# Şifre: 5l1B1nJ0auxY2WEuM3
+
+# Proje klasörüne git
+cd /var/www/ekartvizit
+
+# Otomatik düzeltme script'ini çalıştır
+chmod +x fix-server.sh
+./fix-server.sh
+```
+
+**VEYA** manuel olarak:
+
+```bash
+# 1. PM2'yi durdur ve temizle
+pm2 delete ekartvizit
+pm2 kill
+
+# 2. Port 3000'i temizle
+lsof -ti:3000 | xargs kill -9 2>/dev/null || fuser -k 3000/tcp
+
+# 3. Proje klasörüne git
+cd /var/www/ekartvizit
+
+# 4. Build yap
+npm run build
+
+# 5. PM2 ile başlat
+pm2 start ecosystem.config.js
+pm2 save
+
+# 6. Durumu kontrol et
+pm2 status
+pm2 logs ekartvizit --lines 30
+```
+
+### Sunucu Sorun Giderme
+
+Eğer site sürekli "Web server is down" (Error 521) hatası veriyorsa:
+
+**ADIM 1: Temel Kontroller**
+```bash
+# 1. Port 3000'in dinlenip dinlenmediğini kontrol et
+ss -tlnp | grep :3000
+
+# 2. Next.js'i manuel başlatmayı dene (PM2 olmadan)
+cd /var/www/ekartvizit
+NODE_ENV=production PORT=3000 node_modules/.bin/next start
+# Bu komut çalışıyorsa ve "Ready on http://localhost:3000" görüyorsan, sorun PM2'de
+# Ctrl+C ile durdur
+
+# 3. Build'in başarılı olup olmadığını kontrol et
+ls -la .next/server/app/
+
+# 4. PM2 durumunu kontrol et
+pm2 status
+pm2 logs ekartvizit --err --lines 50
+```
+
+**ADIM 2: Port 3000 Sorunu Çözme (EADDRINUSE)**
+```bash
+# Port 3000'i kullanan process'i bul ve durdur
+lsof -ti:3000 | xargs kill -9
+# veya
+fuser -k 3000/tcp
+
+# PM2'yi tamamen durdur
+pm2 delete ekartvizit
+pm2 kill
+
+# PM2 config'i kontrol et ve düzelt
+cd /var/www/ekartvizit
+cat ecosystem.config.js | grep -A 2 "script:"
+
+# Eğer "npm" görüyorsan, şunu çalıştır:
+sed -i "s|script: 'npm',|script: 'node_modules/.bin/next',|" ecosystem.config.js
+
+# PM2'yi yeniden başlat
+pm2 start ecosystem.config.js
+pm2 save
+
+# 10 saniye bekle ve logları kontrol et
+sleep 10
+pm2 logs ekartvizit --lines 30
+ss -tlnp | grep :3000
+```
+
+**ADIM 3: Nginx Kontrolü ve Başlatma**
+```bash
+# Nginx durumunu kontrol et
+ps aux | grep nginx
+
+# Nginx config'i kontrol et
+cat /etc/nginx/sites-enabled/ekartvizit.co | grep proxy_pass
+
+# Nginx config'i test et
+nginx -t
+
+# Nginx'i başlat (systemctl yoksa)
+nginx
+# veya
+/etc/init.d/nginx start
+
+# Nginx'i yeniden başlat
+nginx -s reload
+# veya
+/etc/init.d/nginx restart
+
+# Port 80'in dinlenip dinlenmediğini kontrol et
+ss -tlnp | grep :80
+```
+
+**ADIM 4: Cloudflare ve Firewall Kontrolü**
+```bash
+# 1. Firewall durumunu kontrol et
+ufw status
+# veya
+iptables -L -n | grep -E "(80|443)"
+
+# 2. Port 80 ve 443'ün açık olduğundan emin ol
+ufw allow 80/tcp
+ufw allow 443/tcp
+
+# 3. Sunucunun IP'sini kontrol et
+curl ifconfig.me
+hostname -I
+
+# 4. Cloudflare'in origin sunucuya bağlanıp bağlanamadığını test et
+# (Sunucu IP'si ile direkt erişim denemesi)
+curl -I http://89.252.179.40
+
+# 5. Nginx access loglarını kontrol et (Cloudflare'den gelen istekler var mı?)
+tail -20 /var/log/nginx/access.log
+
+# 6. Nginx error loglarını kontrol et
+tail -20 /var/log/nginx/error.log
+
+# 7. Cloudflare'de SSL/TLS ayarlarını kontrol et:
+# - SSL/TLS encryption mode: "Flexible" veya "Full" olmalı
+# - Always Use HTTPS: Kapalı olmalı (HTTP'den HTTPS'e redirect yapmamalı)
+# - Origin Server: HTTP (port 80) kullanmalı
 ```
 
 ### Deploy Script Kullanma
@@ -265,6 +515,29 @@ Alternatif olarak deploy script'ini kullanabilirsiniz:
 cd /var/www/ekartvizit
 ./deploy.sh
 ```
+
+### Sunucu Durum Kontrol Script'leri
+
+**Durum Kontrolü:**
+```bash
+cd /var/www/ekartvizit
+chmod +x check-server.sh
+./check-server.sh
+```
+
+**Otomatik Düzeltme:**
+```bash
+cd /var/www/ekartvizit
+chmod +x fix-server.sh
+./fix-server.sh
+```
+
+Bu script'ler:
+- PM2 durumunu kontrol eder
+- Port 3000'in açık olup olmadığını kontrol eder
+- Logları gösterir
+- Bellek ve disk kullanımını kontrol eder
+- Sorunları otomatik düzeltmeye çalışır
 
 ## 📞 İletişim
 
