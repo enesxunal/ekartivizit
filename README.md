@@ -321,6 +321,14 @@ df -h /
 
 **Öneri:** Disk %85’in üzerindeyse önce log + apt + npm cache temizliği yapın; hâlâ doluyorsa `du -sh` ile büyük klasörleri bulup ona göre silin. Disk rahatlayınca site ve SSH daha stabil çalışır.
 
+### Log rotasyonu (disk dolmasın)
+
+Projede `config/logrotate-ekartvizit` var. Sunucuda bir kez: `cd /var/www/ekartvizit && sudo cp config/logrotate-ekartvizit /etc/logrotate.d/ekartvizit` veya `sudo ./scripts/setup-logrotate.sh`. Her deploy'da bu ayar otomatik kopyalanır.
+
+### Hızlı sağlık kontrolü
+
+Site kopuyorsa: `df -h /` → `pm2 status` → `pm2 logs ekartvizit --err --lines 30` → `curl -s http://localhost:3000/api/health`
+
 ### Proje Güncelleme (Sırayla)
 
 Sunucuya bağlandıktan sonra:

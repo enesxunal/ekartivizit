@@ -1,0 +1,9 @@
+# PM2 ve uygulama logları - günlük kes, 7 gün sakla, disk dolmasın
+/var/log/ekartvizit/*.log {
+    daily
+    rotate 7
+    compress
+    missingok
+    notifempty
+    copytruncate
+}

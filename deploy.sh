@@ -46,6 +46,11 @@ pm2 status
 echo "🌐 Nginx yeniden yükleniyor..."
 sudo systemctl reload nginx
 
+# Logrotate (config varsa bir kez kurulduysa sorun çıkmaz)
+if [ -f "config/logrotate-ekartvizit" ]; then
+  sudo cp -f config/logrotate-ekartvizit /etc/logrotate.d/ekartvizit 2>/dev/null || true
+fi
+
 # SSL sertifikasını yenile (eğer gerekirse)
 echo "🔒 SSL sertifikası kontrol ediliyor..."
 sudo certbot renew --quiet

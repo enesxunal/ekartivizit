@@ -60,26 +60,22 @@ export interface ToslaPaymentResponse {
 // KRİTİK: Tosla SMS'ine göre artık sadece https://entegrasyon.tosla.com kullanılmalı
 const TOSLA_BASE_URL = 'https://entegrasyon.tosla.com/api/Payment/'
 
+// Production'da aşırı log disk doldurur; sadece debug'ta detay logla
+const toslaDebug = () => process.env.NODE_ENV !== 'production' || process.env.TOSLA_DEBUG === '1'
+
 // Tosla config'i dinamik olarak oku (her çağrıda güncel değerleri alsın)
 export const getToslaConfig = (): ToslaConfig => {
-  // Environment variable'ları kontrol et
   const envBaseUrl = process.env.TOSLA_BASE_URL
   const envApiUser = process.env.TOSLA_API_USER
   const envApiPass = process.env.TOSLA_API_PASS
   const envClientId = process.env.TOSLA_CLIENT_ID
-  
-  console.log('=== Tosla Config Debug ===')
-  console.log('TOSLA_BASE_URL (env):', envBaseUrl || 'UNDEFINED')
-  console.log('TOSLA_API_USER (env):', envApiUser || 'UNDEFINED')
-  console.log('TOSLA_CLIENT_ID (env):', envClientId || 'UNDEFINED')
-  
-  // KRİTİK: Tosla SMS'ine göre sadece entegrasyon.tosla.com kullanılmalı
-  // Her durumda hardcoded URL kullan
+
+  if (toslaDebug()) {
+    console.log('Tosla config:', { baseUrl: TOSLA_BASE_URL, hasApiUser: !!envApiUser, hasClientId: !!envClientId })
+  }
+
   const baseUrl = TOSLA_BASE_URL
-  
-  console.log('Final baseUrl (hardcoded):', baseUrl)
-  console.log('=== Config OK ===')
-  
+
   return {
     apiUser: envApiUser || 'apiUser3016658',
     apiPass: envApiPass || 'YN8L293GPY',
@@ -95,12 +91,11 @@ export const toslaConfig: ToslaConfig = getToslaConfig()
 // Tosla ödeme işlemi - Form tabanlı yönlendirme (Kart bilgileri Tosla sayfasında girilir)
 export async function processToslaPayment(request: ToslaPaymentRequest): Promise<ToslaPaymentResponse> {
   try {
-    const config = getToslaConfig() // Her çağrıda güncel config'i al
-    console.log('=== Tosla Payment Başlatılıyor ===')
-    console.log('OrderId:', request.orderId)
-    console.log('Amount:', request.amount)
-    console.log('Config baseUrl:', config.baseUrl)
-    
+    const config = getToslaConfig()
+    if (toslaDebug()) {
+      console.log('Tosla payment start:', { orderId: request.orderId, amount: request.amount })
+    }
+
     // URL kontrolü - kesinlikle api.tosla.com içermemeli
     if (config.baseUrl.toLowerCase().includes('api.tosla.com')) {
       console.error('KRİTİK HATA: baseUrl hala api.tosla.com içeriyor!')
@@ -120,9 +115,7 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
       console.error('KRİTİK: apiUrl hala api.tosla.com içeriyor! Direkt değiştiriliyor.')
       apiUrl = 'https://entegrasyon.tosla.com/api/Payment/'
     }
-    
-    console.log('Final API URL:', apiUrl)
-    
+
     // Random ve timestamp oluştur (OpenCart eklentisindeki gibi)
     // KRİTİK: Hash hesaplanırken kullanılan değerler, request'te gönderilen değerlerle TAM OLARAK AYNI olmalı
     const rnd = Math.floor(Math.random() * 10000) + 1
@@ -150,17 +143,11 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
     const hashString = hashApiPass + hashClientId + hashApiUser + hashRnd + hashTimeSpan
     const hashBytes = crypto.createHash('sha512').update(hashString).digest()
     const hash = hashBytes.toString('base64')
-    
-    console.log('=== Hash Debug ===')
-    console.log('Hash için kullanılan değerler:')
-    console.log('  apiPass:', hashApiPass, '(length:', hashApiPass.length, ')')
-    console.log('  clientId:', hashClientId, '(length:', hashClientId.length, ')')
-    console.log('  apiUser:', hashApiUser, '(length:', hashApiUser.length, ')')
-    console.log('  rnd:', hashRnd, '(type: string, length:', hashRnd.length, ')')
-    console.log('  timeSpan:', hashTimeSpan, '(type: string, length:', hashTimeSpan.length, ')')
-    console.log('  hashString:', hashString, '(total length:', hashString.length, ')')
-    console.log('  hash (base64):', hash)
-    
+
+    if (toslaDebug()) {
+      console.log('Tosla hash:', { hashStringLength: hashString.length, hashLength: hash.length })
+    }
+
     // startPaymentThreeDSession API çağrısı (kart bilgileri olmadan)
     // OpenCart formatına göre field isimleri - TAM OLARAK AYNI FORMAT
     // PHP'de json_encode() yapıldığında:
@@ -212,10 +199,9 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
       installmentCount: 0 // Number
     }
     
-    console.log('=== Request Data ===')
-    console.log(JSON.stringify(sessionData, null, 2))
-    
-    console.log('Tosla request data:', JSON.stringify(sessionData, null, 2))
+    if (toslaDebug()) {
+      console.log('Tosla request data:', JSON.stringify(sessionData, null, 2))
+    }
 
     // OpenCart formatında: $this->url . $url
     // Önce VerifyClient ile bağlantıyı test et
@@ -228,8 +214,8 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
       Hash: hash
     }
     
-    console.log('Tosla VerifyClient test:', verifyUrl)
-    
+    if (toslaDebug()) console.log('Tosla VerifyClient:', verifyUrl)
+
     try {
       const verifyResponse = await fetch(verifyUrl, {
         method: 'POST',
@@ -241,7 +227,7 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
       })
       
       const verifyText = await verifyResponse.text()
-      console.log('VerifyClient yanıtı:', verifyResponse.status, verifyText)
+      if (toslaDebug()) console.log('VerifyClient:', verifyResponse.status, verifyText)
     } catch (verifyError) {
       console.error('VerifyClient hatası:', verifyError)
     }
@@ -261,8 +247,9 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
       }
     }
     
-    console.log('Tosla API çağrısı yapılıyor (threeDPayment endpoint):', fullUrl)
-    console.log('Session Data:', JSON.stringify(sessionData, null, 2))
+    if (toslaDebug()) {
+      console.log('Tosla API:', fullUrl, JSON.stringify(sessionData, null, 2))
+    }
 
     const response = await fetch(fullUrl, {
       method: 'POST',
@@ -286,8 +273,8 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
     }
 
     const responseText = await response.text()
-    console.log('Tosla API yanıtı (raw):', responseText)
-    
+    if (toslaDebug()) console.log('Tosla API raw response length:', responseText?.length ?? 0)
+
     if (!responseText || responseText.trim() === '') {
       return {
         success: false,
@@ -300,7 +287,7 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
     let result
     try {
       result = JSON.parse(responseText)
-      console.log('Tosla API yanıtı (parsed):', JSON.stringify(result, null, 2))
+      if (toslaDebug()) console.log('Tosla API parsed:', JSON.stringify(result, null, 2))
     } catch (parseError) {
       console.error('Tosla API JSON parse hatası:', parseError, 'Yanıt:', responseText)
       return {
@@ -313,9 +300,10 @@ export async function processToslaPayment(request: ToslaPaymentRequest): Promise
 
     // ThreeDSessionId kontrolü - farklı case'leri dene
     const threeDSessionId = result.ThreeDSessionId || result.threeDSessionId || result.threeDSessionID || result.ThreeDSessionID
-    console.log('ThreeDSessionId bulundu mu?', !!threeDSessionId)
-    console.log('Tüm result keys:', Object.keys(result))
-    
+    if (toslaDebug()) {
+      console.log('ThreeDSessionId:', !!threeDSessionId, 'keys:', Object.keys(result))
+    }
+
     if (!threeDSessionId) {
       const errorMsg = result.ErrorMessage || result.errorMessage || result.message || result.Message || result.error || 'Session ID alınamadı'
       const errorCode = result.ErrorCode || result.errorCode || result.code || result.Code || 'SESSION_FAILED'
