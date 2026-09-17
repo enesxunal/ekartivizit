@@ -144,7 +144,7 @@ export const mailTemplates = {
           <a href="https://ekartvizit.tr/siparislerim" style="background: #59af05; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block; margin-right: 10px;">
             Siparişlerimi Görüntüle
           </a>
-          <a href="https://wa.me/905XXXXXXXXX" style="background: #25D366; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+          <a href="https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || ''}" style="background: #25D366; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
             WhatsApp Destek
           </a>
         </div>
