@@ -48,20 +48,20 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://ekartvizit.co'),
+  metadataBase: new URL('https://ekartvizit.tr'),
   alternates: {
-    canonical: 'https://ekartvizit.co',
+    canonical: 'https://ekartvizit.tr',
   },
   openGraph: {
     type: "website",
     locale: "tr_TR",
-    url: "https://ekartvizit.co",
+    url: "https://ekartvizit.tr",
     title: "E-Kartvizit - Profesyonel Baskı Çözümleri",
     description: "Kartvizit, broşür, magnet ve kurumsal baskı ürünleri için online tasarım ve baskı hizmetleri.",
     siteName: "E-Kartvizit",
     images: [
       {
-        url: "https://ekartvizit.co/og-image.jpg",
+        url: "https://ekartvizit.tr/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "E-Kartvizit - Profesyonel Baskı Çözümleri",
@@ -72,7 +72,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "E-Kartvizit - Profesyonel Baskı Çözümleri",
     description: "Kartvizit, broşür, magnet ve kurumsal baskı ürünleri için online tasarım ve baskı hizmetleri.",
-    images: ["https://ekartvizit.co/twitter-image.jpg"],
+    images: ["https://ekartvizit.tr/twitter-image.jpg"],
   },
   robots: {
     index: true,

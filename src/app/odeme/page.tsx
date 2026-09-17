@@ -297,7 +297,7 @@ export default function OdemePage() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              to: 'info@ekartvizit.co',
+              to: 'info@ekartvizit.tr',
               emailType: 'orderNotificationAdmin',
               orderData: {
                 ...orderData,

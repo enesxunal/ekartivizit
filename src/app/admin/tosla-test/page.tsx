@@ -344,11 +344,11 @@ export default function ToslaTestPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <Label className="text-sm font-medium text-gray-700">API User</Label>
-                <p className="text-sm text-gray-600 font-mono">apiUser3016658</p>
+                <p className="text-sm text-gray-600 font-mono">Vercel env üzerinden yapılandırılır</p>
               </div>
               <div>
                 <Label className="text-sm font-medium text-gray-700">Client ID</Label>
-                <p className="text-sm text-gray-600 font-mono">1000002147</p>
+                <p className="text-sm text-gray-600 font-mono">Vercel env üzerinden yapılandırılır</p>
               </div>
               <div>
                 <Label className="text-sm font-medium text-gray-700">Ortam</Label>

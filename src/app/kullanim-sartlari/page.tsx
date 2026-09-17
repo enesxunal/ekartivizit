@@ -315,7 +315,7 @@ export default function TermsOfServicePage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
                     <div>
                       <p><strong>Şirket:</strong> E-Kartvizit</p>
-                      <p><strong>E-posta:</strong> info@ekartvizit.co</p>
+                      <p><strong>E-posta:</strong> info@ekartvizit.tr</p>
                       <p><strong>Telefon:</strong> 0 850 840 30 11</p>
                     </div>
                     <div>

@@ -23,7 +23,7 @@ Canva entegrasyonu, müşterilerin sitemizden ayrılmadan tasarım yapabilmeleri
 
 **OAuth Settings:**
 - **Redirect URIs:** 
-  - `https://ekartvizit.co/api/canva/callback` (production)
+  - `https://ekartvizit.tr/api/canva/callback` (production)
   - `http://localhost:3000/canva/callback` (development)
 
 **Scopes:**
@@ -42,7 +42,7 @@ NEXT_PUBLIC_CANVA_REDIRECT_URI=http://localhost:3000/canva/callback
 
 ### 4. Test Etme
 
-1. https://ekartvizit.co/canva-test sayfasına gidin
+1. https://ekartvizit.tr/canva-test sayfasına gidin
 2. "Gerçek OAuth Test" butonuna tıklayın
 3. Canva'ya yönlendirileceksiniz
 4. Giriş yaptıktan sonra callback URL'inize geri döneceksiniz
@@ -76,12 +76,12 @@ GET /canva-test
 
 ```bash
 # Test URL'ini ziyaret edin
-curl "https://ekartvizit.co/api/canva/callback?code=test_code&state=test_state"
+curl "https://ekartvizit.tr/api/canva/callback?code=test_code&state=test_state"
 ```
 
 ### 2. Gerçek OAuth Test
 
-1. https://ekartvizit.co/canva-test sayfasına gidin
+1. https://ekartvizit.tr/canva-test sayfasına gidin
 2. "Gerçek OAuth Başlat" butonuna tıklayın
 3. Canva'ya yönlendirileceksiniz
 4. Giriş yaptıktan sonra callback URL'inize geri döneceksiniz
@@ -90,7 +90,7 @@ curl "https://ekartvizit.co/api/canva/callback?code=test_code&state=test_state"
 
 ```bash
 # Test callback URL'ini ziyaret edin
-curl "https://ekartvizit.co/api/canva/callback?code=test_code&state=test_state"
+curl "https://ekartvizit.tr/api/canva/callback?code=test_code&state=test_state"
 ```
 
 ## 📋 Gereksinimler
@@ -104,7 +104,7 @@ curl "https://ekartvizit.co/api/canva/callback?code=test_code&state=test_state"
 
 **OAuth Settings:**
 - **Redirect URIs:** 
-  - `https://ekartvizit.co/api/canva/callback` (production)
+  - `https://ekartvizit.tr/api/canva/callback` (production)
   - `http://localhost:3000/canva/callback` (development)
 
 **Scopes:**
@@ -128,7 +128,7 @@ NEXT_PUBLIC_CANVA_REDIRECT_URI=http://localhost:3000/canva/callback
    GET https://www.canva.com/api/oauth/authorize?
      response_type=code&
      client_id=YOUR_CLIENT_ID&
-     redirect_uri=https://ekartvizit.co/api/canva/callback&
+     redirect_uri=https://ekartvizit.tr/api/canva/callback&
      scope=design:read design:write&
      state=random_state_string
    ```
@@ -142,7 +142,7 @@ NEXT_PUBLIC_CANVA_REDIRECT_URI=http://localhost:3000/canva/callback
    code=AUTHORIZATION_CODE&
    client_id=YOUR_CLIENT_ID&
    client_secret=YOUR_CLIENT_SECRET&
-   redirect_uri=https://ekartvizit.co/api/canva/callback
+   redirect_uri=https://ekartvizit.tr/api/canva/callback
    ```
 
 3. **Design API Calls:**
@@ -235,14 +235,14 @@ NEXT_PUBLIC_CANVA_REDIRECT_URI=http://localhost:3000/canva/callback
 ```env
 NEXT_PUBLIC_CANVA_APP_ID=your_production_app_id
 CANVA_CLIENT_SECRET=your_production_client_secret
-NEXT_PUBLIC_CANVA_REDIRECT_URI=https://ekartvizit.co/canva/callback
+NEXT_PUBLIC_CANVA_REDIRECT_URI=https://ekartvizit.tr/canva/callback
 ```
 
 ## 📞 Destek
 
 ### Test Sayfası
 
-**URL:** https://ekartvizit.co/canva-test
+**URL:** https://ekartvizit.tr/canva-test
 
 **Özellikler:**
 - OAuth flow test

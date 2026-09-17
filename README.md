@@ -52,24 +52,24 @@ NEXT_PUBLIC_CANVA_REDIRECT_URI=http://localhost:3000/canva/callback
 NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
 
 # Site URL
-NEXT_PUBLIC_SITE_URL=https://ekartvizit.co
+NEXT_PUBLIC_SITE_URL=https://ekartvizit.tr
 
 # WhatsApp
 NEXT_PUBLIC_WHATSAPP_NUMBER=905xxxxxxxxx
 
 # Tosla Payment Gateway
-TOSLA_API_USER=apiUser3016658
-TOSLA_API_PASS=YN8L293GPY
-TOSLA_CLIENT_ID=1000002147
+TOSLA_API_USER=__SET_IN_VERCEL__
+TOSLA_API_PASS=__SET_IN_VERCEL__
+TOSLA_CLIENT_ID=__SET_IN_VERCEL__
 TOSLA_BASE_URL=https://api.tosla.com
 ```
 
 ## 💳 Tosla Ödeme Entegrasyonu
 
 ### API Bilgileri
-- **API User**: `apiUser3016658`
-- **API Pass**: `YN8L293GPY`
-- **Client ID**: `1000002147`
+- **API User**: Vercel Environment Variable
+- **API Pass**: Vercel Environment Variable
+- **Client ID**: Vercel Environment Variable
 - **Base URL**: `https://api.tosla.com`
 
 ### Özellikler
@@ -84,7 +84,7 @@ Admin panelinde `/admin/tosla-test` adresinde Tosla entegrasyonunu test edebilir
 
 ### Webhook URL
 ```
-https://ekartvizit.co/api/tosla/webhook
+https://ekartvizit.tr/api/tosla/webhook
 ```
 
 ## 🎨 Canva Entegrasyonu Kurulumu
@@ -104,7 +104,7 @@ Category: Design Tools
 // OAuth Settings
 Redirect URIs: 
 - http://localhost:3000/canva/callback (development)
-- https://ekartvizit.co/canva/callback (production)
+- https://ekartvizit.tr/canva/callback (production)
 
 // Scopes
 - design:content:read
@@ -465,7 +465,7 @@ ss -tlnp | grep :3000
 ps aux | grep nginx
 
 # Nginx config'i kontrol et
-cat /etc/nginx/sites-enabled/ekartvizit.co | grep proxy_pass
+cat /etc/nginx/sites-enabled/ekartvizit.tr | grep proxy_pass
 
 # Nginx config'i test et
 nginx -t
@@ -550,5 +550,5 @@ Bu script'ler:
 ## 📞 İletişim
 
 Proje hakkında sorularınız için:
-- Email: info@ekartvizit.co
+- Email: info@ekartvizit.tr
 - WhatsApp: +90 850 840 3011

@@ -38,8 +38,8 @@ chown -R www-data:www-data /var/log/ekartvizit
 
 # Nginx konfigürasyonu
 echo "🌐 Nginx konfigürasyonu yapılıyor..."
-cp nginx.conf /etc/nginx/sites-available/ekartvizit.co
-ln -sf /etc/nginx/sites-available/ekartvizit.co /etc/nginx/sites-enabled/
+cp nginx.conf /etc/nginx/sites-available/ekartvizit.tr
+ln -sf /etc/nginx/sites-available/ekartvizit.tr /etc/nginx/sites-enabled/
 
 # Default nginx site'ı kaldır
 rm -f /etc/nginx/sites-enabled/default
@@ -77,6 +77,6 @@ echo "   pm2 start ecosystem.config.js"
 echo "   pm2 save"
 echo ""
 echo "4. SSL sertifikası alın:"
-echo "   certbot --nginx -d ekartvizit.co -d www.ekartvizit.co"
+echo "   certbot --nginx -d ekartvizit.tr -d www.ekartvizit.tr"
 echo ""
-echo "🌍 Site: http://ekartvizit.co"
+echo "🌍 Site: http://ekartvizit.tr"

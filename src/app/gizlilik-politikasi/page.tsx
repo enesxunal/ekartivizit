@@ -222,7 +222,7 @@ export default function PrivacyPolicyPage() {
                   <div className="bg-gray-50 p-6 rounded-lg">
                     <h4 className="font-semibold text-gray-900 mb-4">İletişim Bilgileri:</h4>
                     <div className="space-y-2 text-gray-700">
-                      <p><strong>E-posta:</strong> kvkk@ekartvizit.co</p>
+                      <p><strong>E-posta:</strong> kvkk@ekartvizit.tr</p>
                       <p><strong>Telefon:</strong> 0 850 840 30 11</p>
                       <p><strong>Adres:</strong> Mustafa Kemal Mah. 2139 Sk. 15/5 Çankaya/Ankara</p>
                       <p><strong>Veri Sorumlusu:</strong> E-Kartvizit</p>

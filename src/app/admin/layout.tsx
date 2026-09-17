@@ -18,33 +18,37 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
 
-  // Admin bilgileri
-  const ADMIN_USERNAME = 'ekartvizit'
-  const ADMIN_PASSWORD = 'Ekartvizit15..'
-
   useEffect(() => {
-    // Sayfa yüklendiğinde oturum kontrolü yap
-    const isLoggedIn = localStorage.getItem('admin-logged-in') === 'true'
-    setIsAuthenticated(isLoggedIn)
-    setIsLoading(false)
+    fetch('/api/admin/session', { cache: 'no-store' })
+      .then((response) => response.json())
+      .then((data) => setIsAuthenticated(data.authenticated === true))
+      .catch(() => setIsAuthenticated(false))
+      .finally(() => setIsLoading(false))
   }, [])
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
 
-    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-      localStorage.setItem('admin-logged-in', 'true')
-      setIsAuthenticated(true)
-      setUsername('')
-      setPassword('')
-    } else {
-      setError('Kullanıcı adı veya şifre hatalı!')
+    const response = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    })
+    const result = await response.json().catch(() => null)
+
+    if (!response.ok) {
+      setError(result?.error || 'Giriş başarısız.')
+      return
     }
+
+    setIsAuthenticated(true)
+    setUsername('')
+    setPassword('')
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem('admin-logged-in')
+  const handleLogout = async () => {
+    await fetch('/api/admin/logout', { method: 'POST' }).catch(() => null)
     setIsAuthenticated(false)
     setUsername('')
     setPassword('')
@@ -53,7 +57,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
       </div>
     )
   }
@@ -74,44 +78,19 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               <div>
                 <Label htmlFor="username">Kullanıcı Adı</Label>
                 <div className="relative mt-1">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input
-                    id="username"
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Kullanıcı adınızı girin"
-                    className="pl-10"
-                    required
-                  />
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Input id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Kullanıcı adınızı girin" className="pl-10" required autoComplete="username" />
                 </div>
               </div>
-              
               <div>
                 <Label htmlFor="password">Şifre</Label>
                 <div className="relative mt-1">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Şifrenizi girin"
-                    className="pl-10"
-                    required
-                  />
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Şifrenizi girin" className="pl-10" required autoComplete="current-password" />
                 </div>
               </div>
-
-              {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-                  {error}
-                </div>
-              )}
-
-              <Button type="submit" className="w-full">
-                Giriş Yap
-              </Button>
+              {error && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">{error}</div>}
+              <Button type="submit" className="w-full">Giriş Yap</Button>
             </form>
           </CardContent>
         </Card>
@@ -121,16 +100,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Logout Button */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-end items-center py-2">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={handleLogout}
-              className="text-gray-600 hover:text-gray-900"
-            >
+            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-gray-600 hover:text-gray-900">
               <Lock className="w-4 h-4 mr-2" />
               Çıkış Yap
             </Button>
@@ -140,4 +113,4 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       {children}
     </div>
   )
-} 
+}

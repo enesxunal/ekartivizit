@@ -339,7 +339,7 @@ export default function FAQPage() {
                   E-posta
                 </h3>
                 <p className="text-gray-600 mb-4">
-                  info@ekartvizit.co
+                  info@ekartvizit.tr
                 </p>
                 <Button variant="outline">
                   E-posta Gönder

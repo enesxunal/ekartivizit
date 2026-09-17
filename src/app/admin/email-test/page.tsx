@@ -279,13 +279,13 @@ export default function EmailTestPage() {
               <h4 className="font-medium text-blue-900 mb-2">Mevcut Ayarlar:</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div>
-                  <strong>SMTP Sunucu:</strong> mail.ekartvizit.co
+                  <strong>SMTP Sunucu:</strong> mail.ekartvizit.tr
                 </div>
                 <div>
                   <strong>Port:</strong> 465 (SSL)
                 </div>
                 <div>
-                  <strong>Gönderen:</strong> info@ekartvizit.co
+                  <strong>Gönderen:</strong> info@ekartvizit.tr
                 </div>
                 <div>
                   <strong>Güvenlik:</strong> SSL/TLS

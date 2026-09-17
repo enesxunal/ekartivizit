@@ -6,8 +6,8 @@ export const canvaConfig = {
   tokenUrl: 'https://api.canva.com/rest/v1/oauth/token',
   
   // Redirect URL'leri (Canva geliştirici panelinde tanımlanmalı)
-  redirectUri: 'https://ekartvizit.co/api/canva/callback',
-  returnUrl: 'https://ekartvizit.co/tasarim-tamamlandi',
+  redirectUri: 'https://ekartvizit.tr/api/canva/callback',
+  returnUrl: 'https://ekartvizit.tr/tasarim-tamamlandi',
   
   // Geliştirme ortamı için localhost URL'leri
   dev: {

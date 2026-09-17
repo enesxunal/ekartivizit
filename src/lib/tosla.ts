@@ -56,9 +56,8 @@ export interface ToslaPaymentResponse {
   }
 }
 
-// Tosla konfigürasyonu - Resmi API URL'i
-// KRİTİK: Tosla SMS'ine göre artık sadece https://entegrasyon.tosla.com kullanılmalı
-const TOSLA_BASE_URL = 'https://entegrasyon.tosla.com/api/Payment/'
+// Tosla konfigürasyonu - credentiallar yalnızca server-side environment variable'lardan gelir
+const DEFAULT_TOSLA_BASE_URL = 'https://entegrasyon.tosla.com/api/Payment/'
 
 // Production'da aşırı log disk doldurur; sadece debug'ta detay logla
 const toslaDebug = () => process.env.NODE_ENV !== 'production' || process.env.TOSLA_DEBUG === '1'
@@ -70,23 +69,26 @@ export const getToslaConfig = (): ToslaConfig => {
   const envApiPass = process.env.TOSLA_API_PASS
   const envClientId = process.env.TOSLA_CLIENT_ID
 
+  const baseUrl = envBaseUrl || DEFAULT_TOSLA_BASE_URL
+
   if (toslaDebug()) {
-    console.log('Tosla config:', { baseUrl: TOSLA_BASE_URL, hasApiUser: !!envApiUser, hasClientId: !!envClientId })
+    console.log('Tosla config:', { baseUrl, hasApiUser: !!envApiUser, hasApiPass: !!envApiPass, hasClientId: !!envClientId })
   }
 
-  const baseUrl = TOSLA_BASE_URL
+  if (!envApiUser || !envApiPass || !envClientId) {
+    throw new Error('Tosla environment variables are missing')
+  }
 
   return {
-    apiUser: envApiUser || 'apiUser3016658',
-    apiPass: envApiPass || 'YN8L293GPY',
-    clientId: envClientId || '1000002147',
-    baseUrl: baseUrl,
+    apiUser: envApiUser,
+    apiPass: envApiPass,
+    clientId: envClientId,
+    baseUrl,
     environment: (process.env.NODE_ENV === 'production' ? 'production' : 'test') as 'test' | 'production'
   }
 }
 
 // Backward compatibility için
-export const toslaConfig: ToslaConfig = getToslaConfig()
 
 // Tosla ödeme işlemi - Form tabanlı yönlendirme (Kart bilgileri Tosla sayfasında girilir)
 export async function processToslaPayment(request: ToslaPaymentRequest): Promise<ToslaPaymentResponse> {

@@ -21,7 +21,7 @@ export default function SettingsPage() {
     // Genel Ayarlar
     siteName: 'E-Kartvizit',
     siteDescription: 'Özel tasarım kartvizit ve matbaa hizmetleri',
-    contactEmail: 'info@ekartvizit.com',
+    contactEmail: 'info@ekartvizit.trm',
     contactPhone: '+90 555 123 4567',
     address: 'İstanbul, Türkiye',
     

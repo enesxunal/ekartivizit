@@ -7,10 +7,10 @@ module.exports = {
     env: {
       NODE_ENV: 'production',
       PORT: 3000,
-      NEXT_PUBLIC_SITE_URL: 'https://ekartvizit.co',
-      TOSLA_API_USER: 'apiUser3016658',
-      TOSLA_API_PASS: 'YN8L293GPY',
-      TOSLA_CLIENT_ID: '1000002147',
+      NEXT_PUBLIC_SITE_URL: 'https://ekartvizit.tr',
+      TOSLA_API_USER: process.env.TOSLA_API_USER,
+      TOSLA_API_PASS: process.env.TOSLA_API_PASS,
+      TOSLA_CLIENT_ID: process.env.TOSLA_CLIENT_ID,
       TOSLA_BASE_URL: 'https://entegrasyon.tosla.com/api/Payment/'
     },
     instances: 1,

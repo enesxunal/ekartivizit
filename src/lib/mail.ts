@@ -1,11 +1,11 @@
 // Mail konfigürasyonu (şimdilik simüle edilmiş)
 const mailConfig = {
-  host: 'mail.ekartvizit.co',
-  port: 465,
-  secure: true,
+  host: process.env.SMTP_HOST || '',
+  port: Number(process.env.SMTP_PORT || 465),
+  secure: process.env.SMTP_SECURE !== 'false',
   auth: {
-    user: 'info@ekartvizit.co',
-    pass: '?@fKVM9ztz@j'
+    user: process.env.SMTP_USER || '',
+    pass: process.env.SMTP_PASS || ''
   }
 }
 
@@ -19,12 +19,12 @@ export interface MailOptions {
 export async function sendMail({ to, subject }: MailOptions) {
   try {
     // Şimdilik simüle edilmiş mail gönderimi
-    console.log('Mail gönderiliyor:', { to, subject, mailConfig })
+    console.log('Mail gönderiliyor:', { to, subject, smtpConfigured: !!mailConfig.host && !!mailConfig.auth.user })
     
     // Gerçek mail gönderimi için nodemailer kullanılacak
     // const transporter = nodemailer.createTransporter(mailConfig)
     // const info = await transporter.sendMail({
-    //   from: '"E-Kartvizit" <info@ekartvizit.co>',
+    //   from: '"E-Kartvizit" <info@ekartvizit.tr>',
     //   to,
     //   subject,
     //   html,
@@ -70,14 +70,14 @@ export const mailTemplates = {
         </div>
         
         <div style="text-align: center; margin-top: 30px;">
-          <a href="https://ekartvizit.co" style="background: #59af05; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+          <a href="https://ekartvizit.tr" style="background: #59af05; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
             Alışverişe Başla
           </a>
         </div>
         
         <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #999; font-size: 12px;">
           <p>Bu mail otomatik olarak gönderilmiştir.</p>
-          <p>E-Kartvizit | info@ekartvizit.co | 0850 XXX XX XX</p>
+          <p>E-Kartvizit | info@ekartvizit.tr | 0850 XXX XX XX</p>
         </div>
       </div>
     `
@@ -141,7 +141,7 @@ export const mailTemplates = {
         </div>
         
         <div style="text-align: center; margin-top: 30px;">
-          <a href="https://ekartvizit.co/siparislerim" style="background: #59af05; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block; margin-right: 10px;">
+          <a href="https://ekartvizit.tr/siparislerim" style="background: #59af05; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block; margin-right: 10px;">
             Siparişlerimi Görüntüle
           </a>
           <a href="https://wa.me/905XXXXXXXXX" style="background: #25D366; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
@@ -151,7 +151,7 @@ export const mailTemplates = {
         
         <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #999; font-size: 12px;">
           <p>Bu mail otomatik olarak gönderilmiştir.</p>
-          <p>E-Kartvizit | info@ekartvizit.co | 0850 XXX XX XX</p>
+          <p>E-Kartvizit | info@ekartvizit.tr | 0850 XXX XX XX</p>
         </div>
       </div>
     `
@@ -194,14 +194,14 @@ export const mailTemplates = {
           </div>
           
           <div style="text-align: center; margin-top: 30px;">
-            <a href="https://ekartvizit.co/siparislerim" style="background: #59af05; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+            <a href="https://ekartvizit.tr/siparislerim" style="background: #59af05; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
               Sipariş Detayını Görüntüle
             </a>
           </div>
           
           <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #999; font-size: 12px;">
             <p>Bu mail otomatik olarak gönderilmiştir.</p>
-            <p>E-Kartvizit | info@ekartvizit.co | 0850 XXX XX XX</p>
+            <p>E-Kartvizit | info@ekartvizit.tr | 0850 XXX XX XX</p>
           </div>
         </div>
       `

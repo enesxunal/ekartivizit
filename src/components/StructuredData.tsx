@@ -14,11 +14,11 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
           '@context': 'https://schema.org',
           '@type': 'WebSite',
           name: 'E-Kartvizit',
-          url: 'https://e-kartvizit.com',
+          url: 'https://ekartvizit.tr',
           description: 'Profesyonel baskı çözümleri ve online tasarım hizmetleri',
           potentialAction: {
             '@type': 'SearchAction',
-            target: 'https://e-kartvizit.com/search?q={search_term_string}',
+            target: 'https://ekartvizit.tr/search?q={search_term_string}',
             'query-input': 'required name=search_term_string',
           },
           ...data,
@@ -29,8 +29,8 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
           '@context': 'https://schema.org',
           '@type': 'Organization',
           name: 'E-Kartvizit',
-          url: 'https://e-kartvizit.com',
-          logo: 'https://e-kartvizit.com/logo.png',
+          url: 'https://ekartvizit.tr',
+          logo: 'https://ekartvizit.tr/logo.png',
           description: 'Kartvizit, broşür, magnet ve kurumsal baskı ürünleri için online tasarım ve baskı hizmetleri',
           contactPoint: {
             '@type': 'ContactPoint',
@@ -105,10 +105,10 @@ export function WebsiteStructuredData() {
     "@type": "WebSite",
     "name": "E-Kartvizit",
     "description": "Profesyonel baskı çözümleri - Kartvizit, broşür, magnet ve kurumsal baskı ürünleri",
-    "url": "https://ekartvizit.co",
+    "url": "https://ekartvizit.tr",
     "potentialAction": {
       "@type": "SearchAction",
-      "target": "https://ekartvizit.co/search?q={search_term_string}",
+      "target": "https://ekartvizit.tr/search?q={search_term_string}",
       "query-input": "required name=search_term_string"
     },
     "sameAs": [
@@ -132,8 +132,8 @@ export function OrganizationStructuredData() {
     "@type": "Organization",
     "name": "E-Kartvizit",
     "description": "Profesyonel baskı çözümleri ve online tasarım hizmetleri",
-    "url": "https://ekartvizit.co",
-    "logo": "https://ekartvizit.co/logo.png",
+    "url": "https://ekartvizit.tr",
+    "logo": "https://ekartvizit.tr/logo.png",
     "contactPoint": {
       "@type": "ContactPoint",
       "telephone": "+90-XXX-XXX-XXXX",
@@ -230,9 +230,9 @@ export function LocalBusinessStructuredData() {
     "@type": "LocalBusiness",
     "name": "E-Kartvizit",
     "description": "Profesyonel baskı çözümleri ve online tasarım hizmetleri",
-    "url": "https://ekartvizit.co",
-    "logo": "https://ekartvizit.co/logo.png",
-    "image": "https://ekartvizit.co/logo.png",
+    "url": "https://ekartvizit.tr",
+    "logo": "https://ekartvizit.tr/logo.png",
+    "image": "https://ekartvizit.tr/logo.png",
     "address": {
       "@type": "PostalAddress",
       "addressCountry": "TR",

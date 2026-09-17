@@ -24,7 +24,7 @@ export default function CanvaTestPage() {
     const authParams = new URLSearchParams({
       response_type: 'code',
       client_id: 'OC-AZcSA-HyneyB', // Gerçek client ID
-      redirect_uri: 'https://ekartvizit.co/api/canva/callback',
+      redirect_uri: 'https://ekartvizit.tr/api/canva/callback',
       scope: 'design:read design:write',
       state: state,
       code_challenge: codeChallenge,
@@ -74,7 +74,7 @@ export default function CanvaTestPage() {
       await new Promise(resolve => setTimeout(resolve, 2000))
 
       // Test callback URL'ini ziyaret et
-      const testCallbackUrl = 'https://ekartvizit.co/api/canva/callback?code=test_code&state=test_state'
+      const testCallbackUrl = 'https://ekartvizit.tr/api/canva/callback?code=test_code&state=test_state'
       
       setTestStatus('success')
       setTestMessage('OAuth flow başarılı! Test callback URL: ' + testCallbackUrl)
@@ -118,7 +118,7 @@ export default function CanvaTestPage() {
 
               <div className="text-xs text-gray-500">
                 <p><strong>Client ID:</strong> OC-AZcSA-HyneyB</p>
-                <p><strong>Redirect URI:</strong> https://ekartvizit.co/api/canva/callback</p>
+                <p><strong>Redirect URI:</strong> https://ekartvizit.tr/api/canva/callback</p>
                 <p><strong>Scope:</strong> design:read design:write</p>
               </div>
             </CardContent>
@@ -146,7 +146,7 @@ export default function CanvaTestPage() {
               </Button>
 
               <div className="text-xs text-gray-500">
-                <p><strong>Test URL:</strong> https://ekartvizit.co/api/canva/callback</p>
+                <p><strong>Test URL:</strong> https://ekartvizit.tr/api/canva/callback</p>
                 <p><strong>Test Code:</strong> test_code</p>
                 <p><strong>Test State:</strong> test_state</p>
               </div>
@@ -199,16 +199,16 @@ export default function CanvaTestPage() {
                 <div className="text-sm text-gray-600 space-y-1">
                   <p><strong>App Name:</strong> E-Kartvizit Design Tool</p>
                   <p><strong>Client ID:</strong> OC-AZcSA-HyneyB</p>
-                  <p><strong>Redirect URI:</strong> https://ekartvizit.co/api/canva/callback</p>
+                  <p><strong>Redirect URI:</strong> https://ekartvizit.tr/api/canva/callback</p>
                   <p><strong>Scope:</strong> design:read, design:write</p>
                 </div>
               </div>
               <div>
                 <h4 className="font-medium text-gray-900 mb-2">Test URL&apos;leri</h4>
                 <div className="text-sm text-gray-600 space-y-1">
-                  <p><strong>Callback:</strong> https://ekartvizit.co/api/canva/callback</p>
-                  <p><strong>Success Page:</strong> https://ekartvizit.co/tasarim-tamamlandi</p>
-                  <p><strong>Test Page:</strong> https://ekartvizit.co/canva-test</p>
+                  <p><strong>Callback:</strong> https://ekartvizit.tr/api/canva/callback</p>
+                  <p><strong>Success Page:</strong> https://ekartvizit.tr/tasarim-tamamlandi</p>
+                  <p><strong>Test Page:</strong> https://ekartvizit.tr/canva-test</p>
                 </div>
               </div>
             </div>

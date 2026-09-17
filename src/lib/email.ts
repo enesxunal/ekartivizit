@@ -1,11 +1,11 @@
 // E-posta konfigürasyonu - sadece server-side'da kullanılacak
 const emailConfig = {
-  host: 'mail.ekartvizit.co',
-  port: 465,
-  secure: true, // SSL için true
+  host: process.env.SMTP_HOST || '',
+  port: Number(process.env.SMTP_PORT || 465),
+  secure: process.env.SMTP_SECURE !== 'false',
   auth: {
-    user: 'info@ekartvizit.co',
-    pass: '?@fKVM9ztz@j'
+    user: process.env.SMTP_USER || '',
+    pass: process.env.SMTP_PASS || ''
   }
 }
 
@@ -53,14 +53,14 @@ export const emailTemplates = {
           </div>
           
           <div style="text-align: center; margin: 30px 0;">
-            <a href="https://ekartvizit.co" style="background-color: #59af05; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+            <a href="https://ekartvizit.tr" style="background-color: #59af05; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
               Alışverişe Başla
             </a>
           </div>
           
           <div style="border-top: 1px solid #eee; padding-top: 20px; margin-top: 30px; text-align: center; color: #666; font-size: 14px;">
             <p>Bu e-posta otomatik olarak gönderilmiştir.</p>
-            <p>E-Kartvizit | info@ekartvizit.co | www.ekartvizit.co</p>
+            <p>E-Kartvizit | info@ekartvizit.tr | www.ekartvizit.tr</p>
           </div>
         </div>
       </div>
@@ -127,14 +127,14 @@ export const emailTemplates = {
           </div>
           
           <div style="text-align: center; margin: 30px 0;">
-            <a href="https://ekartvizit.co/siparis-takip/${orderData.orderId}" style="background-color: #59af05; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+            <a href="https://ekartvizit.tr/siparis-takip/${orderData.orderId}" style="background-color: #59af05; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
               Siparişimi Takip Et
             </a>
           </div>
           
           <div style="border-top: 1px solid #eee; padding-top: 20px; margin-top: 30px; text-align: center; color: #666; font-size: 14px;">
-            <p>Siparişinizle ilgili sorularınız için: info@ekartvizit.co</p>
-            <p>E-Kartvizit | info@ekartvizit.co | www.ekartvizit.co</p>
+            <p>Siparişinizle ilgili sorularınız için: info@ekartvizit.tr</p>
+            <p>E-Kartvizit | info@ekartvizit.tr | www.ekartvizit.tr</p>
           </div>
         </div>
       </div>
@@ -200,7 +200,7 @@ export const emailTemplates = {
           </div>
           
           <div style="text-align: center; margin: 30px 0;">
-            <a href="https://ekartvizit.co/admin/siparisler" style="background-color: #59af05; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+            <a href="https://ekartvizit.tr/admin/siparisler" style="background-color: #59af05; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
               Admin Paneli
             </a>
           </div>
@@ -248,14 +248,14 @@ export const emailTemplates = {
           </div>
           
           <div style="text-align: center; margin: 30px 0;">
-            <a href="https://ekartvizit.co/siparis-takip/${orderData.orderId}" style="background-color: #59af05; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+            <a href="https://ekartvizit.tr/siparis-takip/${orderData.orderId}" style="background-color: #59af05; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
               Detaylı Takip
             </a>
           </div>
           
           <div style="border-top: 1px solid #eee; padding-top: 20px; margin-top: 30px; text-align: center; color: #666; font-size: 14px;">
-            <p>Sorularınız için: info@ekartvizit.co</p>
-            <p>E-Kartvizit | info@ekartvizit.co | www.ekartvizit.co</p>
+            <p>Sorularınız için: info@ekartvizit.tr</p>
+            <p>E-Kartvizit | info@ekartvizit.tr | www.ekartvizit.tr</p>
           </div>
         </div>
       </div>
@@ -295,7 +295,7 @@ export const emailTemplates = {
           
           <div style="border-top: 1px solid #eee; padding-top: 20px; margin-top: 30px; text-align: center; color: #666; font-size: 14px;">
             <p>Bu e-posta otomatik olarak gönderilmiştir.</p>
-            <p>E-Kartvizit | info@ekartvizit.co | www.ekartvizit.co</p>
+            <p>E-Kartvizit | info@ekartvizit.tr | www.ekartvizit.tr</p>
           </div>
         </div>
       </div>

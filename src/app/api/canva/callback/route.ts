@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
           code: code,
           client_id: process.env.NEXT_PUBLIC_CANVA_APP_ID || '',
           client_secret: process.env.CANVA_CLIENT_SECRET || '',
-          redirect_uri: 'https://ekartvizit.co/api/canva/callback'
+          redirect_uri: 'https://ekartvizit.tr/api/canva/callback'
         })
       });
 

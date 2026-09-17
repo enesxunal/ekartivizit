@@ -124,7 +124,7 @@ function DefaultContent({ source }: { source?: string | null }) {
             • Telefon: 0850 840 30 11
           </span>
           <span className="text-gray-600">
-            • E-posta: info@ekartvizit.co
+            • E-posta: info@ekartvizit.tr
           </span>
         </div>
       </div>

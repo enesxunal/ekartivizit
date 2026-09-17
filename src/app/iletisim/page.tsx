@@ -66,7 +66,7 @@ export default function ContactPage() {
     {
       icon: Mail,
       title: 'E-posta',
-      content: 'info@ekartvizit.co',
+      content: 'info@ekartvizit.tr',
       action: 'E-posta Gönder'
     },
     {

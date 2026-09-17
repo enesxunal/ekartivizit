@@ -35,7 +35,7 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
     ],
-    sitemap: 'https://ekartvizit.co/sitemap.xml',
-    host: 'https://ekartvizit.co',
+    sitemap: 'https://ekartvizit.tr/sitemap.xml',
+    host: 'https://ekartvizit.tr',
   }
 } 

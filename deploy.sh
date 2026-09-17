@@ -56,6 +56,6 @@ echo "🔒 SSL sertifikası kontrol ediliyor..."
 sudo certbot renew --quiet
 
 echo "✅ Deployment tamamlandı!"
-echo "🌍 Site: https://ekartvizit.co"
+echo "🌍 Site: https://ekartvizit.tr"
 echo "📊 PM2 Logs: pm2 logs ekartvizit"
 echo "📊 PM2 Monitor: pm2 monit"
