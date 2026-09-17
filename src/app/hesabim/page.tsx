@@ -9,12 +9,14 @@ import { Label } from '@/components/ui/label'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { useAuth } from '@/contexts/AuthContext'
+import { useOrders } from '@/contexts/OrderContext'
 import { useToast } from '@/contexts/ToastContext'
 import { User, Package, LogOut, Eye, EyeOff, MapPin, Phone, Mail, Edit } from 'lucide-react'
 
 export default function AccountPage() {
   const { user, isAuthenticated, login, register, logout, updateProfile, isLoading } = useAuth()
   const { addToast } = useToast()
+  const { orders } = useOrders()
   const [activeTab, setActiveTab] = useState('login')
   const [showPassword, setShowPassword] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
@@ -172,31 +174,18 @@ export default function AccountPage() {
     }
   }
 
-  // Kullanıcının sipariş geçmişini al
+  // Kullanıcının sipariş geçmişini server-side kayıtlardan al
   const getUserOrders = () => {
     if (!user) return []
-    
-    // localStorage'dan tüm siparişleri al
-    const allOrders = JSON.parse(localStorage.getItem('ekartvizit-orders') || '[]')
-    
-    // Sadece bu kullanıcının siparişlerini filtrele
-    return allOrders.filter((order: { customerInfo?: { email?: string } }) => 
-      order.customerInfo?.email === user.email
-    ).map((order: { 
-      id: string; 
-      createdAt: string; 
-      status: string; 
-      total: number; 
-      items?: Array<{ product: { name: string }; quantity: number }> 
-    }) => ({
-      id: order.id,
-      date: new Date(order.createdAt).toLocaleDateString('tr-TR'),
-      status: getOrderStatusText(order.status),
-      total: order.total,
-      items: order.items?.map((item: { product: { name: string }; quantity: number }) => 
-        `${item.product.name} (${item.quantity} adet)`
-      ) || []
-    }))
+    return orders
+      .filter((order) => order.userId === user.id || order.customerInfo.email === user.email)
+      .map((order) => ({
+        id: order.id,
+        date: new Date(order.createdAt).toLocaleDateString('tr-TR'),
+        status: getOrderStatusText(order.status),
+        total: order.total,
+        items: order.items.map((item) => `${item.product.name} (${item.quantity} adet)`)
+      }))
   }
 
   const getOrderStatusText = (status: string) => {

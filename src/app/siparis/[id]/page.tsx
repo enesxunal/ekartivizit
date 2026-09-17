@@ -72,14 +72,23 @@ export default function OrderDetailPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // localStorage'dan sipariş detaylarını al
-    const allOrders = JSON.parse(localStorage.getItem('ekartvizit-orders') || '[]')
-    const foundOrder = allOrders.find((o: { id: string }) => o.id === orderId)
-    
-    if (foundOrder) {
-      setOrder(foundOrder)
+    const loadOrder = async () => {
+      try {
+        const response = await fetch(`/api/orders/${encodeURIComponent(orderId)}`, { cache: 'no-store' })
+        if (!response.ok) {
+          setOrder(null)
+          return
+        }
+        const data = await response.json()
+        setOrder(data.order ?? null)
+      } catch (error) {
+        console.error('Siparis detaylari alinamadi:', error)
+        setOrder(null)
+      } finally {
+        setLoading(false)
+      }
     }
-    setLoading(false)
+    void loadOrder()
   }, [orderId])
 
   const getStatusText = (status: string) => {

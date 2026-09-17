@@ -44,7 +44,9 @@ export async function processWhatsAppPayment(paymentData: PaymentData): Promise<
   try {
     // WhatsApp mesajı oluştur
     const message = createWhatsAppOrderMessage(paymentData)
-    const whatsappUrl = `https://wa.me/905XXXXXXXXX?text=${encodeURIComponent(message)}`
+    const number = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/\D/g, '')
+    if (!number) return { success: false, errorMessage: 'WhatsApp siparis hatti yapilandirilmamis' }
+    const whatsappUrl = `https://wa.me/${number}?text=${encodeURIComponent(message)}`
     
     return {
       success: true,
@@ -62,11 +64,10 @@ export async function processWhatsAppPayment(paymentData: PaymentData): Promise<
 // Kredi kartı ödeme (Tosla entegrasyonu) - Güncellenmiş
 export async function processCreditCardPayment(
   paymentData: PaymentData, 
-  cardData: CreditCardData
+  _cardData: CreditCardData
 ): Promise<PaymentResult> {
+  void _cardData
   try {
-    console.log('Tosla ödeme işleniyor:', { paymentData, cardData })
-
     // İstek verisini hazırla (sunucu tarafındaki API route'a gönderilecek)
     // NOT: Kart bilgileri Tosla'nın sayfasında girilecek, burada gönderilmiyor
     const toslaRequest = {
@@ -168,18 +169,12 @@ export async function processCreditCardPayment(
 export async function processBankTransferPayment(paymentData: PaymentData): Promise<PaymentResult> {
   try {
     // Banka bilgileri ve ödeme talimatları
-    const bankInfo = {
-      bankName: 'Türkiye İş Bankası',
-      accountName: 'E-Kartvizit Ltd. Şti.',
-      iban: 'TR64 0006 4000 0011 2345 6789 01',
-      accountNumber: '1234567890',
-      reference: `EK-${paymentData.orderId}`
-    }
-    
+    const iban = process.env.NEXT_PUBLIC_BANK_IBAN?.trim()
+    if (!iban) return { success: false, errorMessage: 'Banka havalesi bilgileri henuz yapilandirilmamis' }
     return {
       success: true,
       paymentId: `bt-${Date.now()}`,
-      redirectUrl: `/odeme/banka-havalesi?ref=${bankInfo.reference}`
+      redirectUrl: `/siparis-onay/${paymentData.orderId}`
     }
   } catch {
     return {

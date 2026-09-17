@@ -45,99 +45,41 @@ export default function OrderTrackingPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  // localStorage'dan sipariş verilerini getir
-  const getOrderFromStorage = (query: string): OrderStatus | null => {
-    try {
-      const allOrders = JSON.parse(localStorage.getItem('ekartvizit-orders') || '[]') as Array<{
-        id: string
-        status: string
-        trackingNumber?: string
-        createdAt: string
-        estimatedDelivery?: string
-        customerInfo: {
-          name: string
-          email: string
-          phone: string
-        }
-        items: Array<{
-          product: {
-            name: string
-          }
-          quantity: number
-          price: number
-          selectedMaterial?: string
-          selectedSize?: string
-        }>
-        total: number
-      }>
-      const foundOrder = allOrders.find((order) => 
-        order.id.toLowerCase() === query.toLowerCase() || 
-        order.trackingNumber?.toLowerCase() === query.toLowerCase()
-      )
+  const getOrderFromApi = async (query: string): Promise<OrderStatus | null> => {
+    const response = await fetch(`/api/orders/${encodeURIComponent(query.trim())}`, { cache: 'no-store' })
+    if (!response.ok) return null
+    const payload = await response.json()
+    const foundOrder = payload.order
+    if (!foundOrder) return null
 
-      if (!foundOrder) return null
-
-      // Durum geçmişi oluştur
-      const statusHistory = [
-        {
-          status: 'Sipariş Alındı',
-          message: 'Siparişiniz başarıyla alındı ve işleme konuldu.',
-          date: foundOrder.createdAt
-        }
-      ]
-
-      // Duruma göre ek geçmişler ekle
-      const statusMap: Record<string, { status: string; message: string }> = {
-        'confirmed': { status: 'Sipariş Onaylandı', message: 'Siparişiniz onaylandı ve hazırlanmaya başlandı.' },
-        'preparing': { status: 'Hazırlanıyor', message: 'Siparişiniz hazırlanıyor.' },
-        'printing': { status: 'Basılıyor', message: 'Siparişiniz basım aşamasında.' },
-        'shipping': { status: 'Kargoya Verildi', message: 'Siparişiniz kargoya verildi ve yola çıktı.' },
-        'delivered': { status: 'Teslim Edildi', message: 'Siparişiniz teslim edildi.' }
+    const statusHistory = [{ status: 'Sipariş Alındı', message: 'Siparişiniz başarıyla alındı ve işleme konuldu.', date: foundOrder.createdAt }]
+    const statusMap: Record<string, { status: string; message: string }> = {
+      confirmed: { status: 'Sipariş Onaylandı', message: 'Siparişiniz onaylandı ve hazırlanmaya başlandı.' },
+      preparing: { status: 'Hazırlanıyor', message: 'Siparişiniz hazırlanıyor.' },
+      printing: { status: 'Basılıyor', message: 'Siparişiniz basım aşamasında.' },
+      shipping: { status: 'Kargoya Verildi', message: 'Siparişiniz kargoya verildi ve yola çıktı.' },
+      delivered: { status: 'Teslim Edildi', message: 'Siparişiniz teslim edildi.' }
+    }
+    const sequence = ['pending', 'confirmed', 'preparing', 'printing', 'shipping', 'delivered']
+    const currentStatusIndex = sequence.indexOf(foundOrder.status)
+    if (currentStatusIndex > 0) {
+      for (let i = 1; i <= currentStatusIndex; i += 1) {
+        const statusInfo = statusMap[sequence[i]]
+        if (statusInfo) statusHistory.push({ ...statusInfo, date: foundOrder.updatedAt || foundOrder.createdAt })
       }
-
-      const currentStatusIndex = ['pending', 'confirmed', 'preparing', 'printing', 'shipping', 'delivered'].indexOf(foundOrder.status)
-      if (currentStatusIndex > 0) {
-        for (let i = 1; i <= currentStatusIndex; i++) {
-          const statusKey = ['pending', 'confirmed', 'preparing', 'printing', 'shipping', 'delivered'][i]
-          const statusInfo = statusMap[statusKey]
-          if (statusInfo) {
-            const statusDate = new Date(foundOrder.createdAt)
-            statusDate.setDate(statusDate.getDate() + i - 1)
-            statusHistory.push({
-              status: statusInfo.status,
-              message: statusInfo.message,
-              date: statusDate.toISOString()
-            })
-          }
-        }
-      }
-
-      return {
-        orderId: foundOrder.id,
-        trackingNumber: foundOrder.trackingNumber || '',
-        status: foundOrder.status as 'pending' | 'confirmed' | 'preparing' | 'printing' | 'shipping' | 'delivered',
-        customerInfo: {
-          name: foundOrder.customerInfo.name,
-          email: foundOrder.customerInfo.email,
-          phone: foundOrder.customerInfo.phone
-        },
-        items: foundOrder.items.map((item) => ({
-          name: item.product.name,
-          quantity: item.quantity,
-          price: item.price,
-          material: item.selectedMaterial,
-          size: item.selectedSize
-        })),
-        total: foundOrder.total,
-        createdAt: foundOrder.createdAt,
-        estimatedDelivery: foundOrder.estimatedDelivery 
-          ? new Date(foundOrder.estimatedDelivery).toLocaleDateString('tr-TR')
-          : 'Hesaplanıyor...',
-        statusHistory
-      }
-    } catch (error) {
-      console.error('Sipariş verisi yüklenirken hata:', error)
-      return null
+    }
+    return {
+      orderId: foundOrder.id,
+      trackingNumber: foundOrder.trackingNumber || '',
+      status: foundOrder.status,
+      customerInfo: foundOrder.customerInfo,
+      items: foundOrder.items.map((item: { product: { name: string }; quantity: number; price: number; selectedMaterial?: string; selectedSize?: string }) => ({
+        name: item.product.name, quantity: item.quantity, price: item.price, material: item.selectedMaterial, size: item.selectedSize
+      })),
+      total: foundOrder.total,
+      createdAt: foundOrder.createdAt,
+      estimatedDelivery: foundOrder.estimatedDelivery ? new Date(foundOrder.estimatedDelivery).toLocaleDateString('tr-TR') : 'Hesaplanıyor...',
+      statusHistory
     }
   }
 
@@ -150,7 +92,7 @@ export default function OrderTrackingPage() {
     try {
       await new Promise(resolve => setTimeout(resolve, 500))
 
-      const order = getOrderFromStorage(query)
+      const order = await getOrderFromApi(query)
       
       if (order) {
         setOrderData(order)
@@ -175,7 +117,7 @@ export default function OrderTrackingPage() {
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
-      setError('Lütfen sipariş numarası veya takip numarası girin')
+      setError('Lütfen sipariş numarası girin')
       return
     }
 
@@ -186,7 +128,7 @@ export default function OrderTrackingPage() {
     try {
       await new Promise(resolve => setTimeout(resolve, 500))
 
-      const order = getOrderFromStorage(searchQuery)
+      const order = await getOrderFromApi(searchQuery)
       
       if (order) {
         setOrderData(order)

@@ -223,6 +223,7 @@ export default function OdemePage() {
         paymentMethod: selectedPaymentMethod,
         subtotal: getTotalPrice(),
         discount: appliedDiscount ? getTotalPrice() - totalPrice : 0,
+        discountCode: appliedDiscount?.code,
         shippingCost: 0,
         total: totalPrice,
         notes: customerInfo.notes
@@ -282,28 +283,14 @@ export default function OdemePage() {
           await fetch('/api/send-email', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              to: customerInfo.email,
-              emailType: 'orderConfirmation',
-              orderData: {
-                ...orderData,
-                orderId: orderResult.orderId
-              }
-            })
+            body: JSON.stringify({ emailType: 'orderConfirmation', orderId: orderResult.orderId })
           })
-          
+
           // E-posta gönder - Admin
           await fetch('/api/send-email', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              to: 'info@ekartvizit.tr',
-              emailType: 'orderNotificationAdmin',
-              orderData: {
-                ...orderData,
-                orderId: orderResult.orderId
-              }
-            })
+            body: JSON.stringify({ emailType: 'orderNotificationAdmin', orderId: orderResult.orderId })
           })
         } catch (emailError) {
           console.error('E-posta gönderme hatası:', emailError)

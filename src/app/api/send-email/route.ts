@@ -1,83 +1,68 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { sendEmail } from '@/lib/email'
 import { emailTemplates } from '@/lib/email-templates'
+import { db } from '@/lib/server/db'
+import { getCurrentUser } from '@/lib/server/session'
+import { hasOrderAccess } from '@/lib/server/order-access'
+import { isAdminSession } from '@/lib/admin-auth'
+import { serializeOrder } from '@/lib/server/serialize-order'
+
+function asTemplateOrder(order: ReturnType<typeof serializeOrder>) {
+  return { ...order, orderId: order.id }
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const { to, emailType, orderData, statusData } = await request.json()
+    const body = await request.json()
+    const emailType = String(body.emailType ?? '')
+    const currentUser = await getCurrentUser()
+    const admin = await isAdminSession()
 
-    if (!to || !emailType) {
-      return NextResponse.json(
-        { success: false, error: 'E-posta adresi ve e-posta türü gerekli' },
-        { status: 400 }
-      )
+    if (emailType === 'userRegistration') {
+      if (!currentUser) return NextResponse.json({ success: false, error: 'Oturum gerekli' }, { status: 401 })
+      const template = emailTemplates.userRegistration(currentUser.name, currentUser.email)
+      const result = await sendEmail(currentUser.email, template)
+      return NextResponse.json({ success: true, messageId: result.messageId })
     }
 
+    const orderId = String(body.orderId ?? '').trim()
+    if (!orderId) return NextResponse.json({ success: false, error: 'Siparis numarasi gerekli' }, { status: 400 })
+
+    const order = await db.order.findUnique({ where: { id: orderId }, include: { items: true, payments: true } })
+    if (!order) return NextResponse.json({ success: false, error: 'Siparis bulunamadi' }, { status: 404 })
+
+    const allowed = admin || (currentUser && order.userId === currentUser.id) || await hasOrderAccess(order.id)
+    if (!allowed) return NextResponse.json({ success: false, error: 'Erisim reddedildi' }, { status: 403 })
+
+    const orderData = asTemplateOrder(serializeOrder(order))
+    let recipient: string
     let template
-    
+
     switch (emailType) {
-      case 'userRegistration':
-        if (!orderData?.customerInfo?.name) {
-          return NextResponse.json(
-            { success: false, error: 'Kullanıcı adı gerekli' },
-            { status: 400 }
-          )
-        }
-        template = emailTemplates.userRegistration(orderData.customerInfo.name, to)
-        break
-        
       case 'orderConfirmation':
-        if (!orderData) {
-          return NextResponse.json(
-            { success: false, error: 'Sipariş verisi gerekli' },
-            { status: 400 }
-          )
-        }
+        recipient = order.customerEmail
         template = emailTemplates.orderConfirmationCustomer(orderData)
         break
-        
-      case 'orderNotificationAdmin':
-        if (!orderData) {
-          return NextResponse.json(
-            { success: false, error: 'Sipariş verisi gerekli' },
-            { status: 400 }
-          )
-        }
+      case 'orderNotificationAdmin': {
+        const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER
+        if (!adminEmail) return NextResponse.json({ success: false, error: 'Admin e-posta adresi yapilandirilmamis' }, { status: 503 })
+        recipient = adminEmail
         template = emailTemplates.orderNotificationAdmin(orderData)
         break
-        
+      }
       case 'orderStatusUpdate':
-        if (!orderData || !statusData) {
-          return NextResponse.json(
-            { success: false, error: 'Sipariş ve durum verisi gerekli' },
-            { status: 400 }
-          )
-        }
-        template = emailTemplates.orderStatusUpdate(orderData, statusData)
+        if (!admin) return NextResponse.json({ success: false, error: 'Admin oturumu gerekli' }, { status: 401 })
+        recipient = order.customerEmail
+        template = emailTemplates.orderStatusUpdate(orderData, body.statusData ?? { status: order.status.toLowerCase() })
         break
-        
       default:
-        return NextResponse.json(
-          { success: false, error: 'Geçersiz e-posta türü' },
-          { status: 400 }
-        )
+        return NextResponse.json({ success: false, error: 'Gecersiz e-posta turu' }, { status: 400 })
     }
 
-    const result = await sendEmail(to, template)
-    
-    return NextResponse.json({
-      success: true,
-      messageId: result.messageId
-    })
-
+    const result = await sendEmail(recipient, template)
+    return NextResponse.json({ success: true, messageId: result.messageId })
   } catch (error) {
-    console.error('E-posta gönderme API hatası:', error)
-    return NextResponse.json(
-      { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'E-posta gönderilirken hata oluştu' 
-      },
-      { status: 500 }
-    )
+    console.error('E-posta gonderme API hatasi:', error)
+    return NextResponse.json({ success: false, error: 'E-posta gonderilirken hata olustu' }, { status: 500 })
   }
-} 
+}

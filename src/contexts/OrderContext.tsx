@@ -1,9 +1,7 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 import { CartItem } from './CartContext'
-import { calculateEstimatedDelivery } from '@/lib/delivery-time'
-// E-posta şablonları artık API üzerinden kullanılacak
 
 export interface Order {
   id: string
@@ -13,18 +11,14 @@ export interface Order {
     name: string
     email: string
     phone: string
-    address?: {
-      street: string
-      city: string
-      district: string
-      postalCode: string
-    }
+    address?: { street: string; city: string; district: string; postalCode: string }
   }
   status: 'pending' | 'confirmed' | 'preparing' | 'printing' | 'shipping' | 'delivered' | 'cancelled'
   paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded'
   paymentMethod: 'whatsapp' | 'credit-card' | 'bank-transfer' | 'cash-on-delivery'
   subtotal: number
   discount: number
+  discountCode?: string
   shippingCost: number
   total: number
   notes?: string
@@ -38,7 +32,7 @@ interface OrderContextType {
   orders: Order[]
   createOrder: (orderData: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>) => Promise<{ success: boolean; orderId?: string; message: string }>
   getOrder: (orderId: string) => Order | undefined
-  getOrderById: (orderId: string) => Order | undefined // Alias for getOrder
+  getOrderById: (orderId: string) => Order | undefined
   getUserOrders: (userId: string) => Order[]
   updateOrderStatus: (orderId: string, status: Order['status']) => Promise<void>
   updatePaymentStatus: (orderId: string, status: Order['paymentStatus']) => void
@@ -52,197 +46,71 @@ const OrderContext = createContext<OrderContextType | undefined>(undefined)
 export function OrderProvider({ children }: { children: React.ReactNode }) {
   const [orders, setOrders] = useState<Order[]>([])
 
-  // LocalStorage'dan siparişleri yükle
-  useEffect(() => {
-    const savedOrders = localStorage.getItem('ekartvizit-orders')
-    if (savedOrders) {
-      try {
-        setOrders(JSON.parse(savedOrders))
-      } catch (error) {
-        console.error('Sipariş verisi yüklenirken hata:', error)
-      }
+  const refreshOrders = async () => {
+    try {
+      const response = await fetch('/api/orders', { cache: 'no-store' })
+      const data = await response.json()
+      if (response.ok && Array.isArray(data.orders)) setOrders(data.orders)
+    } catch (error) {
+      console.error('Siparisler yuklenemedi:', error)
     }
-  }, [])
-
-  // Siparişler değiştiğinde localStorage'a kaydet
-  useEffect(() => {
-    localStorage.setItem('ekartvizit-orders', JSON.stringify(orders))
-  }, [orders])
-
-  const generateOrderId = () => {
-    const timestamp = Date.now().toString()
-    const random = Math.random().toString(36).substring(2, 8).toUpperCase()
-    return `EK${timestamp.slice(-6)}${random}`
   }
 
-  const generateTrackingNumber = () => {
-    return `TK${Date.now().toString().slice(-8)}${Math.random().toString(36).substring(2, 6).toUpperCase()}`
-  }
+  useEffect(() => { void refreshOrders() }, [])
 
   const createOrder = async (orderData: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>) => {
     try {
-      // Simüle edilmiş API çağrısı
-      await new Promise(resolve => setTimeout(resolve, 1000))
-
-      // Ürün kategorisine göre tahmini teslim süresini hesapla
-      const estimatedDeliveryDate = calculateEstimatedDelivery(orderData.items)
-      
-      const newOrder: Order = {
-        ...orderData,
-        id: generateOrderId(),
-        trackingNumber: undefined, // Kargo takip numarası sadece 'shipping' durumunda oluşturulacak
-        estimatedDelivery: estimatedDeliveryDate.toISOString(),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      }
-
-      setOrders(prev => [newOrder, ...prev])
-
-      return {
-        success: true,
-        orderId: newOrder.id,
-        message: 'Sipariş başarıyla oluşturuldu!'
-      }
-    } catch {
-      return {
-        success: false,
-        message: 'Sipariş oluşturulurken bir hata oluştu.'
-      }
-    }
-  }
-
-  const getOrder = (orderId: string) => {
-    return orders.find(order => order.id === orderId)
-  }
-
-  const getUserOrders = (userId: string) => {
-    return orders.filter(order => order.userId === userId)
-  }
-
-  const updateOrderStatus = async (orderId: string, status: Order['status']) => {
-    const order = getOrder(orderId)
-    if (!order) return
-
-    // Durum mesajları
-    const statusMessages: Record<Order['status'], string> = {
-      pending: 'Sipariş Alındı',
-      confirmed: 'Sipariş Onaylandı',
-      preparing: 'Sipariş Hazırlanıyor',
-      printing: 'Sipariş Basılıyor',
-      shipping: 'Sipariş Kargoya Verildi',
-      delivered: 'Sipariş Teslim Edildi',
-      cancelled: 'Sipariş İptal Edildi'
-    }
-
-    // Eğer durum 'shipping' ise ve kargo takip numarası yoksa oluştur
-    let trackingNumber = order.trackingNumber
-    if (status === 'shipping' && !trackingNumber) {
-      trackingNumber = generateTrackingNumber()
-    }
-
-    // E-posta gönder
-    try {
-      await fetch('/api/send-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch('/api/orders', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          to: order.customerInfo.email,
-          emailType: 'orderStatusUpdate',
-          orderData: order,
-          statusData: { status, message: statusMessages[status] }
+          items: orderData.items,
+          customerInfo: orderData.customerInfo,
+          paymentMethod: orderData.paymentMethod,
+          discountCode: orderData.discountCode,
+          notes: orderData.notes
         })
       })
-    } catch (emailError) {
-      console.error('Durum güncelleme e-postası gönderme hatası:', emailError)
+      const data = await response.json()
+      if (!response.ok || !data.order) return { success: false, message: data.message ?? 'Siparis olusturulamadi.' }
+      setOrders((current) => [data.order, ...current.filter((order) => order.id !== data.order.id)])
+      return { success: true, orderId: data.orderId, message: data.message ?? 'Siparis basariyla olusturuldu.' }
+    } catch {
+      return { success: false, message: 'Siparis olusturulurken bir hata olustu.' }
     }
+  }
 
-    setOrders(prev => prev.map(order => 
-      order.id === orderId 
-        ? { 
-            ...order, 
-            status, 
-            trackingNumber: trackingNumber || order.trackingNumber,
-            updatedAt: new Date().toISOString() 
-          }
-        : order
-    ))
+  const getOrder = (orderId: string) => orders.find((order) => order.id === orderId)
+  const getUserOrders = (userId: string) => orders.filter((order) => order.userId === userId)
+
+  const updateOrderStatus = async (orderId: string, status: Order['status']) => {
+    const response = await fetch(`/api/orders/${encodeURIComponent(orderId)}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) })
+    if (!response.ok) return
+    const data = await response.json()
+    if (data.order) setOrders((current) => current.map((order) => order.id === orderId ? data.order : order))
   }
 
   const updatePaymentStatus = (orderId: string, paymentStatus: Order['paymentStatus']) => {
-    setOrders(prev => prev.map(order => 
-      order.id === orderId 
-        ? { ...order, paymentStatus, updatedAt: new Date().toISOString() }
-        : order
-    ))
+    setOrders((current) => current.map((order) => order.id === orderId ? { ...order, paymentStatus } : order))
   }
 
   const cancelOrder = async (orderId: string, reason?: string) => {
-    try {
-      const order = getOrder(orderId)
-      if (!order) {
-        return { success: false, message: 'Sipariş bulunamadı.' }
-      }
-
-      if (['delivered', 'cancelled'].includes(order.status)) {
-        return { success: false, message: 'Bu sipariş iptal edilemez.' }
-      }
-
-      // Simüle edilmiş API çağrısı
-      await new Promise(resolve => setTimeout(resolve, 500))
-
-      setOrders(prev => prev.map(o => 
-        o.id === orderId 
-          ? { 
-              ...o, 
-              status: 'cancelled' as const,
-              notes: reason ? `İptal nedeni: ${reason}` : 'Sipariş iptal edildi',
-              updatedAt: new Date().toISOString() 
-            }
-          : o
-      ))
-
-      return { success: true, message: 'Sipariş başarıyla iptal edildi.' }
-    } catch {
-      return { success: false, message: 'Sipariş iptal edilirken bir hata oluştu.' }
-    }
+    const response = await fetch(`/api/orders/${encodeURIComponent(orderId)}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'cancelled', notes: reason ? `Iptal nedeni: ${reason}` : 'Siparis iptal edildi' }) })
+    const data = await response.json().catch(() => ({}))
+    if (response.ok && data.order) setOrders((current) => current.map((order) => order.id === orderId ? data.order : order))
+    return { success: response.ok, message: data.message ?? (response.ok ? 'Siparis iptal edildi.' : 'Siparis iptal edilemedi.') }
   }
 
-  const getOrdersByStatus = (status: Order['status']) => {
-    return orders.filter(order => order.status === status)
-  }
-
+  const getOrdersByStatus = (status: Order['status']) => orders.filter((order) => order.status === status)
   const searchOrders = (query: string) => {
-    const lowercaseQuery = query.toLowerCase()
-    return orders.filter(order => 
-      order.id.toLowerCase().includes(lowercaseQuery) ||
-      order.customerInfo.name.toLowerCase().includes(lowercaseQuery) ||
-      order.customerInfo.email.toLowerCase().includes(lowercaseQuery) ||
-      order.trackingNumber?.toLowerCase().includes(lowercaseQuery)
-    )
+    const normalized = query.toLowerCase()
+    return orders.filter((order) => order.id.toLowerCase().includes(normalized) || order.customerInfo.name.toLowerCase().includes(normalized) || order.customerInfo.email.toLowerCase().includes(normalized))
   }
 
-  return (
-    <OrderContext.Provider value={{
-      orders,
-      createOrder,
-      getOrder,
-      getOrderById: getOrder, // Alias for getOrder
-      getUserOrders,
-      updateOrderStatus,
-      updatePaymentStatus,
-      cancelOrder,
-      getOrdersByStatus,
-      searchOrders
-    }}>
-      {children}
-    </OrderContext.Provider>
-  )
+  return <OrderContext.Provider value={{ orders, createOrder, getOrder, getOrderById: getOrder, getUserOrders, updateOrderStatus, updatePaymentStatus, cancelOrder, getOrdersByStatus, searchOrders }}>{children}</OrderContext.Provider>
 }
 
 export function useOrders() {
   const context = useContext(OrderContext)
-  if (context === undefined) {
-    throw new Error('useOrders must be used within an OrderProvider')
-  }
+  if (!context) throw new Error('useOrders must be used within an OrderProvider')
   return context
-} 
+}

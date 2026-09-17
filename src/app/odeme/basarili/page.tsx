@@ -39,60 +39,47 @@ export default function PaymentSuccessPage() {
   const orderId = searchParams.get('order')
 
   useEffect(() => {
-    // Ödeme durumunu kontrol et
     const checkPaymentStatus = async () => {
-      if (!paymentId && !orderId) {
+      if (!orderId) {
         router.push('/')
         return
       }
-
       try {
-        // localStorage'dan sipariş detaylarını al
-        const allOrders = JSON.parse(localStorage.getItem('ekartvizit-orders') || '[]')
-        const foundOrder = allOrders.find((order: { id: string }) => order.id === orderId)
-        
-        if (foundOrder) {
-          const orderDetails = {
-            orderId: foundOrder.id,
-            paymentId: foundOrder.paymentId || `PAY-${Date.now()}`,
-            amount: foundOrder.total,
-            status: foundOrder.status,
-            customerInfo: {
-              name: foundOrder.customerInfo.name,
-              email: foundOrder.customerInfo.email,
-              phone: foundOrder.customerInfo.phone
-            },
-            items: foundOrder.items.map((item: {
-              product: { name: string }
-              quantity: number
-              price: number
-              selectedMaterial?: string
-              selectedSize?: string
-            }) => ({
-              name: item.product.name,
-              quantity: item.quantity,
-              price: item.price,
-              material: item.selectedMaterial,
-              size: item.selectedSize
-            })),
-            estimatedDelivery: foundOrder.estimatedDelivery || '2-3 İş Günü',
-            trackingNumber: foundOrder.trackingNumber || `TRK${Date.now()}`,
-            createdAt: foundOrder.createdAt
-          }
-          setOrderDetails(orderDetails)
-        } else {
-          // Sipariş bulunamadı, ana sayfaya yönlendir
-          router.push('/')
+        let foundOrder = null
+        for (let attempt = 0; attempt < 5; attempt += 1) {
+          const response = await fetch(`/api/orders/${encodeURIComponent(orderId)}`, { cache: 'no-store' })
+          if (!response.ok) throw new Error('Siparis bulunamadi')
+          const data = await response.json()
+          foundOrder = data.order
+          if (foundOrder?.paymentStatus !== 'pending') break
+          await new Promise((resolve) => setTimeout(resolve, 1000))
         }
+        if (!foundOrder) throw new Error('Siparis bulunamadi')
+        setOrderDetails({
+          orderId: foundOrder.id,
+          paymentId: paymentId || 'Tosla',
+          amount: foundOrder.total,
+          status: foundOrder.paymentStatus,
+          customerInfo: foundOrder.customerInfo,
+          items: foundOrder.items.map((item: { product: { name: string }; quantity: number; price: number; selectedMaterial?: string; selectedSize?: string }) => ({
+            name: item.product.name,
+            quantity: item.quantity,
+            price: item.price,
+            material: item.selectedMaterial,
+            size: item.selectedSize
+          })),
+          estimatedDelivery: foundOrder.estimatedDelivery ? new Date(foundOrder.estimatedDelivery).toLocaleDateString('tr-TR') : 'Hesaplaniyor...',
+          trackingNumber: foundOrder.trackingNumber || 'Henuz olusturulmadi',
+          createdAt: foundOrder.createdAt
+        })
       } catch (error) {
-        console.error('Sipariş detayları alınamadı:', error)
+        console.error('Siparis detaylari alinamadi:', error)
         router.push('/')
       } finally {
         setLoading(false)
       }
     }
-
-    checkPaymentStatus()
+    void checkPaymentStatus()
   }, [paymentId, orderId, router])
 
   const handleWhatsAppSupport = () => {
@@ -146,9 +133,9 @@ export default function PaymentSuccessPage() {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
             <CheckCircle className="w-8 h-8 text-green-600" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Ödemeniz Başarılı! 🎉</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{orderDetails.status === 'paid' ? 'Ödemeniz Başarılı! 🎉' : orderDetails.status === 'failed' ? 'Ödeme Başarısız' : 'Ödemeniz Doğrulanıyor'}</h1>
           <p className="text-lg text-gray-600">
-            Siparişiniz alındı ve işleme konuldu.
+            {orderDetails.status === 'paid' ? 'Siparişiniz alındı ve işleme konuldu.' : 'Ödeme sağlayıcısından kesin sonuç bekleniyor.'}
           </p>
         </div>
 

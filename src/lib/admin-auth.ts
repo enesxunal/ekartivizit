@@ -1,4 +1,6 @@
+import { cookies } from 'next/headers'
 import { createHmac, timingSafeEqual } from 'crypto'
+import { getCurrentUser } from '@/lib/server/session'
 
 export const ADMIN_COOKIE_NAME = 'ekartvizit_admin_session'
 
@@ -37,4 +39,11 @@ export function validateAdminSessionToken(token?: string) {
   if (!token) return false
   const expected = createAdminSessionToken()
   return expected ? safeEqual(token, expected) : false
+}
+
+export async function isAdminSession() {
+  const user = await getCurrentUser().catch(() => null)
+  if (user?.role === 'ADMIN') return true
+  const store = await cookies()
+  return validateAdminSessionToken(store.get(ADMIN_COOKIE_NAME)?.value)
 }

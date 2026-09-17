@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { sendMail, mailTemplates } from '@/lib/mail'
+import { isAdminSession } from '@/lib/admin-auth'
 
 export async function POST(request: NextRequest) {
+  if (!(await isAdminSession())) return NextResponse.json({ success: false, error: 'Admin oturumu gerekli' }, { status: 401 })
   try {
     const { type, recipient, data } = await request.json()
 
