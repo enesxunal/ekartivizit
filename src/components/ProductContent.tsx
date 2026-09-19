@@ -300,7 +300,7 @@ export default function ProductContent({ product }: ProductContentProps) {
 
             <div className="mt-4 border-t border-[#e7e9e5] pt-4 lg:shrink-0">
               <div className="mb-3 flex items-end justify-between gap-4">
-                <div><p className="text-xs font-medium text-[#858b82]">Seçimlerinize göre toplam</p><p className="mt-1 text-[26px] font-semibold tracking-[-.045em] text-[#171a16]">{price.toLocaleString('tr-TR')} TL</p></div>
+                <div><p className="text-xs font-medium text-[#858b82]">Seçimlerinize göre toplam</p><p className="mt-1 text-[26px] font-semibold tracking-[-.045em] text-[#171a16]">{price.toLocaleString('tr-TR')} TL</p><p className="mt-1 text-[10px] font-medium text-[#7b8178]">KDV ve kargo dahil</p></div>
                 <div className="text-right"><p className="text-xs text-[#858b82]">{quantity.toLocaleString('tr-TR')} adet</p><p className="mt-1 text-xs font-semibold text-[#596057]">≈ {unitPrice.toLocaleString('tr-TR', { maximumFractionDigits: 2 })} TL / adet</p></div>
               </div>
               <div className="grid gap-2 sm:grid-cols-[1fr_auto]">

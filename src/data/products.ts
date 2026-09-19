@@ -99,25 +99,24 @@ export const PRODUCTS: Product[] = [
     ],
     href: '/urun/kartvizit',
     gradient: 'from-[#59af05] to-[#4a9321]',
-    features: ['Mat/Parlak Laminasyon', 'UV Spot Laminasyon', 'Özel Kesim', 'Kabartma Laklı'],
-    sizes: ['86.75x54mm (Standart)'],
+    features: ['Parlak/Mat Selefon', 'Kabartma Lak', 'Düz veya Oval Kesim', 'Çift Yön Renkli Baskı'],
+    sizes: ['85x52mm (Standart)'],
     materials: ['250 Gram Tek Yön', '350 Gram Çift Yön', '700 Gram Sıvama'],
     colors: ['CMYK 4 Renk', 'Pantone Özel Renk'],
     minQuantity: 1000,
-    price: { min: 500, max: 2000 },
+    price: { min: 700, max: 2300 },
     extraOptions: [
-      { name: 'Özel Kesim', price: 250 },
+      { name: 'Delik', price: 250 },
+      { name: 'Özel Kesim', price: 200 },
       { name: 'Logo Tasarımı', price: 250 }
     ],
     quantityPricing: [
-      { quantity: 1000, price: 500, material: '250 Gram Tek Yön' },
-      { quantity: 2000, price: 900, material: '250 Gram Tek Yön' },
-      { quantity: 1000, price: 800, material: '350 Gram Çift Yön' },
-      { quantity: 2000, price: 1500, material: '350 Gram Çift Yön' },
-      { quantity: 1000, price: 900, material: '350 Gram Çift Yön (Düz Kesim)' },
-      { quantity: 2000, price: 1600, material: '350 Gram Çift Yön (Düz Kesim)' },
-      { quantity: 1000, price: 1100, material: '700 Gram Sıvama' },
-      { quantity: 2000, price: 2000, material: '700 Gram Sıvama' }
+      { quantity: 1000, price: 700, material: '250 Gram Tek Yön' },
+      { quantity: 2000, price: 1200, material: '250 Gram Tek Yön' },
+      { quantity: 1000, price: 1100, material: '350 Gram Çift Yön' },
+      { quantity: 2000, price: 2000, material: '350 Gram Çift Yön' },
+      { quantity: 1000, price: 1250, material: '700 Gram Sıvama' },
+      { quantity: 2000, price: 2300, material: '700 Gram Sıvama' }
     ]
   },
   {
@@ -129,16 +128,17 @@ export const PRODUCTS: Product[] = [
     href: '/urun/antetli-kagit',
     gradient: 'from-blue-400 to-blue-600',
     features: ['Letterhead Tasarım', 'Tek Yön Renkli'],
-    sizes: ['A4 (21x29.7cm)'],
+    sizes: ['A5', 'A4'],
     materials: ['80 Gram 1. Hamur'],
     colors: ['CMYK 4 Renk', 'Tek Renk'],
     minQuantity: 2000,
-    price: { min: 2500, max: 2500 },
+    price: { min: 3500, max: 3750 },
     extraOptions: [
       { name: 'Logo Tasarımı', price: 250 }
     ],
     quantityPricing: [
-      { quantity: 2000, price: 2500 }
+      { quantity: 4000, price: 3750, size: 'A5' },
+      { quantity: 2000, price: 3500, size: 'A4' }
     ]
   },
   {
@@ -157,17 +157,17 @@ export const PRODUCTS: Product[] = [
     sizes: ['Diplomat (104x240mm)', 'Torba A5', 'Torba A4'],
     materials: ['110 Gram Kağıt'],
     colors: ['Tek Renk Baskı'],
-    windowOptions: ['Pencereli', 'Pencersiz'],
+    windowOptions: ['Penceresiz'],
     minQuantity: 500,
-    price: { min: 1800, max: 3500 },
+    price: { min: 2500, max: 5500 },
     extraOptions: [
       { name: 'Logo Tasarımı', price: 250 }
     ],
     quantityPricing: [
-      { quantity: 500, price: 1800, size: 'Diplomat (104x240mm)' },
-      { quantity: 1000, price: 2500, size: 'Diplomat (104x240mm)' },
-      { quantity: 500, price: 3000, size: 'Torba A5' },
-      { quantity: 500, price: 3500, size: 'Torba A4' }
+      { quantity: 500, price: 2500, size: 'Diplomat (104x240mm)' },
+      { quantity: 1000, price: 3000, size: 'Diplomat (104x240mm)' },
+      { quantity: 500, price: 4000, size: 'Torba A5' },
+      { quantity: 500, price: 5500, size: 'Torba A4' }
     ]
   },
   {
@@ -187,15 +187,15 @@ export const PRODUCTS: Product[] = [
     materials: ['NCR Karbonlu'],
     colors: ['Tek Renk Siyah'],
     minQuantity: 10,
-    price: { min: 1500, max: 4000 },
+    price: { min: 2200, max: 5000 },
     extraOptions: [
       { name: 'Logo Tasarımı', price: 250 }
     ],
     quantityPricing: [
-      { quantity: 10, price: 1500, size: '14x20 cm' },
-      { quantity: 20, price: 2250, size: '14x20 cm' },
-      { quantity: 10, price: 2250, size: '20x29 cm' },
-      { quantity: 20, price: 4000, size: '20x29 cm' }
+      { quantity: 10, price: 2200, size: '14x20 cm' },
+      { quantity: 20, price: 3000, size: '14x20 cm' },
+      { quantity: 10, price: 3000, size: '20x29 cm' },
+      { quantity: 20, price: 5000, size: '20x29 cm' }
     ]
   },
   {
@@ -213,18 +213,18 @@ export const PRODUCTS: Product[] = [
     gradient: 'from-indigo-400 to-indigo-600',
     features: ['Kulak Yapıştırmalı', 'Mat Selefon', 'Kabartma Selefon'],
     sizes: ['A4 Boyut'],
-    materials: ['250Gr. Bristol', '350Gr. Bristol'],
+    materials: ['250Gr. Bristol', '350Gr. Bristol (Mat Selefon + Kabartma Lak)'],
     colors: ['CMYK 4 Renk'],
     minQuantity: 250,
-    price: { min: 4250, max: 10500 },
+    price: { min: 6000, max: 12000 },
     extraOptions: [
       { name: 'Logo Tasarımı', price: 250 }
     ],
     quantityPricing: [
-      { quantity: 250, price: 4250, material: '250Gr. Bristol' },
-      { quantity: 500, price: 6000, material: '250Gr. Bristol' },
-      { quantity: 1000, price: 10500, material: '250Gr. Bristol' },
-      { quantity: 500, price: 10000, material: '350Gr. Bristol (Mat Selefon + Kabartma Lak)' }
+      { quantity: 250, price: 6000, material: '250Gr. Bristol' },
+      { quantity: 500, price: 8000, material: '250Gr. Bristol' },
+      { quantity: 1000, price: 11000, material: '250Gr. Bristol' },
+      { quantity: 500, price: 12000, material: '350Gr. Bristol (Mat Selefon + Kabartma Lak)' }
     ]
   },
 
@@ -247,7 +247,7 @@ export const PRODUCTS: Product[] = [
     materials: ['115 Gram', '130 Gram'],
     colors: ['CMYK 4 Renk'],
     minQuantity: 1000,
-    price: { min: 1400, max: 3500 },
+    price: { min: 1800, max: 4300 },
     extraOptions: [
       { name: 'Logo Tasarımı', price: 250 },
       { name: 'Kırım 1000 Adet', price: 400 },
@@ -255,14 +255,14 @@ export const PRODUCTS: Product[] = [
       { name: 'Kırım 5000 Adet', price: 1000 }
     ],
     quantityPricing: [
-      { quantity: 1000, price: 1400, material: '115 Gram', size: 'A5 (140x200mm)' },
-      { quantity: 2000, price: 2000, material: '115 Gram', size: 'A5 (140x200mm)' },
-      { quantity: 1000, price: 2200, material: '115 Gram', size: 'A4 (200x280mm)' },
-      { quantity: 2000, price: 3500, material: '115 Gram', size: 'A4 (200x280mm)' },
-      { quantity: 1000, price: 1400, material: '130 Gram', size: 'A5 (140x200mm)' },
-      { quantity: 2000, price: 2000, material: '130 Gram', size: 'A5 (140x200mm)' },
-      { quantity: 1000, price: 2000, material: '130 Gram', size: 'A4 (200x280mm)' },
-      { quantity: 2000, price: 2800, material: '130 Gram', size: 'A4 (200x280mm)' }
+      { quantity: 1000, price: 1800, material: '115 Gram', size: 'A5 (140x200mm)' },
+      { quantity: 2000, price: 2500, material: '115 Gram', size: 'A5 (140x200mm)' },
+      { quantity: 1000, price: 3000, material: '115 Gram', size: 'A4 (200x280mm)' },
+      { quantity: 2000, price: 4000, material: '115 Gram', size: 'A4 (200x280mm)' },
+      { quantity: 1000, price: 2000, material: '130 Gram', size: 'A5 (140x200mm)' },
+      { quantity: 2000, price: 2600, material: '130 Gram', size: 'A5 (140x200mm)' },
+      { quantity: 1000, price: 3300, material: '130 Gram', size: 'A4 (200x280mm)' },
+      { quantity: 2000, price: 4300, material: '130 Gram', size: 'A4 (200x280mm)' }
     ]
   },
   {
@@ -283,12 +283,12 @@ export const PRODUCTS: Product[] = [
     materials: ['Parlak Selefon'],
     colors: ['CMYK 4 Renk'],
     minQuantity: 1000,
-    price: { min: 1250, max: 1250 },
+    price: { min: 1400, max: 1400 },
     extraOptions: [
       { name: 'Logo Tasarımı', price: 250 }
     ],
     quantityPricing: [
-      { quantity: 1000, price: 1250, size: '46x68mm (Standart)' }
+      { quantity: 1000, price: 1400, size: '46x68mm (Standart)' }
     ],
     customSizing: {
       enabled: true,
@@ -309,13 +309,13 @@ export const PRODUCTS: Product[] = [
     materials: ['Güçlü Magnet'],
     colors: ['CMYK UV Dayanıklı'],
     minQuantity: 2,
-    price: { min: 1000, max: 1200 },
+    price: { min: 1100, max: 1500 },
     extraOptions: [
       { name: 'Logo Tasarımı', price: 250 }
     ],
     quantityPricing: [
-      { quantity: 2, price: 1000, size: '20x60 cm' },
-      { quantity: 2, price: 1200, size: '30x60 cm' }
+      { quantity: 2, price: 1100, size: '20x60 cm' },
+      { quantity: 2, price: 1500, size: '30x60 cm' }
     ]
   },
   {
@@ -332,19 +332,18 @@ export const PRODUCTS: Product[] = [
     gradient: 'from-orange-400 to-orange-600',
     features: ['Kuşe Etiket', 'Parlak Selefon', 'Özel Kesim'],
     sizes: ['53x83mm', 'A5', 'A4'],
-    materials: ['Kuşe Etiket'],
+    materials: ['Standart Köşeli', 'Özel Kesim'],
     colors: ['CMYK 4 Renk'],
     minQuantity: 1000,
-    price: { min: 700, max: 6200 },
+    price: { min: 800, max: 8000 },
     extraOptions: [
-      { name: 'Logo Tasarımı', price: 250 },
-      { name: 'Özel Kesim', price: 300 }
+      { name: 'Logo Tasarımı', price: 250 }
     ],
     quantityPricing: [
-      { quantity: 1000, price: 700, size: '53x83mm', material: 'Standart Köşeli' },
-      { quantity: 1000, price: 1000, size: '53x83mm', material: 'Özel Kesim' },
-      { quantity: 1000, price: 3200, size: 'A5' },
-      { quantity: 1000, price: 6200, size: 'A4' }
+      { quantity: 1000, price: 800, size: '53x83mm', material: 'Standart Köşeli' },
+      { quantity: 1000, price: 1200, size: '53x83mm', material: 'Özel Kesim' },
+      { quantity: 1000, price: 4000, size: 'A5', material: 'Standart Köşeli' },
+      { quantity: 1000, price: 8000, size: 'A4', material: 'Standart Köşeli' }
     ]
   },
   {
@@ -360,12 +359,12 @@ export const PRODUCTS: Product[] = [
     materials: ['Polyester Kumaş'],
     colors: ['Dijital Baskı'],
     minQuantity: 2,
-    price: { min: 2250, max: 2250 },
+    price: { min: 4000, max: 4000 },
     extraOptions: [
       { name: 'Logo Tasarımı', price: 250 }
     ],
     quantityPricing: [
-      { quantity: 2, price: 2250 }
+      { quantity: 2, price: 4000 }
     ]
   },
 
@@ -383,12 +382,12 @@ export const PRODUCTS: Product[] = [
     materials: ['Plastik'],
     colors: ['Beyaz', '4 Renk Baskı'],
     minQuantity: 100,
-    price: { min: 1000, max: 1000 },
+    price: { min: 1300, max: 1300 },
     extraOptions: [
       { name: 'Logo Tasarımı', price: 250 }
     ],
     quantityPricing: [
-      { quantity: 100, price: 1000 }
+      { quantity: 100, price: 1300 }
     ]
   },
   {
@@ -404,12 +403,12 @@ export const PRODUCTS: Product[] = [
     materials: ['Plastik'],
     colors: ['Beyaz', '4 Renk Baskı'],
     minQuantity: 100,
-    price: { min: 1200, max: 1200 },
+    price: { min: 1500, max: 1500 },
     extraOptions: [
       { name: 'Logo Tasarımı', price: 250 }
     ],
     quantityPricing: [
-      { quantity: 100, price: 1200 }
+      { quantity: 100, price: 1500 }
     ]
   },
   {
@@ -429,12 +428,12 @@ export const PRODUCTS: Product[] = [
     materials: ['Seramik'],
     colors: ['Beyaz', '4 Renk Baskı'],
     minQuantity: 10,
-    price: { min: 1750, max: 1750 },
+    price: { min: 2000, max: 2000 },
     extraOptions: [
       { name: 'Logo Tasarımı', price: 250 }
     ],
     quantityPricing: [
-      { quantity: 10, price: 1750 }
+      { quantity: 10, price: 2000 }
     ]
   },
   {
