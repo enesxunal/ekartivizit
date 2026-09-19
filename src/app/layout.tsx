@@ -23,10 +23,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "E-Kartvizit - Profesyonel Baskı Çözümleri",
+    default: "Online Matbaa ve Baskı Ürünleri | E-Kartvizit",
     template: "%s | E-Kartvizit"
   },
-  description: "Kartvizit, broşür, magnet ve kurumsal baskı ürünleri için online tasarım ve baskı hizmetleri. Ücretsiz tasarım desteği ve hızlı teslimat garantisi.",
+  description: "Kartvizit, broşür, sticker, magnet ve kurumsal baskı ürünlerini ölçü, kağıt ve adet seçenekleriyle online sipariş edin.",
   keywords: [
     "kartvizit",
     "broşür",
@@ -55,22 +55,22 @@ export const metadata: Metadata = {
     type: "website",
     locale: "tr_TR",
     url: "https://ekartvizit.tr",
-    title: "E-Kartvizit - Profesyonel Baskı Çözümleri",
-    description: "Kartvizit, broşür, magnet ve kurumsal baskı ürünleri için online tasarım ve baskı hizmetleri.",
+    title: "Online Matbaa ve Baskı Ürünleri | E-Kartvizit",
+    description: "Kartvizit, broşür, sticker, magnet ve kurumsal baskı ürünlerini online sipariş edin.",
     siteName: "E-Kartvizit",
     images: [
       {
         url: "https://ekartvizit.tr/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "E-Kartvizit - Profesyonel Baskı Çözümleri",
+        alt: "E-Kartvizit online matbaa ve baskı ürünleri",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "E-Kartvizit - Profesyonel Baskı Çözümleri",
-    description: "Kartvizit, broşür, magnet ve kurumsal baskı ürünleri için online tasarım ve baskı hizmetleri.",
+    title: "Online Matbaa ve Baskı Ürünleri | E-Kartvizit",
+    description: "Kartvizit, broşür, sticker, magnet ve kurumsal baskı ürünlerini online sipariş edin.",
     images: ["https://ekartvizit.tr/twitter-image.jpg"],
   },
   robots: {
@@ -82,12 +82,6 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
       "max-image-preview": "large",
       "max-snippet": -1,
-    },
-  },
-  verification: {
-    google: "your-google-verification-code",
-    other: {
-      "facebook-domain-verification": "yp476bq60jobeyrubku1znmgzvn9rp",
     },
   },
   icons: {

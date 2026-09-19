@@ -1,41 +1,32 @@
 import { MetadataRoute } from 'next'
 
+const privatePaths = ['/admin/', '/api/', '/private/', '/temp/']
+
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
         userAgent: '*',
         allow: '/',
-        disallow: [
-          '/admin/',
-          '/api/',
-          '/_next/',
-          '/private/',
-          '/temp/',
-          '*.json',
-          '*.xml',
-        ],
+        disallow: privatePaths,
       },
       {
         userAgent: 'Googlebot',
         allow: '/',
-        disallow: [
-          '/admin/',
-          '/api/',
-          '/private/',
-        ],
+        disallow: privatePaths,
       },
       {
         userAgent: 'Bingbot',
         allow: '/',
-        disallow: [
-          '/admin/',
-          '/api/',
-          '/private/',
-        ],
+        disallow: privatePaths,
+      },
+      {
+        userAgent: 'OAI-SearchBot',
+        allow: '/',
+        disallow: privatePaths,
       },
     ],
     sitemap: 'https://ekartvizit.tr/sitemap.xml',
     host: 'https://ekartvizit.tr',
   }
-} 
+}

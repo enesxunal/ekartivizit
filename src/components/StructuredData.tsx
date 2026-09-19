@@ -1,265 +1,105 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import Script from 'next/script'
 
-interface StructuredDataProps {
-  type: 'website' | 'product' | 'organization' | 'breadcrumb'
-  data: any
-}
+const BASE_URL = 'https://ekartvizit.tr'
 
-export default function StructuredData({ type, data }: StructuredDataProps) {
-  const generateStructuredData = () => {
-    switch (type) {
-      case 'website':
-        return {
-          '@context': 'https://schema.org',
-          '@type': 'WebSite',
-          name: 'E-Kartvizit',
-          url: 'https://ekartvizit.tr',
-          description: 'Profesyonel baskı çözümleri ve online tasarım hizmetleri',
-          potentialAction: {
-            '@type': 'SearchAction',
-            target: 'https://ekartvizit.tr/search?q={search_term_string}',
-            'query-input': 'required name=search_term_string',
-          },
-          ...data,
-        }
-
-      case 'organization':
-        return {
-          '@context': 'https://schema.org',
-          '@type': 'Organization',
-          name: 'E-Kartvizit',
-          url: 'https://ekartvizit.tr',
-          logo: 'https://ekartvizit.tr/logo.png',
-          description: 'Kartvizit, broşür, magnet ve kurumsal baskı ürünleri için online tasarım ve baskı hizmetleri',
-          contactPoint: {
-            '@type': 'ContactPoint',
-            telephone: '+90-XXX-XXX-XXXX',
-            contactType: 'customer service',
-            availableLanguage: 'Turkish',
-          },
-          sameAs: [
-            'https://facebook.com/ekartvizit',
-            'https://instagram.com/ekartvizit',
-            'https://twitter.com/ekartvizit',
-          ],
-          ...data,
-        }
-
-      case 'product':
-        return {
-          '@context': 'https://schema.org',
-          '@type': 'Product',
-          name: data.name,
-          description: data.description,
-          image: data.image,
-          brand: {
-            '@type': 'Brand',
-            name: 'E-Kartvizit',
-          },
-          offers: {
-            '@type': 'Offer',
-            price: data.price,
-            priceCurrency: 'TRY',
-            availability: 'https://schema.org/InStock',
-            seller: {
-              '@type': 'Organization',
-              name: 'E-Kartvizit',
-            },
-          },
-          category: data.category,
-        }
-
-      case 'breadcrumb':
-        return {
-          '@context': 'https://schema.org',
-          '@type': 'BreadcrumbList',
-          itemListElement: data.map((item: any, index: number) => ({
-            '@type': 'ListItem',
-            position: index + 1,
-            name: item.name,
-            item: item.url,
-          })),
-        }
-
-      default:
-        return data
-    }
+export function WebsiteStructuredData() {
+  const data = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'E-Kartvizit',
+    url: BASE_URL,
+    description: 'Kartvizit, broşür, etiket, magnet ve kurumsal baskı ürünlerini online sipariş edebileceğiniz baskı platformu.',
+    inLanguage: 'tr-TR',
   }
 
-  return (
-    <Script
-      id={`structured-data-${type}`}
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{
-        __html: JSON.stringify(generateStructuredData()),
-      }}
-    />
-  )
-}
-
-// Önceden tanımlanmış structured data'lar
-export function WebsiteStructuredData() {
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "E-Kartvizit",
-    "description": "Profesyonel baskı çözümleri - Kartvizit, broşür, magnet ve kurumsal baskı ürünleri",
-    "url": "https://ekartvizit.tr",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://ekartvizit.tr/search?q={search_term_string}",
-      "query-input": "required name=search_term_string"
-    },
-    "sameAs": [
-      "https://www.facebook.com/ekartvizit",
-      "https://www.instagram.com/ekartvizit",
-      "https://twitter.com/ekartvizit"
-    ]
-  };
-
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-    />
-  );
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
 }
 
 export function OrganizationStructuredData() {
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "E-Kartvizit",
-    "description": "Profesyonel baskı çözümleri ve online tasarım hizmetleri",
-    "url": "https://ekartvizit.tr",
-    "logo": "https://ekartvizit.tr/logo.png",
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "telephone": "+90-XXX-XXX-XXXX",
-      "contactType": "customer service",
-      "areaServed": "TR",
-      "availableLanguage": ["Turkish", "English"]
+  const data = {
+    '@context': 'https://schema.org',
+    '@type': 'OnlineStore',
+    '@id': `${BASE_URL}/#organization`,
+    name: 'E-Kartvizit',
+    url: BASE_URL,
+    logo: `${BASE_URL}/logo.png`,
+    email: 'info@ekartvizit.tr',
+    telephone: '+90 850 840 30 11',
+    areaServed: {
+      '@type': 'Country',
+      name: 'Türkiye',
     },
-    "address": {
-      "@type": "PostalAddress",
-      "addressCountry": "TR",
-      "addressLocality": "İstanbul",
-      "addressRegion": "İstanbul"
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'customer service',
+      email: 'info@ekartvizit.tr',
+      telephone: '+90 850 840 30 11',
+      availableLanguage: ['tr'],
+      areaServed: 'TR',
     },
-    "sameAs": [
-      "https://www.facebook.com/ekartvizit",
-      "https://www.instagram.com/ekartvizit",
-      "https://twitter.com/ekartvizit"
-    ],
-    "foundingDate": "2024",
-    "numberOfEmployees": "10-50",
-    "serviceArea": {
-      "@type": "Country",
-      "name": "Turkey"
-    }
-  };
+  }
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-    />
-  );
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
 }
 
 export function ProductStructuredData({ product }: { product: any }) {
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    "name": product.name,
-    "description": product.description,
-    "image": product.image,
-    "brand": {
-      "@type": "Brand",
-      "name": "E-Kartvizit"
-    },
-    "offers": {
-      "@type": "Offer",
-      "price": product.price,
-      "priceCurrency": "TRY",
-      "availability": "https://schema.org/InStock",
-      "seller": {
-        "@type": "Organization",
-        "name": "E-Kartvizit"
-      }
-    },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": product.rating || 4.5,
-      "reviewCount": product.reviewCount || 10
-    }
-  };
+  const images = (product.images?.length ? product.images : [product.image]).map((image: string) =>
+    image.startsWith('http') ? image : `${BASE_URL}${image}`,
+  )
+  const minPrice = product.price?.min ?? 0
+  const maxPrice = product.price?.max ?? minPrice
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-    />
-  );
+  const offer = minPrice === maxPrice
+    ? {
+        '@type': 'Offer',
+        url: `${BASE_URL}${product.href}`,
+        price: minPrice,
+        priceCurrency: 'TRY',
+        availability: 'https://schema.org/InStock',
+        itemCondition: 'https://schema.org/NewCondition',
+        seller: { '@id': `${BASE_URL}/#organization` },
+      }
+    : {
+        '@type': 'AggregateOffer',
+        url: `${BASE_URL}${product.href}`,
+        lowPrice: minPrice,
+        highPrice: maxPrice,
+        priceCurrency: 'TRY',
+        offerCount: product.quantityPricing?.length || 1,
+      }
+
+  const data = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    '@id': `${BASE_URL}${product.href}#product`,
+    sku: product.id,
+    name: product.name,
+    description: product.description,
+    image: images,
+    url: `${BASE_URL}${product.href}`,
+    category: product.category,
+    brand: {
+      '@type': 'Brand',
+      name: 'E-Kartvizit',
+    },
+    material: product.materials?.join(', '),
+    offers: offer,
+  }
+
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
 }
 
 export function BreadcrumbStructuredData({ items }: { items: Array<{ name: string; url: string }> }) {
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": items.map((item, index) => ({
-      "@type": "ListItem",
-      "position": index + 1,
-      "name": item.name,
-      "item": item.url
-    }))
-  };
+  const data = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  }
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-    />
-  );
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
 }
-
-export function LocalBusinessStructuredData() {
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "name": "E-Kartvizit",
-    "description": "Profesyonel baskı çözümleri ve online tasarım hizmetleri",
-    "url": "https://ekartvizit.tr",
-    "logo": "https://ekartvizit.tr/logo.png",
-    "image": "https://ekartvizit.tr/logo.png",
-    "address": {
-      "@type": "PostalAddress",
-      "addressCountry": "TR",
-      "addressLocality": "İstanbul",
-      "addressRegion": "İstanbul"
-    },
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "telephone": "+90-XXX-XXX-XXXX",
-      "contactType": "customer service",
-      "areaServed": "TR",
-      "availableLanguage": ["Turkish", "English"]
-    },
-    "openingHours": "Mo-Fr 09:00-18:00",
-    "priceRange": "₺₺",
-    "servesCuisine": "Baskı ve Tasarım Hizmetleri",
-    "sameAs": [
-      "https://www.facebook.com/ekartvizit",
-      "https://www.instagram.com/ekartvizit",
-      "https://twitter.com/ekartvizit"
-    ]
-  };
-
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-    />
-  );
-} 
