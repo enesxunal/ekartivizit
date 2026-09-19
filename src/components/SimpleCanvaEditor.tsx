@@ -8,6 +8,7 @@ import { ExternalLink, ArrowLeft, Upload, AlertCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/contexts/CartContext'
 import { useToast } from '@/contexts/ToastContext'
+import { upload } from '@vercel/blob/client'
 
 interface SimpleCanvaEditorProps {
   productCategory: 'kartvizit' | 'brosur' | 'magnet'
@@ -124,7 +125,7 @@ export default function SimpleCanvaEditor({
   }
 
   // Sepete ekle
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     try {
       if (!designFile) {
         addToast({
@@ -135,73 +136,51 @@ export default function SimpleCanvaEditor({
         return
       }
 
-      // Dosyayı base64'e çevir (gerçek uygulamada dosya upload servisi kullanılmalı)
-      const reader = new FileReader()
-      reader.onload = () => {
-        try {
-          const base64Data = reader.result as string
+      const safeName = designFile.name.replace(/[^a-zA-Z0-9._-]/g, '-')
+      const blob = await upload(`designs/${Date.now()}-${safeName}`, designFile, {
+        access: 'public',
+        handleUploadUrl: '/api/uploads/design',
+        contentType: 'application/pdf',
+        multipart: designFile.size >= 5 * 1024 * 1024,
+      })
 
-          addToCart({
-            product: {
-              id: productId,
-              name: `${productCategory.charAt(0).toUpperCase() + productCategory.slice(1)} - Özel Tasarım`,
-              description: 'Canva ile özel tasarladığınız ürün',
-              category: 'kurumsal',
-              image: '/placeholder-design.jpg',
-              href: `/${productCategory}-ozel-tasarim`,
-              gradient: 'from-[#59af05] to-[#4a9321]',
-              price: { min: 0, max: 0 }
-            },
-            quantity: 1000,
-            selectedMaterial: undefined,
-            selectedSize: undefined,
-            selectedWindow: undefined,
-            selectedExtras: undefined,
-            price: 0,
-            customDesign: {
-              designId: `custom-${Date.now()}`,
-              designTitle: designFile.name,
-              pdfUrl: base64Data, // Gerçek uygulamada upload edilmiş dosya URL'i
-              createdAt: new Date().toISOString()
-            }
-          })
-
-          addToast({
-            type: 'success',
-            title: 'Sepete Eklendi',
-            description: 'Özel tasarımınız sepete eklendi'
-          })
-
-          router.push('/sepet')
-        } catch (err) {
-          const errorMessage = err instanceof Error ? err.message : 'Sepete eklenirken hata oluştu'
-          setError(errorMessage)
-          console.error('Add to cart error:', err)
-          
-          addToast({
-            type: 'error',
-            title: 'Hata',
-            description: errorMessage
-          })
+      addToCart({
+        product: {
+          id: productId,
+          name: `${productCategory.charAt(0).toUpperCase() + productCategory.slice(1)} - Özel Tasarım`,
+          description: 'Canva ile özel tasarladığınız ürün',
+          category: 'kurumsal',
+          image: '/placeholder-design.jpg',
+          href: `/${productCategory}-ozel-tasarim`,
+          gradient: 'from-[#59af05] to-[#4a9321]',
+          price: { min: 0, max: 0 }
+        },
+        quantity: 1000,
+        selectedMaterial: undefined,
+        selectedSize: undefined,
+        selectedWindow: undefined,
+        selectedExtras: undefined,
+        price: 0,
+        customDesign: {
+          designId: `custom-${Date.now()}`,
+          designTitle: designFile.name,
+          pdfUrl: blob.url,
+          createdAt: new Date().toISOString()
         }
-      }
-      
-      reader.onerror = () => {
-        const errorMessage = 'Dosya okunamadı'
-        setError(errorMessage)
-        addToast({
-          type: 'error',
-          title: 'Hata',
-          description: errorMessage
-        })
-      }
-      
-      reader.readAsDataURL(designFile)
+      })
+
+      addToast({
+        type: 'success',
+        title: 'Sepete Eklendi',
+        description: 'Özel tasarımınız güvenli şekilde yüklendi ve sepete eklendi'
+      })
+
+      router.push('/sepet')
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Sepete eklenirken hata oluştu'
       setError(errorMessage)
       console.error('Add to cart error:', err)
-      
+
       addToast({
         type: 'error',
         title: 'Hata',
