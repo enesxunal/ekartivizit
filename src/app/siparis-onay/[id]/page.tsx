@@ -22,7 +22,7 @@ export default function SiparisOnayPage() {
     return (
       <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
         <Header />
-        <main className="site-container max-w-5xl py-10 sm:py-12 lg:py-16">
+        <main className="site-container max-w-5xl py-8 sm:py-10 lg:py-12">
           <Card className="text-center p-8">
             <h1 className="text-2xl font-semibold tracking-[-0.035em] text-[#171a16] mb-2">Sipariş Bulunamadı</h1>
             <p className="text-[#687067] mb-6">Aradığınız sipariş bulunamadı.</p>
@@ -72,11 +72,11 @@ export default function SiparisOnayPage() {
     <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
       <Header />
       
-      <main className="site-container max-w-5xl py-10 sm:py-12 lg:py-16">
+      <main className="site-container max-w-5xl py-8 sm:py-10 lg:py-12">
         {/* Başarı Mesajı */}
         <div className="text-center mb-8">
           <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-          <h1 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">
+          <h1 className="text-[clamp(1.9rem,3.5vw,3.2rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">
             Siparişiniz Alındı!
           </h1>
           <p className="text-lg text-[#687067]">

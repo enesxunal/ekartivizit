@@ -15,10 +15,10 @@ export default function CartPage() {
     return (
       <div className="min-h-screen bg-white text-[#171a16]">
         <Header />
-        <main className="site-container py-16 sm:py-24">
+        <main className="site-container py-10 sm:py-14">
           <div className="mx-auto max-w-xl text-center">
             <span className="mx-auto flex size-14 items-center justify-center rounded-full bg-[#f2f4ef]"><ShoppingBag className="size-5" /></span>
-            <h1 className="mt-7 text-[clamp(2.6rem,6vw,5rem)] font-semibold leading-[.92] tracking-[-.06em]">Sepetiniz boş.</h1>
+            <h1 className="mt-7 text-[clamp(2.3rem,4.5vw,4.2rem)] font-semibold leading-[.92] tracking-[-.06em]">Sepetiniz boş.</h1>
             <p className="mx-auto mt-4 max-w-md text-sm leading-6 text-[#71776e]">Baskı ürününü seçin, özelliklerini belirleyin ve sipariş akışına ekleyin.</p>
             <Link href="/tum-urunler" className="mt-8 inline-flex h-12 items-center gap-2 rounded-[12px] bg-[#171a16] px-6 text-sm font-semibold text-white">Ürünleri incele <ArrowLeft className="size-4 rotate-180" /></Link>
           </div>
@@ -35,7 +35,7 @@ export default function CartPage() {
         <div className="mb-8 flex flex-col gap-5 border-b border-[#dfe3dc] pb-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <Link href="/tum-urunler" className="mb-4 inline-flex items-center gap-2 text-xs font-semibold text-[#687067] hover:text-[#171a16]"><ArrowLeft className="size-4" /> Alışverişe devam et</Link>
-            <h1 className="text-[clamp(2.8rem,6vw,5.4rem)] font-semibold leading-[.9] tracking-[-.065em]">Sepet</h1>
+            <h1 className="text-[clamp(2.35rem,4.5vw,4.2rem)] font-semibold leading-[.9] tracking-[-.065em]">Sepet</h1>
             <p className="mt-3 text-sm text-[#777d74]">{getItemCount()} paket · sipariş detaylarını son kez kontrol edin.</p>
           </div>
           <button type="button" onClick={clearCart} className="inline-flex items-center gap-2 self-start text-xs font-semibold text-[#9a3b35] hover:underline"><Trash2 className="size-4" /> Sepeti temizle</button>
@@ -88,7 +88,7 @@ export default function CartPage() {
             })}
           </section>
 
-          <aside className="lg:sticky lg:top-[124px] lg:h-fit">
+          <aside className="lg:sticky lg:top-[82px] lg:h-fit">
             <div className="rounded-[20px] border border-[#dfe3dc] bg-white p-5 sm:p-6">
               <p className="text-xs font-semibold uppercase tracking-[.14em] text-[#8a9087]">Sipariş özeti</p>
               <div className="mt-6 space-y-3 text-sm">

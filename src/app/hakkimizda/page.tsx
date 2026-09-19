@@ -90,10 +90,10 @@ export default function AboutPage() {
       <Header />
       <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
       {/* Hero Section */}
-      <section className="bg-[#171a16] text-white py-16 sm:py-20 lg:py-24">
+      <section className="bg-[#171a16] text-white py-10 sm:py-12 lg:py-14">
         <div className="site-container">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-[clamp(2.8rem,6vw,6rem)] font-semibold leading-[.9] tracking-[-0.06em] mb-6">
+            <h1 className="text-[clamp(2.25rem,4vw,4rem)] font-semibold leading-[.9] tracking-[-0.06em] mb-6">
               Hakkımızda
             </h1>
             <p className="text-base sm:text-lg leading-7 text-white/65 mb-8">
@@ -116,7 +116,7 @@ export default function AboutPage() {
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-[#171a16] text-white rounded-full mb-4">
                   <stat.icon className="h-8 w-8" />
                 </div>
-                <div className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">
+                <div className="text-[clamp(1.9rem,3.5vw,3.2rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">
                   {stat.number}
                 </div>
                 <div className="text-[#687067]">
@@ -129,11 +129,11 @@ export default function AboutPage() {
       </section>
 
       {/* Story Section */}
-      <section className="py-16">
+      <section className="py-10">
         <div className="site-container">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-6">
+              <h2 className="text-[clamp(1.9rem,3.5vw,3.2rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-6">
                 Hikayemiz
               </h2>
               <div className="space-y-4 text-gray-700 leading-relaxed">
@@ -177,7 +177,7 @@ export default function AboutPage() {
       <section className="py-14 sm:py-18 bg-[#fbfbf8]">
         <div className="site-container">
           <div className="text-center mb-12">
-            <h2 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-4">
+            <h2 className="text-[clamp(1.9rem,3.5vw,3.2rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-4">
               Değerlerimiz
             </h2>
             <p className="text-[#687067] max-w-2xl mx-auto">
@@ -206,10 +206,10 @@ export default function AboutPage() {
       </section>
 
       {/* Team Section */}
-      <section className="py-16">
+      <section className="py-10">
         <div className="site-container">
           <div className="text-center mb-12">
-            <h2 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-4">
+            <h2 className="text-[clamp(1.9rem,3.5vw,3.2rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-4">
               Ekibimiz
             </h2>
             <p className="text-[#687067] max-w-2xl mx-auto">
@@ -249,7 +249,7 @@ export default function AboutPage() {
       <section className="py-14 sm:py-18 bg-[#fbfbf8]">
         <div className="site-container">
           <div className="text-center mb-12">
-            <h2 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-4">
+            <h2 className="text-[clamp(1.9rem,3.5vw,3.2rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-4">
               Neden E-Kartvizit?
             </h2>
             <p className="text-[#687067] max-w-2xl mx-auto">
@@ -298,7 +298,7 @@ export default function AboutPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 sm:py-20 bg-[#171a16] text-white">
+      <section className="py-10 sm:py-12 bg-[#171a16] text-white">
         <div className="site-container text-center">
           <h2 className="text-3xl font-bold mb-4">
             Projelerinizi Hayata Geçirelim

@@ -96,7 +96,7 @@ export default function OdemePage() {
     return (
       <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
         <Header />
-        <main className="site-container max-w-5xl py-10 sm:py-12 lg:py-16">
+        <main className="site-container max-w-5xl py-8 sm:py-10 lg:py-12">
           <Card className="text-center p-8">
             <ShoppingCart className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h1 className="text-2xl font-semibold tracking-[-0.035em] text-[#171a16] mb-2">Sepetiniz Boş</h1>
@@ -341,7 +341,7 @@ export default function OdemePage() {
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="mb-3 text-xs font-semibold uppercase tracking-[.16em] text-[#579d32]">Sipariş</p>
-              <h1 className="text-[clamp(2.8rem,6vw,5.4rem)] font-semibold leading-[.9] tracking-[-.065em]">Teslimat ve ödeme</h1>
+              <h1 className="text-[clamp(2.35rem,4.5vw,4.2rem)] font-semibold leading-[.9] tracking-[-.065em]">Teslimat ve ödeme</h1>
               <p className="mt-3 text-sm text-[#777d74]">Bilgilerinizi tamamlayın, ödeme yöntemini seçin ve siparişi oluşturun.</p>
             </div>
 
@@ -433,7 +433,7 @@ export default function OdemePage() {
             </CheckoutSection>
           </div>
 
-          <aside className="lg:sticky lg:top-[124px] lg:h-fit">
+          <aside className="lg:sticky lg:top-[82px] lg:h-fit">
             <div className="rounded-[20px] border border-[#dfe3dc] bg-white p-5 sm:p-6">
               <div className="flex items-center justify-between"><p className="text-xs font-semibold uppercase tracking-[.14em] text-[#8a9087]">Sipariş özeti</p><span className="text-xs text-[#8a9087]">{items.length} ürün</span></div>
 

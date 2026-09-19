@@ -26,7 +26,7 @@ export default function TasarimPage() {
         actionLabel="Önce ürün seç"
       />
 
-      <main className="site-container py-10 sm:py-14 lg:py-16">
+      <main className="site-container py-8 sm:py-10 lg:py-12">
         <div className="mb-8 grid gap-3 md:grid-cols-3">
           {[
             ['01', 'Ürünü seç', 'Baskı türünü ve ölçüyü belirleyin.'],
@@ -49,7 +49,7 @@ export default function TasarimPage() {
                 key={category.id}
                 type="button"
                 onClick={() => router.push(`/tasarim/${category.id}`)}
-                className="group flex min-h-[360px] flex-col rounded-[28px] border border-black/8 bg-[#171a16] p-7 text-left text-white transition hover:-translate-y-1 hover:shadow-[0_24px_80px_rgba(16,24,16,.14)]"
+                className="group flex min-h-[280px] flex-col rounded-[28px] border border-black/8 bg-[#171a16] p-7 text-left text-white transition hover:-translate-y-1 hover:shadow-[0_24px_80px_rgba(16,24,16,.14)]"
               >
                 <div className="flex items-start justify-between">
                   <span className="flex size-12 items-center justify-center rounded-full bg-white/10 text-[#9fe468]"><Icon className="size-5" /></span>

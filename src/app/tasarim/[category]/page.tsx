@@ -61,7 +61,7 @@ export default function TasarimPage() {
     <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
       <Header />
       
-      <main className="site-container py-10 sm:py-12 lg:py-16">
+      <main className="site-container py-8 sm:py-10 lg:py-12">
         {/* Başlık ve Geri Dön */}
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-4">

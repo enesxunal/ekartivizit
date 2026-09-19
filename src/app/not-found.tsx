@@ -10,7 +10,7 @@ export default function NotFound() {
     <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
       <Header />
       
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="text-center">
           {/* 404 İkonu */}
           <div className="mb-8">

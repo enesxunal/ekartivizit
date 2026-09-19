@@ -25,8 +25,8 @@ export default function TumUrunlerPage() {
         actionLabel="Hazır tasarımını yükle"
       />
 
-      <main className="site-container py-10 sm:py-14 lg:py-16">
-        <div className="mb-8 flex flex-col gap-5 border-b border-black/8 pb-5 lg:flex-row lg:items-center lg:justify-between">
+      <main className="site-container py-8 sm:py-10 lg:py-12">
+        <div className="mb-6 flex flex-col gap-4 border-b border-black/8 pb-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex gap-2 overflow-x-auto pb-1">
             <button
               type="button"

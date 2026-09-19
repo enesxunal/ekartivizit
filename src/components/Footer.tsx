@@ -38,11 +38,11 @@ const columns = [
 export default function Footer() {
   return (
     <footer className="bg-[#171a16] text-white">
-      <div className="site-container py-14 sm:py-16 lg:py-20">
+      <div className="site-container py-14 sm:py-10 lg:py-20">
         <div className="grid gap-12 border-b border-white/12 pb-12 lg:grid-cols-[1.15fr_1fr] lg:gap-20 lg:pb-16">
           <div>
             <Image src="/logo.png" alt="E-Kartvizit" width={150} height={46} className="mb-8 h-11 w-auto brightness-0 invert" />
-            <p className="max-w-xl text-[clamp(2rem,4.2vw,4.4rem)] font-semibold leading-[.94] tracking-[-0.055em] text-white">
+            <p className="max-w-xl text-[clamp(1.7rem,3vw,2.8rem)] font-semibold leading-[.94] tracking-[-0.055em] text-white">
               Baskıyı daha kolay sipariş edilen bir ürüne dönüştürüyoruz.
             </p>
           </div>

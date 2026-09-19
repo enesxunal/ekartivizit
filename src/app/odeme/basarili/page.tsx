@@ -92,8 +92,8 @@ export default function PaymentSuccessPage() {
     return (
       <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
         <Header />
-        <main className="site-container max-w-5xl py-10 sm:py-12 lg:py-16">
-          <div className="text-center py-16">
+        <main className="site-container max-w-5xl py-8 sm:py-10 lg:py-12">
+          <div className="text-center py-10">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#59af05] mx-auto"></div>
             <p className="mt-4 text-[#687067]">Sipariş bilgileri yükleniyor...</p>
           </div>
@@ -107,8 +107,8 @@ export default function PaymentSuccessPage() {
     return (
       <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
         <Header />
-        <main className="site-container max-w-5xl py-10 sm:py-12 lg:py-16">
-          <div className="text-center py-16">
+        <main className="site-container max-w-5xl py-8 sm:py-10 lg:py-12">
+          <div className="text-center py-10">
             <h1 className="text-2xl font-semibold tracking-[-0.035em] text-[#171a16] mb-4">Sipariş Bulunamadı</h1>
             <p className="text-[#687067] mb-8">Aradığınız sipariş bulunamadı.</p>
             <Link href="/">
@@ -127,13 +127,13 @@ export default function PaymentSuccessPage() {
     <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
       <Header />
       
-      <main className="site-container max-w-5xl py-10 sm:py-12 lg:py-16">
+      <main className="site-container max-w-5xl py-8 sm:py-10 lg:py-12">
         {/* Başarı Mesajı */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
             <CheckCircle className="w-8 h-8 text-green-600" />
           </div>
-          <h1 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">{orderDetails.status === 'paid' ? 'Ödemeniz Başarılı! 🎉' : orderDetails.status === 'failed' ? 'Ödeme Başarısız' : 'Ödemeniz Doğrulanıyor'}</h1>
+          <h1 className="text-[clamp(1.9rem,3.5vw,3.2rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">{orderDetails.status === 'paid' ? 'Ödemeniz Başarılı! 🎉' : orderDetails.status === 'failed' ? 'Ödeme Başarısız' : 'Ödemeniz Doğrulanıyor'}</h1>
           <p className="text-lg text-[#687067]">
             {orderDetails.status === 'paid' ? 'Siparişiniz alındı ve işleme konuldu.' : 'Ödeme sağlayıcısından kesin sonuç bekleniyor.'}
           </p>

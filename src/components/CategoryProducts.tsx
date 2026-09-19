@@ -6,9 +6,9 @@ const icons = { Building2, Megaphone, Gift }
 
 export default function CategoryProducts() {
   return (
-    <section className="bg-[#f7f8f5] py-12 sm:py-16">
+    <section className="bg-[#f7f8f5] py-12 sm:py-10">
       <div className="site-container">
-        <div className="mb-8 flex items-end justify-between gap-4"><div><p className="site-kicker mb-3">Kategoriler</p><h2 className="text-[clamp(2rem,4.2vw,4rem)] font-semibold leading-[.94] tracking-[-.055em]">İşine uygun baskıyı seç.</h2></div><Link href="/tum-urunler" className="hidden items-center gap-2 text-sm font-semibold sm:flex">Tüm ürünler <ArrowRight className="size-4" /></Link></div>
+        <div className="mb-8 flex items-end justify-between gap-4"><div><p className="site-kicker mb-3">Kategoriler</p><h2 className="text-[clamp(1.9rem,3.5vw,3.3rem)] font-semibold leading-[.94] tracking-[-.055em]">İşine uygun baskıyı seç.</h2></div><Link href="/tum-urunler" className="hidden items-center gap-2 text-sm font-semibold sm:flex">Tüm ürünler <ArrowRight className="size-4" /></Link></div>
         <div className="grid gap-3 md:grid-cols-3">
           {CATEGORIES.map((category) => {
             const Icon = icons[category.icon as keyof typeof icons]

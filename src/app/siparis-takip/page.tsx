@@ -205,10 +205,10 @@ export default function OrderTrackingPage() {
     <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
       <Header />
       
-      <main className="site-container max-w-5xl py-10 sm:py-12 lg:py-16">
+      <main className="site-container max-w-5xl py-8 sm:py-10 lg:py-12">
         {/* Başlık */}
         <div className="text-center mb-8">
-          <h1 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">Sipariş Takip</h1>
+          <h1 className="text-[clamp(1.9rem,3.5vw,3.2rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">Sipariş Takip</h1>
           <p className="text-lg text-[#687067]">
             Sipariş numaranız veya takip numaranız ile siparişinizi takip edin
           </p>

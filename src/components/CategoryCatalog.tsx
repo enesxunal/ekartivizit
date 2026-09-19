@@ -17,8 +17,8 @@ export default function CategoryCatalog({ eyebrow, title, description, products 
   return (
     <>
       <PageHero eyebrow={eyebrow} title={title} description={description} />
-      <main className="site-container py-10 sm:py-14 lg:py-16">
-        <div className="mb-8 flex items-center justify-between border-b border-black/8 pb-4">
+      <main className="site-container py-8 sm:py-10 lg:py-12">
+        <div className="mb-6 flex items-center justify-between border-b border-black/8 pb-4">
           <p className="text-sm font-medium text-[#676e64]">{visibleProducts.length} ürün</p>
           <p className="hidden text-xs font-semibold uppercase tracking-[0.14em] text-[#8a9087] sm:block">
             Ürünü seç · özellikleri belirle · siparişi tamamla

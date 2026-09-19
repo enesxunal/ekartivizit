@@ -18,7 +18,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     return (
       <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
         <Header />
-        <main className="site-container py-10 sm:py-12 lg:py-16">
+        <main className="site-container py-8 sm:py-10 lg:py-12">
           <div className="text-center">
             <h1 className="text-2xl font-semibold tracking-[-0.035em] text-[#171a16] mb-4">Ürün Bulunamadı</h1>
             <Link href="/" className="text-[#59af05] hover:underline">

@@ -89,10 +89,10 @@ export default function ContactPage() {
       <Header />
       <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
       {/* Hero Section */}
-      <section className="bg-[#171a16] text-white py-16 sm:py-20 lg:py-24">
+      <section className="bg-[#171a16] text-white py-10 sm:py-12 lg:py-14">
         <div className="site-container">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-[clamp(2.8rem,6vw,6rem)] font-semibold leading-[.9] tracking-[-0.06em] mb-6">
+            <h1 className="text-[clamp(2.25rem,4vw,4rem)] font-semibold leading-[.9] tracking-[-0.06em] mb-6">
               İletişim
             </h1>
             <p className="text-base sm:text-lg leading-7 text-white/65 mb-8">
@@ -107,7 +107,7 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <div className="site-container py-12">
+      <div className="site-container py-9">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Contact Form */}
           <div className="lg:col-span-2">
@@ -302,7 +302,7 @@ export default function ContactPage() {
       <section className="py-14 sm:py-18 bg-[#fbfbf8]">
         <div className="site-container">
           <div className="text-center mb-12">
-            <h2 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-4">
+            <h2 className="text-[clamp(1.9rem,3.5vw,3.2rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-4">
               Ofisimizi Ziyaret Edin
             </h2>
             <p className="text-[#687067] max-w-2xl mx-auto">
@@ -370,10 +370,10 @@ export default function ContactPage() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-16">
+      <section className="py-10">
         <div className="site-container">
           <div className="text-center mb-12">
-            <h2 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-4">
+            <h2 className="text-[clamp(1.9rem,3.5vw,3.2rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-4">
               Sık Sorulan Sorular
             </h2>
             <p className="text-[#687067] max-w-2xl mx-auto">

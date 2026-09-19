@@ -137,7 +137,7 @@ export default function ProductContent({ product }: ProductContentProps) {
   return (
     <main className="bg-white">
       <div className="border-b border-[#e9ebe7] bg-[#fafaf8]">
-        <div className="site-container flex min-h-12 items-center gap-2 overflow-x-auto whitespace-nowrap text-xs text-[#72786f]">
+        <div className="site-container flex min-h-10 items-center gap-2 overflow-x-auto whitespace-nowrap text-xs text-[#72786f]">
           <Link href="/" className="hover:text-[#171a16]">Ana Sayfa</Link>
           <ChevronRight className="size-3.5" />
           <Link href={`/${product.category}`} className="capitalize hover:text-[#171a16]">{product.category}</Link>
@@ -146,39 +146,39 @@ export default function ProductContent({ product }: ProductContentProps) {
         </div>
       </div>
 
-      <section className="site-container py-7 sm:py-10 lg:py-12">
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1.08fr)_minmax(430px,.92fr)] lg:gap-14">
+      <section className="site-container py-5 sm:py-6 lg:py-6">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.04fr)_minmax(420px,.96fr)] lg:gap-9">
           <div className="min-w-0">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-[22px] bg-[#f3f4f1] sm:rounded-[26px]">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-[18px] bg-[#f3f4f1] sm:rounded-[20px] lg:aspect-auto lg:h-[calc(100vh-225px)] lg:min-h-[430px] lg:max-h-[610px]">
               <Image
                 src={activeImage}
                 alt={product.name}
                 fill
                 priority
                 sizes="(max-width:1024px) 100vw, 56vw"
-                className="object-contain p-8 sm:p-12 lg:p-16"
+                className="object-contain p-6 sm:p-8 lg:p-10"
               />
-              <span className="absolute left-4 top-4 rounded-full border border-black/8 bg-white/95 px-3 py-2 text-[11px] font-semibold uppercase tracking-[.12em] text-[#656b62]">
+              <span className="absolute left-3 top-3 rounded-full border border-black/8 bg-white/95 px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-[.12em] text-[#656b62]">
                 Baskı ürünü
               </span>
             </div>
 
             {gallery.length > 1 && (
-              <div className="mt-3 grid grid-cols-4 gap-3 sm:max-w-xl">
+              <div className="mt-2 grid grid-cols-4 gap-2 sm:max-w-lg">
                 {gallery.map((image, index) => (
                   <button
                     type="button"
                     key={`${image}-${index}`}
                     onClick={() => setActiveImage(image)}
-                    className={`relative aspect-square overflow-hidden rounded-[16px] border bg-[#f6f6f3] transition ${activeImage === image ? 'border-[#171a16]' : 'border-black/8 hover:border-black/20'}`}
+                    className={`relative aspect-square overflow-hidden rounded-[12px] lg:h-[74px] lg:aspect-auto border bg-[#f6f6f3] transition ${activeImage === image ? 'border-[#171a16]' : 'border-black/8 hover:border-black/20'}`}
                   >
-                    <Image src={image} alt={`${product.name} ${index + 1}`} fill className="object-contain p-3" sizes="140px" />
+                    <Image src={image} alt={`${product.name} ${index + 1}`} fill className="object-contain p-2" sizes="140px" />
                   </button>
                 ))}
               </div>
             )}
 
-            <div className="mt-10 hidden lg:block">
+            <div className="mt-6 hidden lg:block">
               <div className="grid grid-cols-3 border-y border-[#e9ebe7]">
                 {[
                   [Truck, 'Türkiye geneli gönderim', 'Sipariş durumu takip edilir'],
@@ -187,8 +187,8 @@ export default function ProductContent({ product }: ProductContentProps) {
                 ].map(([Icon, title, text]) => {
                   const FeatureIcon = Icon as typeof Truck
                   return (
-                    <div key={String(title)} className="border-r border-[#e9ebe7] px-5 py-6 last:border-r-0 first:pl-0">
-                      <FeatureIcon className="mb-5 size-5 text-[#579d32]" />
+                    <div key={String(title)} className="border-r border-[#e9ebe7] px-4 py-4 last:border-r-0 first:pl-0">
+                      <FeatureIcon className="mb-3 size-4 text-[#579d32]" />
                       <p className="text-sm font-semibold text-[#171a16]">{String(title)}</p>
                       <p className="mt-1 text-xs leading-5 text-[#737970]">{String(text)}</p>
                     </div>
@@ -198,16 +198,16 @@ export default function ProductContent({ product }: ProductContentProps) {
             </div>
           </div>
 
-          <aside className="min-w-0 lg:sticky lg:top-[124px] lg:h-fit">
-            <div className="mb-7">
-              <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[.14em] text-[#579d32]">
+          <aside className="min-w-0 lg:sticky lg:top-[82px] lg:flex lg:max-h-[calc(100vh-98px)] lg:flex-col lg:overflow-hidden">
+            <div className="mb-4 lg:shrink-0">
+              <div className="mb-2 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[.14em] text-[#579d32]">
                 <span>{product.category}</span><span className="text-[#b7bbb4]">/</span><span>Online baskı</span>
               </div>
-              <h1 className="text-[clamp(2.5rem,4.5vw,4.6rem)] font-semibold leading-[.93] tracking-[-.06em] text-[#171a16]">{product.name}</h1>
-              <p className="mt-4 max-w-xl text-[15px] leading-7 text-[#687067]">{product.description}</p>
+              <h1 className="text-[clamp(2.2rem,3.2vw,3.4rem)] font-semibold leading-[.93] tracking-[-.06em] text-[#171a16]">{product.name}</h1>
+              <p className="mt-2 max-w-xl line-clamp-2 text-[13px] leading-5 text-[#687067]">{product.description}</p>
             </div>
 
-            <div className="space-y-7 border-t border-[#e7e9e5] pt-7">
+            <div className="space-y-4 border-t border-[#e7e9e5] pt-4 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-2">
               {product.sizes?.length ? (
                 <OptionSection number="01" title="Ölçü">
                   <div className="grid gap-2 sm:grid-cols-2">
@@ -216,9 +216,9 @@ export default function ProductContent({ product }: ProductContentProps) {
                     ))}
                   </div>
                   {product.customSizing?.enabled && selectedSize === 'Özel Ölçü' && (
-                    <div className="mt-3 grid grid-cols-2 gap-3 rounded-[16px] bg-[#f6f7f4] p-4">
-                      <label className="text-xs font-medium text-[#636960]">Genişlik (cm)<input value={customWidth} onChange={(e) => setCustomWidth(e.target.value)} type="number" className="mt-2 h-11 w-full rounded-[10px] border border-black/10 bg-white px-3 text-sm outline-none focus:border-[#579d32]" /></label>
-                      <label className="text-xs font-medium text-[#636960]">Yükseklik (cm)<input value={customHeight} onChange={(e) => setCustomHeight(e.target.value)} type="number" className="mt-2 h-11 w-full rounded-[10px] border border-black/10 bg-white px-3 text-sm outline-none focus:border-[#579d32]" /></label>
+                    <div className="mt-3 grid grid-cols-2 gap-3 rounded-[12px] bg-[#f6f7f4] p-3">
+                      <label className="text-xs font-medium text-[#636960]">Genişlik (cm)<input value={customWidth} onChange={(e) => setCustomWidth(e.target.value)} type="number" className="mt-1.5 h-9 w-full rounded-[10px] border border-black/10 bg-white px-3 text-sm outline-none focus:border-[#579d32]" /></label>
+                      <label className="text-xs font-medium text-[#636960]">Yükseklik (cm)<input value={customHeight} onChange={(e) => setCustomHeight(e.target.value)} type="number" className="mt-1.5 h-9 w-full rounded-[10px] border border-black/10 bg-white px-3 text-sm outline-none focus:border-[#579d32]" /></label>
                     </div>
                   )}
                 </OptionSection>
@@ -232,11 +232,11 @@ export default function ProductContent({ product }: ProductContentProps) {
                         type="button"
                         key={material}
                         onClick={() => setSelectedMaterial(material)}
-                        className={`flex items-center justify-between gap-4 rounded-[14px] border px-4 py-3.5 text-left transition ${selectedMaterial === material ? 'border-[#171a16] bg-[#f7f8f5]' : 'border-[#e5e8e2] hover:border-[#b9beb5]'}`}
+                        className={`flex items-center justify-between gap-4 rounded-[11px] border px-3 py-2.5 text-left transition ${selectedMaterial === material ? 'border-[#171a16] bg-[#f7f8f5]' : 'border-[#e5e8e2] hover:border-[#b9beb5]'}`}
                       >
                         <div>
                           <p className="text-sm font-semibold text-[#171a16]">{material}</p>
-                          <p className="mt-1 text-xs text-[#858b82]">Bu ürün için baskıya uygun seçenek</p>
+                          
                         </div>
                         <span className={`flex size-5 shrink-0 items-center justify-center rounded-full border ${selectedMaterial === material ? 'border-[#171a16] bg-[#171a16] text-white' : 'border-[#c9cdc6]'}`}>
                           {selectedMaterial === material && <Check className="size-3" />}
@@ -253,7 +253,7 @@ export default function ProductContent({ product }: ProductContentProps) {
                     {availableQuantities.map((qty) => {
                       const pricing = product.quantityPricing?.find((item) => item.quantity === qty && (!item.material || item.material === selectedMaterial) && (!item.size || item.size === selectedSize))
                       return (
-                        <button type="button" key={qty} onClick={() => setQuantity(qty)} className={`rounded-[14px] border p-3 text-left transition ${quantity === qty ? 'border-[#171a16] bg-[#171a16] text-white' : 'border-[#e5e8e2] bg-white hover:border-[#b9beb5]'}`}>
+                        <button type="button" key={qty} onClick={() => setQuantity(qty)} className={`rounded-[11px] border p-2.5 text-left transition ${quantity === qty ? 'border-[#171a16] bg-[#171a16] text-white' : 'border-[#e5e8e2] bg-white hover:border-[#b9beb5]'}`}>
                           <span className="block text-sm font-semibold">{qty.toLocaleString('tr-TR')} adet</span>
                           {pricing && <span className={`mt-1 block text-xs ${quantity === qty ? 'text-white/65' : 'text-[#8a9087]'}`}>{pricing.price.toLocaleString('tr-TR')} TL</span>}
                         </button>
@@ -273,7 +273,7 @@ export default function ProductContent({ product }: ProductContentProps) {
                 <OptionSection number="05" title="Ek seçenekler">
                   <div className="space-y-2">
                     {product.extraOptions.map((extra) => (
-                      <label key={extra.name} className="flex cursor-pointer items-center justify-between rounded-[14px] border border-[#e5e8e2] px-4 py-3.5 hover:border-[#b9beb5]">
+                      <label key={extra.name} className="flex cursor-pointer items-center justify-between rounded-[11px] border border-[#e5e8e2] px-3 py-2.5 hover:border-[#b9beb5]">
                         <span className="flex items-center gap-3">
                           <input type="checkbox" checked={selectedExtras.includes(extra.name)} onChange={() => toggleExtra(extra.name)} className="size-4 accent-[#171a16]" />
                           <span className="text-sm font-medium text-[#31362f]">{extra.name}</span>
@@ -287,36 +287,36 @@ export default function ProductContent({ product }: ProductContentProps) {
 
               <OptionSection number={product.extraOptions?.length ? '06' : '04'} title="Tasarım dosyası">
                 <div className="grid grid-cols-2 gap-2">
-                  <button type="button" onClick={() => setDesignChoice('ready')} className={`rounded-[16px] border p-4 text-left transition ${designChoice === 'ready' ? 'border-[#579d32] bg-[#f0f8eb]' : 'border-[#e5e8e2] hover:border-[#b9beb5]'}`}>
-                    <FileUp className="mb-6 size-5 text-[#579d32]" /><p className="text-sm font-semibold text-[#171a16]">Dosyam hazır</p><p className="mt-1 text-xs leading-5 text-[#747a71]">Siparişten sonra PDF dosyanızı yükleyin.</p>
+                  <button type="button" onClick={() => setDesignChoice('ready')} className={`rounded-[12px] border p-3 text-left transition ${designChoice === 'ready' ? 'border-[#579d32] bg-[#f0f8eb]' : 'border-[#e5e8e2] hover:border-[#b9beb5]'}`}>
+                    <FileUp className="mb-2 size-4 text-[#579d32]" /><p className="text-sm font-semibold text-[#171a16]">Dosyam hazır</p><p className="mt-1 text-xs leading-5 text-[#747a71]">Siparişten sonra PDF dosyanızı yükleyin.</p>
                   </button>
-                  <button type="button" onClick={() => setDesignChoice('support')} className={`rounded-[16px] border p-4 text-left transition ${designChoice === 'support' ? 'border-[#579d32] bg-[#f0f8eb]' : 'border-[#e5e8e2] hover:border-[#b9beb5]'}`}>
-                    <Sparkles className="mb-6 size-5 text-[#579d32]" /><p className="text-sm font-semibold text-[#171a16]">Tasarım desteği</p><p className="mt-1 text-xs leading-5 text-[#747a71]">Dosya hazırlama için destek talep edin.</p>
+                  <button type="button" onClick={() => setDesignChoice('support')} className={`rounded-[12px] border p-3 text-left transition ${designChoice === 'support' ? 'border-[#579d32] bg-[#f0f8eb]' : 'border-[#e5e8e2] hover:border-[#b9beb5]'}`}>
+                    <Sparkles className="mb-2 size-4 text-[#579d32]" /><p className="text-sm font-semibold text-[#171a16]">Tasarım desteği</p><p className="mt-1 text-xs leading-5 text-[#747a71]">Dosya hazırlama için destek talep edin.</p>
                   </button>
                 </div>
                 {designChoice === 'ready' && <Link href={`/tasarim/${product.category}`} className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-[#579d32] hover:underline">Dosya yükleme merkezini aç <ArrowRight className="size-3" /></Link>}
               </OptionSection>
             </div>
 
-            <div className="mt-8 border-t border-[#e7e9e5] pt-6">
-              <div className="mb-5 flex items-end justify-between gap-4">
-                <div><p className="text-xs font-medium text-[#858b82]">Seçimlerinize göre toplam</p><p className="mt-1 text-[32px] font-semibold tracking-[-.045em] text-[#171a16]">{price.toLocaleString('tr-TR')} TL</p></div>
+            <div className="mt-4 border-t border-[#e7e9e5] pt-4 lg:shrink-0">
+              <div className="mb-3 flex items-end justify-between gap-4">
+                <div><p className="text-xs font-medium text-[#858b82]">Seçimlerinize göre toplam</p><p className="mt-1 text-[26px] font-semibold tracking-[-.045em] text-[#171a16]">{price.toLocaleString('tr-TR')} TL</p></div>
                 <div className="text-right"><p className="text-xs text-[#858b82]">{quantity.toLocaleString('tr-TR')} adet</p><p className="mt-1 text-xs font-semibold text-[#596057]">≈ {unitPrice.toLocaleString('tr-TR', { maximumFractionDigits: 2 })} TL / adet</p></div>
               </div>
               <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
-                <button type="button" onClick={handleAddAndContinue} className="flex h-13 items-center justify-center gap-2 rounded-[12px] bg-[#171a16] px-6 text-sm font-semibold text-white transition hover:bg-[#2b3029]">
+                <button type="button" onClick={handleAddAndContinue} className="flex h-11 items-center justify-center gap-2 rounded-[12px] bg-[#171a16] px-6 text-sm font-semibold text-white transition hover:bg-[#2b3029]">
                   <ShoppingBag className="size-4" /> Sepete ekle · {price.toLocaleString('tr-TR')} TL
                 </button>
-                <button type="button" onClick={handleAddToCart} className="h-13 rounded-[12px] border border-[#dfe2dc] px-5 text-sm font-semibold text-[#31362f] hover:bg-[#f6f7f4]">Sepette tut</button>
+                <button type="button" onClick={handleAddToCart} className="h-11 rounded-[10px] border border-[#dfe2dc] px-5 text-sm font-semibold text-[#31362f] hover:bg-[#f6f7f4]">Sepette tut</button>
               </div>
-              <button type="button" onClick={handleWhatsApp} className="mt-3 flex w-full items-center justify-center gap-2 py-2 text-xs font-semibold text-[#676e64] hover:text-[#171a16]"><MessageCircle className="size-4" /> Ürünle ilgili soru sor</button>
+              <button type="button" onClick={handleWhatsApp} className="mt-1.5 flex w-full items-center justify-center gap-2 py-2 text-xs font-semibold text-[#676e64] hover:text-[#171a16]"><MessageCircle className="size-4" /> Ürünle ilgili soru sor</button>
             </div>
           </aside>
         </div>
       </section>
 
       <section className="border-t border-[#e9ebe7] bg-[#fafaf8]">
-        <div className="site-container py-12 sm:py-16">
+        <div className="site-container py-9 sm:py-11">
           <div className="mb-8 flex gap-6 overflow-x-auto border-b border-[#e1e4de]">
             {[
               ['details', 'Ürün bilgileri'],
@@ -329,7 +329,7 @@ export default function ProductContent({ product }: ProductContentProps) {
 
           {activeTab === 'details' && (
             <div className="grid gap-8 lg:grid-cols-[.8fr_1.2fr]">
-              <div><p className="site-kicker mb-4">Teknik özet</p><h2 className="site-heading text-[clamp(2rem,4vw,3.5rem)]">Baskıya karar vermek için gereken bilgiler.</h2></div>
+              <div><p className="site-kicker mb-4">Teknik özet</p><h2 className="site-heading text-[clamp(1.8rem,3.2vw,3rem)]">Baskıya karar vermek için gereken bilgiler.</h2></div>
               <div className="grid gap-px overflow-hidden rounded-[18px] border border-[#e1e4de] bg-[#e1e4de] sm:grid-cols-2">
                 {[
                   ['Minimum sipariş', `${product.minQuantity?.toLocaleString('tr-TR') || '-'} adet`],
@@ -369,12 +369,12 @@ export default function ProductContent({ product }: ProductContentProps) {
 function OptionSection({ number, title, children }: { number: string; title: string; children: React.ReactNode }) {
   return (
     <section>
-      <div className="mb-3 flex items-center gap-3"><span className="flex size-6 items-center justify-center rounded-full bg-[#f0f1ed] text-[10px] font-bold text-[#646a61]">{number}</span><h2 className="text-sm font-semibold text-[#171a16]">{title}</h2></div>
+      <div className="mb-2 flex items-center gap-2"><span className="flex size-5 items-center justify-center rounded-full bg-[#f0f1ed] text-[10px] font-bold text-[#646a61]">{number}</span><h2 className="text-sm font-semibold text-[#171a16]">{title}</h2></div>
       {children}
     </section>
   )
 }
 
 function OptionButton({ selected, onClick, label }: { selected: boolean; onClick: () => void; label: string }) {
-  return <button type="button" onClick={onClick} className={`rounded-[14px] border px-4 py-3.5 text-left text-sm font-semibold transition ${selected ? 'border-[#171a16] bg-[#171a16] text-white' : 'border-[#e5e8e2] bg-white text-[#31362f] hover:border-[#b9beb5]'}`}>{label}</button>
+  return <button type="button" onClick={onClick} className={`rounded-[11px] border px-3 py-2.5 text-left text-sm font-semibold transition ${selected ? 'border-[#171a16] bg-[#171a16] text-white' : 'border-[#e5e8e2] bg-white text-[#31362f] hover:border-[#b9beb5]'}`}>{label}</button>
 }

@@ -38,10 +38,10 @@ export default function BlogPage() {
       <Header />
       <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
       {/* Hero Section */}
-      <section className="bg-[#171a16] text-white py-16 sm:py-20 lg:py-24">
+      <section className="bg-[#171a16] text-white py-10 sm:py-12 lg:py-14">
         <div className="site-container">
           <div className="text-center">
-            <h1 className="text-[clamp(2.8rem,6vw,6rem)] font-semibold leading-[.9] tracking-[-0.06em] mb-5">
+            <h1 className="text-[clamp(2.25rem,4vw,4rem)] font-semibold leading-[.9] tracking-[-0.06em] mb-5">
               E-Kartvizit Blog
             </h1>
             <p className="text-base sm:text-lg leading-7 text-white/65 mb-8 max-w-2xl mx-auto">
@@ -63,7 +63,7 @@ export default function BlogPage() {
         </div>
       </section>
 
-      <div className="site-container py-12">
+      <div className="site-container py-9">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar */}
           <div className="lg:col-span-1">

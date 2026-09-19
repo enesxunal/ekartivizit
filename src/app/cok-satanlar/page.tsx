@@ -16,7 +16,7 @@ export default function CokSatanlarPage() {
         actionHref="/tum-urunler"
         actionLabel="Tüm kataloğu görüntüle"
       />
-      <main className="site-container py-10 sm:py-14 lg:py-16">
+      <main className="site-container py-8 sm:py-10 lg:py-12">
         <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
           {products.map((product, index) => <ProductCard key={product.id} product={product} index={index} eyebrow="Çok satan" />)}
         </div>

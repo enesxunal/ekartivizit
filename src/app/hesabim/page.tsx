@@ -390,7 +390,7 @@ export default function AccountPage() {
     <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
       <Header />
       
-      <main className="site-container py-10 sm:py-12 lg:py-16">
+      <main className="site-container py-8 sm:py-10 lg:py-12">
         <div className="mb-6">
           <h1 className="text-2xl font-semibold tracking-[-0.035em] text-[#171a16]">Hoş Geldiniz, {user?.name}!</h1>
           <p className="text-[#687067]">Hesap bilgilerinizi yönetin ve siparişlerinizi takip edin</p>

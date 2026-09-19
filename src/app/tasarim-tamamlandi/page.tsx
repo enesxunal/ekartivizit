@@ -50,7 +50,7 @@ function DefaultContent({ source }: { source?: string | null }) {
         <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-4">
           <CheckCircle className="w-10 h-10 text-green-600" />
         </div>
-        <h1 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">
+        <h1 className="text-[clamp(1.9rem,3.5vw,3.2rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">
           Tasarımınız Başarıyla Tamamlandı!
         </h1>
         <p className="text-[#687067]">
@@ -139,7 +139,7 @@ function TestContent() {
         <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-100 rounded-full mb-4">
           <TestTube className="w-10 h-10 text-blue-600" />
         </div>
-        <h1 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">
+        <h1 className="text-[clamp(1.9rem,3.5vw,3.2rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">
           Test Başarılı!
         </h1>
         <p className="text-[#687067]">
@@ -179,7 +179,7 @@ function OAuthTestContent() {
         <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-4">
           <CheckCircle className="w-10 h-10 text-green-600" />
         </div>
-        <h1 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">
+        <h1 className="text-[clamp(1.9rem,3.5vw,3.2rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">
           OAuth Test Başarılı!
         </h1>
         <p className="text-[#687067]">
@@ -219,7 +219,7 @@ function ErrorContent({ error, message }: { error: string; message?: string | nu
         <div className="inline-flex items-center justify-center w-20 h-20 bg-red-100 rounded-full mb-4">
           <AlertCircle className="w-10 h-10 text-red-600" />
         </div>
-        <h1 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">
+        <h1 className="text-[clamp(1.9rem,3.5vw,3.2rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">
           Bir Hata Oluştu
         </h1>
         <p className="text-[#687067]">
