@@ -128,9 +128,9 @@ export default function OrderDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
         <Header />
-        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="site-container max-w-5xl py-10 sm:py-12 lg:py-16">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
             <div className="space-y-4">
@@ -146,15 +146,15 @@ export default function OrderDetailPage() {
 
   if (!order) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
         <Header />
-        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="site-container max-w-5xl py-10 sm:py-12 lg:py-16">
           <Card className="text-center p-8">
             <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Sipariş Bulunamadı</h1>
-            <p className="text-gray-600 mb-6">Aradığınız sipariş bulunamadı veya erişim yetkiniz yok.</p>
+            <h1 className="text-2xl font-semibold tracking-[-0.035em] text-[#171a16] mb-2">Sipariş Bulunamadı</h1>
+            <p className="text-[#687067] mb-6">Aradığınız sipariş bulunamadı veya erişim yetkiniz yok.</p>
             <Link href="/hesabim">
-              <Button className="bg-[#59af05] hover:bg-[#4a9321]">
+              <Button className="rounded-full bg-[#171a16] hover:bg-black">
                 Hesabıma Dön
               </Button>
             </Link>
@@ -166,25 +166,25 @@ export default function OrderDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
       <Header />
       
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Başlık */}
-        <div className="mb-8">
+        <div className="mb-8 rounded-[28px] border-black/8 shadow-none">
           <Link href="/hesabim" className="inline-flex items-center text-[#59af05] hover:text-[#4a9321] mb-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Hesabıma Dön
           </Link>
-          <h1 className="text-3xl font-bold text-gray-900">Sipariş Detayları</h1>
-          <p className="text-gray-600">Sipariş No: #{order.id}</p>
+          <h1 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16]">Sipariş Detayları</h1>
+          <p className="text-[#687067]">Sipariş No: #{order.id}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Sol taraf - Sipariş Bilgileri */}
           <div className="lg:col-span-2 space-y-6">
             {/* Sipariş Durumu */}
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Package className="w-5 h-5" />
@@ -196,13 +196,13 @@ export default function OrderDetailPage() {
                   <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
                     {getStatusText(order.status)}
                   </span>
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-[#687067]">
                     {new Date(order.createdAt).toLocaleDateString('tr-TR')}
                   </span>
                 </div>
                 
                 {order.status === 'shipping' && order.trackingNumber && (
-                  <div className="bg-blue-50 p-4 rounded-lg">
+                  <div className="bg-blue-50 p-4 rounded-2xl">
                     <div className="flex items-center gap-2 mb-2">
                       <Truck className="w-4 h-4 text-blue-600" />
                       <span className="font-medium text-blue-900">Kargo Takip Numarası</span>
@@ -212,7 +212,7 @@ export default function OrderDetailPage() {
                 )}
 
                 {order.estimatedDelivery && (
-                  <div className="mt-4 flex items-center gap-2 text-sm text-gray-600">
+                  <div className="mt-4 flex items-center gap-2 text-sm text-[#687067]">
                     <Clock className="w-4 h-4" />
                     <span>Tahmini Teslimat: {new Date(order.estimatedDelivery).toLocaleDateString('tr-TR')}</span>
                   </div>
@@ -221,15 +221,15 @@ export default function OrderDetailPage() {
             </Card>
 
             {/* Sipariş İçeriği */}
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
                 <CardTitle>Sipariş İçeriği</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {order.items.map((item) => (
-                    <div key={item.id} className="flex gap-4 p-4 border border-gray-200 rounded-lg">
-                      <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <div key={item.id} className="flex gap-4 p-4 border border-black/8 rounded-2xl">
+                      <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center">
                         <Image
                           src={item.product.image}
                           alt={item.product.name}
@@ -240,7 +240,7 @@ export default function OrderDetailPage() {
                       </div>
                       <div className="flex-1">
                         <h3 className="font-medium text-gray-900">{item.product.name}</h3>
-                        <div className="text-sm text-gray-600 space-y-1">
+                        <div className="text-sm text-[#687067] space-y-1">
                           {(() => {
                             const cartQuantity = item.cartQuantity || 1
                             const itemTotal = item.price * cartQuantity
@@ -275,16 +275,16 @@ export default function OrderDetailPage() {
                 </div>
 
                 {order.notes && (
-                  <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                  <div className="mt-6 p-4 bg-[#f4f4ef] rounded-2xl">
                     <h4 className="font-medium text-gray-900 mb-2">Sipariş Notları</h4>
-                    <p className="text-gray-600">{order.notes}</p>
+                    <p className="text-[#687067]">{order.notes}</p>
                   </div>
                 )}
               </CardContent>
             </Card>
 
             {/* Müşteri Bilgileri */}
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <User className="w-5 h-5" />
@@ -298,15 +298,15 @@ export default function OrderDetailPage() {
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
                         <User className="w-4 h-4 text-gray-400" />
-                        <span className="text-gray-600">{order.customerInfo.name}</span>
+                        <span className="text-[#687067]">{order.customerInfo.name}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Mail className="w-4 h-4 text-gray-400" />
-                        <span className="text-gray-600">{order.customerInfo.email}</span>
+                        <span className="text-[#687067]">{order.customerInfo.email}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Phone className="w-4 h-4 text-gray-400" />
-                        <span className="text-gray-600">{order.customerInfo.phone}</span>
+                        <span className="text-[#687067]">{order.customerInfo.phone}</span>
                       </div>
                     </div>
                   </div>
@@ -315,7 +315,7 @@ export default function OrderDetailPage() {
                     <h4 className="font-medium text-gray-900 mb-3">Teslimat Adresi</h4>
                     <div className="flex items-start gap-2">
                       <MapPin className="w-4 h-4 text-gray-400 mt-0.5" />
-                      <div className="text-gray-600">
+                      <div className="text-[#687067]">
                         <div>{order.customerInfo.address.street}</div>
                         <div>{order.customerInfo.address.district}, {order.customerInfo.address.city}</div>
                         <div>{order.customerInfo.address.postalCode}</div>
@@ -326,7 +326,7 @@ export default function OrderDetailPage() {
 
                 {/* Fatura Bilgileri */}
                 {order.invoiceInfo && (
-                  <div className="mt-6 pt-6 border-t border-gray-200">
+                  <div className="mt-6 pt-6 border-t border-black/8">
                     <h4 className="font-medium text-gray-900 mb-3">Fatura Bilgileri</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
@@ -342,7 +342,7 @@ export default function OrderDetailPage() {
                         </div>
                       </div>
                       <div>
-                        <div className="text-gray-600">
+                        <div className="text-[#687067]">
                           <div>{order.invoiceInfo.address.street}</div>
                           <div>{order.invoiceInfo.address.district}, {order.invoiceInfo.address.city}</div>
                           <div>{order.invoiceInfo.address.postalCode}</div>
@@ -358,7 +358,7 @@ export default function OrderDetailPage() {
           {/* Sağ taraf - Ödeme Bilgileri */}
           <div className="space-y-6">
             {/* Ödeme Özeti */}
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <CreditCard className="w-5 h-5" />
@@ -391,10 +391,10 @@ export default function OrderDetailPage() {
                   </div>
                 </div>
 
-                <div className="mt-6 pt-6 border-t border-gray-200">
+                <div className="mt-6 pt-6 border-t border-black/8">
                   <div className="text-sm">
                     <div className="font-medium text-gray-900 mb-2">Ödeme Yöntemi</div>
-                    <div className="text-gray-600">{getPaymentMethodName(order.paymentMethod)}</div>
+                    <div className="text-[#687067]">{getPaymentMethodName(order.paymentMethod)}</div>
                     <div className="mt-2">
                       <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                         order.paymentStatus === 'completed' 
@@ -413,7 +413,7 @@ export default function OrderDetailPage() {
             </Card>
 
             {/* Aksiyonlar */}
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
                 <CardTitle>İşlemler</CardTitle>
               </CardHeader>

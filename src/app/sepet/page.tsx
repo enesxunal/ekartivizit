@@ -49,15 +49,15 @@ Sipariş detayları hakkında bilgi alabilir miyim?`
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
         <Header />
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="site-container py-10 sm:py-12 lg:py-16">
           <div className="text-center py-16">
             <ShoppingBag className="w-24 h-24 text-gray-300 mx-auto mb-6" />
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">Sepetiniz Boş</h1>
-            <p className="text-gray-600 mb-8">Henüz sepetinize ürün eklemediniz. Hemen alışverişe başlayın!</p>
+            <h1 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-4">Sepetiniz Boş</h1>
+            <p className="text-[#687067] mb-8">Henüz sepetinize ürün eklemediniz. Hemen alışverişe başlayın!</p>
             <Link href="/tum-urunler">
-              <Button className="bg-[#59af05] hover:bg-[#4a9321] text-white px-8 py-3">
+              <Button className="rounded-full bg-[#171a16] hover:bg-black text-white px-8 py-3">
                 Alışverişe Başla
               </Button>
             </Link>
@@ -69,17 +69,17 @@ Sipariş detayları hakkında bilgi alabilir miyim?`
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
       <Header />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="site-container py-10 sm:py-12 lg:py-16">
         {/* Başlık */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center space-x-4">
             <Link href="/tum-urunler" className="text-[#59af05] hover:text-[#4a9321]">
               <ArrowLeft className="w-6 h-6" />
             </Link>
-            <h1 className="text-3xl font-bold text-gray-900">Sepetim ({getItemCount()} paket)</h1>
+            <h1 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16]">Sepetim ({getItemCount()} paket)</h1>
           </div>
           <Button 
             variant="outline" 
@@ -95,11 +95,11 @@ Sipariş detayları hakkında bilgi alabilir miyim?`
           {/* Sol taraf - Sepet ürünleri */}
           <div className="lg:col-span-2 space-y-4">
             {items.map((item) => (
-              <Card key={item.id} className="overflow-hidden">
+              <Card key={item.id} className="overflow-hidden rounded-[24px] border-black/8 shadow-none">
                 <CardContent className="p-6">
                   <div className="flex items-start space-x-4">
                     {/* Ürün görseli */}
-                    <div className="w-24 h-24 bg-white rounded-lg shadow-sm overflow-hidden flex-shrink-0">
+                    <div className="w-24 h-24 rounded-[24px] border border-black/8 bg-white shadow-none overflow-hidden flex-shrink-0">
                       <Image
                         src={item.product.image}
                         alt={item.product.name}
@@ -115,7 +115,7 @@ Sipariş detayları hakkında bilgi alabilir miyim?`
                         {item.product.name}
                       </h3>
                       
-                      <div className="space-y-1 text-sm text-gray-600 mb-4">
+                      <div className="space-y-1 text-sm text-[#687067] mb-4">
                         <p><strong>Paket İçeriği:</strong> {item.quantity.toLocaleString()} adet</p>
                         {item.selectedMaterial && (
                           <p>Malzeme: {item.selectedMaterial}</p>
@@ -139,7 +139,7 @@ Sipariş detayları hakkında bilgi alabilir miyim?`
                       <div className="flex items-center justify-between">
                         {/* Sepet adedi kontrolü */}
                         <div className="flex items-center space-x-2">
-                          <span className="text-sm text-gray-600">Sepet Adedi:</span>
+                          <span className="text-sm text-[#687067]">Sepet Adedi:</span>
                           <Button
                             variant="outline"
                             size="sm"
@@ -191,7 +191,7 @@ Sipariş detayları hakkında bilgi alabilir miyim?`
 
           {/* Sağ taraf - Sipariş özeti */}
           <div className="space-y-6">
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
                 <CardTitle>Sipariş Özeti</CardTitle>
               </CardHeader>
@@ -214,7 +214,7 @@ Sipariş detayları hakkında bilgi alabilir miyim?`
             </Card>
 
             {/* Promosyon kodu */}
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
                 <CardTitle className="text-base">Promosyon Kodu</CardTitle>
               </CardHeader>
@@ -243,7 +243,7 @@ Sipariş detayları hakkında bilgi alabilir miyim?`
               </Button>
               
               <Link href="/odeme" className="block">
-                <Button className="w-full bg-[#59af05] hover:bg-[#4a9321] text-white py-3 text-lg">
+                <Button className="w-full rounded-full bg-[#171a16] hover:bg-black text-white py-3 text-lg">
                   Ödemeye Geç
                 </Button>
               </Link>

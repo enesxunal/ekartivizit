@@ -36,15 +36,15 @@ export default function BlogPage() {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-[#59af05] to-[#4a9321] text-white py-16">
-        <div className="container mx-auto px-4">
+      <section className="bg-[#171a16] text-white py-16 sm:py-20 lg:py-24">
+        <div className="site-container">
           <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            <h1 className="text-[clamp(2.8rem,6vw,6rem)] font-semibold leading-[.9] tracking-[-0.06em] mb-5">
               E-Kartvizit Blog
             </h1>
-            <p className="text-xl mb-8 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg leading-7 text-white/65 mb-8 max-w-2xl mx-auto">
               Baskı dünyasından haberler, tasarım ipuçları ve sektör trendleri
             </p>
             
@@ -63,21 +63,21 @@ export default function BlogPage() {
         </div>
       </section>
 
-      <div className="container mx-auto px-4 py-12">
+      <div className="site-container py-12">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
-                <CardTitle className="text-[#59af05]">Kategoriler</CardTitle>
+                <CardTitle className="text-[#579d32]">Kategoriler</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <Button
                   variant={selectedCategory === 'all' ? 'default' : 'ghost'}
                   className={`w-full justify-start ${
                     selectedCategory === 'all' 
-                      ? 'bg-[#59af05] hover:bg-[#4a9321]' 
-                      : 'hover:bg-gray-100'
+                      ? 'rounded-full bg-[#171a16] hover:bg-black' 
+                      : 'hover:bg-black/5'
                   }`}
                   onClick={() => setSelectedCategory('all')}
                 >
@@ -89,8 +89,8 @@ export default function BlogPage() {
                     variant={selectedCategory === category.id ? 'default' : 'ghost'}
                     className={`w-full justify-start ${
                       selectedCategory === category.id 
-                        ? 'bg-[#59af05] hover:bg-[#4a9321]' 
-                        : 'hover:bg-gray-100'
+                        ? 'rounded-full bg-[#171a16] hover:bg-black' 
+                        : 'hover:bg-black/5'
                     }`}
                     onClick={() => setSelectedCategory(category.id)}
                   >
@@ -101,14 +101,14 @@ export default function BlogPage() {
             </Card>
 
             {/* Popular Tags */}
-            <Card className="mt-6">
+            <Card className="mt-6 rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
-                <CardTitle className="text-[#59af05]">Popüler Etiketler</CardTitle>
+                <CardTitle className="text-[#579d32]">Popüler Etiketler</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
                   {['kartvizit', 'tasarım', 'baskı', 'profesyonel', 'pazarlama', 'broşür', 'dijital', 'ofset'].map((tag) => (
-                    <Badge key={tag} variant="secondary" className="cursor-pointer hover:bg-[#59af05] hover:text-white">
+                    <Badge key={tag} variant="secondary" className="cursor-pointer hover:bg-[#579d32] hover:text-white">
                       {tag}
                     </Badge>
                   ))}
@@ -121,7 +121,7 @@ export default function BlogPage() {
           <div className="lg:col-span-3">
             {searchQuery && (
               <div className="mb-6">
-                <p className="text-gray-600">
+                <p className="text-[#687067]">
                   &quot;{searchQuery}&quot; için {filteredPosts.length} sonuç bulundu
                 </p>
               </div>
@@ -140,7 +140,7 @@ export default function BlogPage() {
                   
                   <CardContent className="p-6">
                     <div className="flex items-center gap-2 mb-3">
-                      <Badge variant="secondary" className="bg-[#59af05] text-white">
+                      <Badge variant="secondary" className="bg-[#171a16] text-white">
                         {categories.find(cat => cat.id === post.category)?.name}
                       </Badge>
                       <div className="flex items-center text-sm text-gray-500">
@@ -153,7 +153,7 @@ export default function BlogPage() {
                       {post.title}
                     </h3>
                     
-                    <p className="text-gray-600 mb-4 line-clamp-3">
+                    <p className="text-[#687067] mb-4 line-clamp-3">
                       {post.excerpt}
                     </p>
                     
@@ -166,7 +166,7 @@ export default function BlogPage() {
                       </div>
                       
                       <Link href={`/blog/${post.id}`}>
-                        <Button variant="ghost" size="sm" className="text-[#59af05] hover:text-[#4a9321]">
+                        <Button variant="ghost" size="sm" className="text-[#579d32] hover:text-[#4a9321]">
                           Devamını Oku
                           <ArrowRight className="h-4 w-4 ml-1" />
                         </Button>

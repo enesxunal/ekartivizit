@@ -142,15 +142,15 @@ export default function FAQPage() {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-[#59af05] to-[#4a9321] text-white py-16">
-        <div className="container mx-auto px-4">
+      <section className="bg-[#171a16] text-white py-16 sm:py-20 lg:py-24">
+        <div className="site-container">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
+            <h1 className="text-[clamp(2.8rem,6vw,6rem)] font-semibold leading-[.9] tracking-[-0.06em] mb-6">
               Sık Sorulan Sorular
             </h1>
-            <p className="text-xl mb-8">
+            <p className="text-base sm:text-lg leading-7 text-white/65 mb-8">
               Merak ettiğiniz soruların cevaplarını burada bulabilirsiniz. 
               Aradığınızı bulamazsanız bizimle iletişime geçin.
             </p>
@@ -170,13 +170,13 @@ export default function FAQPage() {
         </div>
       </section>
 
-      <div className="container mx-auto px-4 py-12">
+      <div className="site-container py-12">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardContent className="p-6">
-                <h3 className="font-bold text-lg mb-4 text-[#59af05]">
+                <h3 className="font-bold text-lg mb-4 text-[#579d32]">
                   Kategoriler
                 </h3>
                 <div className="space-y-2">
@@ -186,8 +186,8 @@ export default function FAQPage() {
                       variant={selectedCategory === category.id ? 'default' : 'ghost'}
                       className={`w-full justify-start ${
                         selectedCategory === category.id 
-                          ? 'bg-[#59af05] hover:bg-[#4a9321]' 
-                          : 'hover:bg-gray-100'
+                          ? 'rounded-full bg-[#171a16] hover:bg-black' 
+                          : 'hover:bg-black/5'
                       }`}
                       onClick={() => setSelectedCategory(category.id)}
                     >
@@ -199,12 +199,12 @@ export default function FAQPage() {
             </Card>
 
             {/* Contact Card */}
-            <Card className="mt-6">
+            <Card className="mt-6 rounded-[28px] border-black/8 shadow-none">
               <CardContent className="p-6">
-                <h3 className="font-bold text-lg mb-4 text-[#59af05]">
+                <h3 className="font-bold text-lg mb-4 text-[#579d32]">
                   Hala Sorunuz Var mı?
                 </h3>
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="text-sm text-[#687067] mb-4">
                   Aradığınız cevabı bulamadıysanız bizimle iletişime geçin.
                 </p>
                 <div className="space-y-3">
@@ -229,7 +229,7 @@ export default function FAQPage() {
           <div className="lg:col-span-3">
             {searchQuery && (
               <div className="mb-6">
-                <p className="text-gray-600">
+                <p className="text-[#687067]">
                   &quot;{searchQuery}&quot; için {filteredFAQs.length} sonuç bulundu
                 </p>
               </div>
@@ -241,14 +241,14 @@ export default function FAQPage() {
                   <CardContent className="p-0">
                     <button
                       onClick={() => toggleItem(faq.id)}
-                      className="w-full p-6 text-left hover:bg-gray-50 transition-colors"
+                      className="w-full p-6 text-left hover:bg-[#f4f4ef] transition-colors"
                     >
                       <div className="flex items-center justify-between">
                         <h3 className="text-lg font-semibold text-gray-900 pr-4">
                           {faq.question}
                         </h3>
                         {openItems.includes(faq.id) ? (
-                          <ChevronUp className="h-5 w-5 text-[#59af05] flex-shrink-0" />
+                          <ChevronUp className="h-5 w-5 text-[#579d32] flex-shrink-0" />
                         ) : (
                           <ChevronDown className="h-5 w-5 text-gray-400 flex-shrink-0" />
                         )}
@@ -284,13 +284,13 @@ export default function FAQPage() {
       </div>
 
       {/* Contact Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
+      <section className="py-14 sm:py-18 bg-[#fbfbf8]">
+        <div className="site-container">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-4">
               Hızlı İletişim
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <p className="text-[#687067] max-w-2xl mx-auto">
               Sorularınız için en hızlı yanıtı almak için aşağıdaki kanalları kullanabilirsiniz.
             </p>
           </div>
@@ -298,16 +298,16 @@ export default function FAQPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-[#59af05] text-white rounded-full mb-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-[#171a16] text-white rounded-full mb-4">
                   <MessageCircle className="h-8 w-8" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">
                   WhatsApp
                 </h3>
-                <p className="text-gray-600 mb-4">
+                <p className="text-[#687067] mb-4">
                   En hızlı yanıt için WhatsApp&apos;tan yazın
                 </p>
-                <Button className="bg-[#59af05] hover:bg-[#4a9321]">
+                <Button className="rounded-full bg-[#171a16] hover:bg-black">
                   Mesaj Gönder
                 </Button>
               </CardContent>
@@ -315,13 +315,13 @@ export default function FAQPage() {
             
             <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-[#59af05] text-white rounded-full mb-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-[#171a16] text-white rounded-full mb-4">
                   <Phone className="h-8 w-8" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">
                   Telefon
                 </h3>
-                <p className="text-gray-600 mb-4">
+                <p className="text-[#687067] mb-4">
                   0 850 840 30 11
                 </p>
                 <Button variant="outline">
@@ -332,13 +332,13 @@ export default function FAQPage() {
             
             <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-[#59af05] text-white rounded-full mb-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-[#171a16] text-white rounded-full mb-4">
                   <Mail className="h-8 w-8" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">
                   E-posta
                 </h3>
-                <p className="text-gray-600 mb-4">
+                <p className="text-[#687067] mb-4">
                   info@ekartvizit.tr
                 </p>
                 <Button variant="outline">

@@ -1,188 +1,84 @@
 'use client'
 
-import React from 'react'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { ArrowRight, Palette, FileText, Magnet, CreditCard } from 'lucide-react'
+import PageHero from '@/components/PageHero'
+import { ArrowUpRight, CreditCard, FileText, Magnet, Upload, Check } from 'lucide-react'
 
 const designCategories = [
-  {
-    id: 'kartvizit',
-    name: 'Kartvizit',
-    description: 'Profesyonel kartvizit tasarımları',
-    icon: CreditCard,
-    color: 'from-blue-500 to-blue-600',
-    dimensions: '90 x 50 mm',
-    features: ['Çift taraflı tasarım', 'Premium kağıt seçenekleri', 'Hızlı teslimat']
-  },
-  {
-    id: 'brosur',
-    name: 'Broşür',
-    description: 'Etkileyici broşür ve katalog tasarımları',
-    icon: FileText,
-    color: 'from-green-500 to-green-600',
-    dimensions: 'A4, A5, Özel boyutlar',
-    features: ['Katlamalı tasarımlar', 'Yüksek kalite baskı', 'Özel boyut seçenekleri']
-  },
-  {
-    id: 'magnet',
-    name: 'Magnet',
-    description: 'Buzdolabı magnetleri ve promosyon ürünleri',
-    icon: Magnet,
-    color: 'from-purple-500 to-purple-600',
-    dimensions: '85 x 55 mm',
-    features: ['Güçlü mıknatıs', 'Dayanıklı malzeme', 'Renkli baskı']
-  }
+  { id: 'kartvizit', name: 'Kartvizit', description: 'Kartvizit dosyanızı yükleyin veya tasarım akışını başlatın.', icon: CreditCard, dimensions: '86,75 × 54 mm' },
+  { id: 'brosur', name: 'Broşür', description: 'Broşür baskısı için dosyanızı ürüne bağlayın.', icon: FileText, dimensions: 'A4 · A5 · özel ölçü' },
+  { id: 'magnet', name: 'Magnet', description: 'Magnet tasarımınızı baskı siparişine hazırlayın.', icon: Magnet, dimensions: 'Standart · özel ölçü' },
 ]
 
 export default function TasarimPage() {
   const router = useRouter()
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#f4f4ef]">
       <Header />
-      
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Hero Section */}
-        <div className="text-center mb-12">
-          <div className="flex justify-center mb-6">
-            <div className="p-4 bg-[#59af05] rounded-full">
-              <Palette className="w-12 h-12 text-white" />
+      <PageHero
+        eyebrow="Tasarım ve dosya"
+        title="Baskı dosyanız siparişten kopmasın."
+        description="Hazır PDF dosyanızı yükleyin ya da desteklenen ürünlerde tasarım akışını başlatın. Dosyanız seçtiğiniz ürünle birlikte siparişe taşınır."
+        actionHref="/tum-urunler"
+        actionLabel="Önce ürün seç"
+      />
+
+      <main className="site-container py-10 sm:py-14 lg:py-16">
+        <div className="mb-8 grid gap-3 md:grid-cols-3">
+          {[
+            ['01', 'Ürünü seç', 'Baskı türünü ve ölçüyü belirleyin.'],
+            ['02', 'Dosyanı bağla', 'PDF dosyanızı güvenli şekilde yükleyin.'],
+            ['03', 'Siparişe devam et', 'Dosya, ürün ve seçimler aynı sepette kalsın.'],
+          ].map(([number, title, text]) => (
+            <div key={number} className="rounded-[24px] border border-black/8 bg-white p-6">
+              <span className="text-xs font-semibold tracking-[0.14em] text-[#579d32]">{number}</span>
+              <h2 className="mt-8 text-xl font-semibold tracking-[-0.03em] text-[#171a16]">{title}</h2>
+              <p className="mt-2 text-sm leading-6 text-[#70766d]">{text}</p>
             </div>
-          </div>
-          <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-            Tasarım Merkezi
-          </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Profesyonel tasarım araçlarımızla kartvizit, broşür ve magnet tasarımlarınızı kolayca oluşturun. 
-            Hazır şablonlardan seçin veya sıfırdan tasarlayın.
-          </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto text-sm">
-            <div className="flex items-center justify-center gap-2 text-gray-600">
-              <div className="w-2 h-2 bg-[#59af05] rounded-full"></div>
-              Canva Entegrasyonu
-            </div>
-            <div className="flex items-center justify-center gap-2 text-gray-600">
-              <div className="w-2 h-2 bg-[#59af05] rounded-full"></div>
-              Baskıya Hazır PDF
-            </div>
-            <div className="flex items-center justify-center gap-2 text-gray-600">
-              <div className="w-2 h-2 bg-[#59af05] rounded-full"></div>
-              Hızlı Teslimat
-            </div>
-          </div>
+          ))}
         </div>
 
-        {/* Kategori Kartları */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <div className="grid gap-4 lg:grid-cols-3">
           {designCategories.map((category) => {
-            const IconComponent = category.icon
+            const Icon = category.icon
             return (
-              <Card key={category.id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
-                <CardContent className="p-0">
-                  {/* Gradient Header */}
-                  <div className={`bg-gradient-to-r ${category.color} p-6 text-white`}>
-                    <div className="flex items-center justify-between mb-4">
-                      <IconComponent className="w-8 h-8" />
-                      <ArrowRight className="w-5 h-5 opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-                    </div>
-                    <h3 className="text-xl font-bold mb-2">{category.name}</h3>
-                    <p className="text-sm opacity-90">{category.description}</p>
+              <button
+                key={category.id}
+                type="button"
+                onClick={() => router.push(`/tasarim/${category.id}`)}
+                className="group flex min-h-[360px] flex-col rounded-[28px] border border-black/8 bg-[#171a16] p-7 text-left text-white transition hover:-translate-y-1 hover:shadow-[0_24px_80px_rgba(16,24,16,.14)]"
+              >
+                <div className="flex items-start justify-between">
+                  <span className="flex size-12 items-center justify-center rounded-full bg-white/10 text-[#9fe468]"><Icon className="size-5" /></span>
+                  <ArrowUpRight className="size-5 text-white/40 transition group-hover:text-white" />
+                </div>
+                <div className="mt-auto">
+                  <p className="mb-3 text-xs font-medium uppercase tracking-[0.14em] text-white/40">{category.dimensions}</p>
+                  <h2 className="text-3xl font-semibold tracking-[-0.04em]">{category.name}</h2>
+                  <p className="mt-3 max-w-sm text-sm leading-6 text-white/55">{category.description}</p>
+                  <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#9fe468] px-4 py-2.5 text-sm font-semibold text-[#171a16]">
+                    <Upload className="size-4" /> Tasarım akışını aç
                   </div>
-                  
-                  {/* İçerik */}
-                  <div className="p-6">
-                    <div className="mb-4">
-                      <div className="text-sm text-gray-500 mb-1">Standart Boyut</div>
-                      <div className="font-semibold text-gray-900">{category.dimensions}</div>
-                    </div>
-                    
-                    <div className="mb-6">
-                      <div className="text-sm text-gray-500 mb-2">Özellikler</div>
-                      <ul className="space-y-1">
-                        {category.features.map((feature, index) => (
-                          <li key={index} className="text-sm text-gray-600 flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 bg-[#59af05] rounded-full"></div>
-                            {feature}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    
-                    <Button
-                      onClick={() => router.push(`/tasarim/${category.id}`)}
-                      className="w-full bg-[#59af05] hover:bg-[#4a9321] group-hover:bg-[#4a9321]"
-                    >
-                      Tasarlamaya Başla
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+                </div>
+              </button>
             )
           })}
         </div>
 
-        {/* Bilgi Bölümü */}
-        <div className="bg-white rounded-2xl p-8 shadow-lg">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Neden Bizim Tasarım Araçlarımızı Seçmelisiniz?
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Profesyonel tasarım deneyimi için ihtiyacınız olan her şey burada
-            </p>
+        <div className="mt-8 grid gap-5 rounded-[28px] border border-black/8 bg-white p-7 sm:p-8 lg:grid-cols-[1fr_auto] lg:items-center">
+          <div>
+            <p className="site-kicker mb-3">Dosya standardı</p>
+            <h2 className="text-2xl font-semibold tracking-[-0.035em] text-[#171a16]">Baskıya uygun PDF ile en hızlı akış.</h2>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Palette className="w-8 h-8 text-blue-600" />
-              </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Kolay Kullanım</h3>
-              <p className="text-sm text-gray-600">
-                Sürükle-bırak editörü ile herkes kolayca tasarım yapabilir
-              </p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <FileText className="w-8 h-8 text-green-600" />
-              </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Hazır Şablonlar</h3>
-              <p className="text-sm text-gray-600">
-                Yüzlerce profesyonel şablon arasından seçim yapın
-              </p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CreditCard className="w-8 h-8 text-purple-600" />
-              </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Yüksek Kalite</h3>
-              <p className="text-sm text-gray-600">
-                300 DPI çözünürlükte baskıya hazır dosyalar
-              </p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Magnet className="w-8 h-8 text-orange-600" />
-              </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Hızlı Teslimat</h3>
-              <p className="text-sm text-gray-600">
-                Tasarımınızı tamamlayın, hemen sipariş verin
-              </p>
-            </div>
+          <div className="flex flex-wrap gap-3 text-sm text-[#646b62]">
+            {['PDF', 'Maks. 10 MB', 'Baskıya uygun ölçü'].map((item) => <span key={item} className="inline-flex items-center gap-2"><Check className="size-4 text-[#579d32]" />{item}</span>)}
           </div>
         </div>
       </main>
-      
       <Footer />
     </div>
   )
-} 
+}

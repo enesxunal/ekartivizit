@@ -155,7 +155,7 @@ export default function OrderTrackingPage() {
       case 'delivered':
         return <CheckCircle className="w-5 h-5 text-green-600" />
       default:
-        return <Clock className="w-5 h-5 text-gray-600" />
+        return <Clock className="w-5 h-5 text-[#687067]" />
     }
   }
 
@@ -202,20 +202,20 @@ export default function OrderTrackingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
       <Header />
       
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="site-container max-w-5xl py-10 sm:py-12 lg:py-16">
         {/* Başlık */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Sipariş Takip</h1>
-          <p className="text-lg text-gray-600">
+          <h1 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">Sipariş Takip</h1>
+          <p className="text-lg text-[#687067]">
             Sipariş numaranız veya takip numaranız ile siparişinizi takip edin
           </p>
         </div>
 
         {/* Arama Formu */}
-        <Card className="mb-8">
+        <Card className="mb-8 rounded-[28px] border-black/8 shadow-none">
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <Search className="w-5 h-5" />
@@ -238,7 +238,7 @@ export default function OrderTrackingPage() {
               </div>
               
               {error && (
-                <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-3 rounded-lg">
+                <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-3 rounded-2xl">
                   <AlertCircle className="w-5 h-5" />
                   <span>{error}</span>
                 </div>
@@ -247,7 +247,7 @@ export default function OrderTrackingPage() {
               <Button 
                 onClick={handleSearch}
                 disabled={loading}
-                className="w-full bg-[#59af05] hover:bg-[#4a9321]"
+                className="w-full rounded-full bg-[#171a16] hover:bg-black"
               >
                 {loading ? (
                   <>
@@ -269,7 +269,7 @@ export default function OrderTrackingPage() {
         {orderData && (
           <div className="space-y-6">
             {/* Durum Özeti */}
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   <span>Sipariş Durumu</span>
@@ -282,15 +282,15 @@ export default function OrderTrackingPage() {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                   <div>
-                    <span className="text-gray-600">Sipariş No:</span>
+                    <span className="text-[#687067]">Sipariş No:</span>
                     <p className="font-semibold">{orderData.orderId}</p>
                   </div>
                   <div>
-                    <span className="text-gray-600">Takip No:</span>
+                    <span className="text-[#687067]">Takip No:</span>
                     <p className="font-semibold">{orderData.trackingNumber}</p>
                   </div>
                   <div>
-                    <span className="text-gray-600">Tahmini Teslimat:</span>
+                    <span className="text-[#687067]">Tahmini Teslimat:</span>
                     <p className="font-semibold">{orderData.estimatedDelivery}</p>
                   </div>
                 </div>
@@ -299,7 +299,7 @@ export default function OrderTrackingPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Sol Taraf - Sipariş Geçmişi */}
-              <Card>
+              <Card className="rounded-[28px] border-black/8 shadow-none">
                 <CardHeader>
                   <CardTitle>Sipariş Geçmişi</CardTitle>
                 </CardHeader>
@@ -323,7 +323,7 @@ export default function OrderTrackingPage() {
                               })}
                             </span>
                           </div>
-                          <p className="text-sm text-gray-600 mt-1">{item.message}</p>
+                          <p className="text-sm text-[#687067] mt-1">{item.message}</p>
                         </div>
                       </div>
                     ))}
@@ -333,23 +333,23 @@ export default function OrderTrackingPage() {
 
               {/* Sağ Taraf - Sipariş Detayları */}
               <div className="space-y-6">
-                <Card>
+                <Card className="rounded-[28px] border-black/8 shadow-none">
                   <CardHeader>
                     <CardTitle>Sipariş Detayları</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
                       {orderData.items.map((item, index) => (
-                        <div key={index} className="bg-gray-50 p-3 rounded-lg">
+                        <div key={index} className="bg-[#f4f4ef] p-3 rounded-2xl">
                           <div className="flex justify-between items-start">
                             <div>
                               <h5 className="font-medium">{item.name}</h5>
-                              <p className="text-sm text-gray-600">Adet: {item.quantity.toLocaleString()}</p>
+                              <p className="text-sm text-[#687067]">Adet: {item.quantity.toLocaleString()}</p>
                               {item.material && (
-                                <p className="text-sm text-gray-600">Malzeme: {item.material}</p>
+                                <p className="text-sm text-[#687067]">Malzeme: {item.material}</p>
                               )}
                               {item.size && (
-                                <p className="text-sm text-gray-600">Boyut: {item.size}</p>
+                                <p className="text-sm text-[#687067]">Boyut: {item.size}</p>
                               )}
                             </div>
                             <div className="text-right">
@@ -369,29 +369,29 @@ export default function OrderTrackingPage() {
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="rounded-[28px] border-black/8 shadow-none">
                   <CardHeader>
                     <CardTitle>Müşteri Bilgileri</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-2 text-sm">
                       <div>
-                        <span className="text-gray-600">Ad Soyad:</span>
+                        <span className="text-[#687067]">Ad Soyad:</span>
                         <p className="font-medium">{orderData.customerInfo.name}</p>
                       </div>
                       <div>
-                        <span className="text-gray-600">E-posta:</span>
+                        <span className="text-[#687067]">E-posta:</span>
                         <p className="font-medium">{orderData.customerInfo.email}</p>
                       </div>
                       <div>
-                        <span className="text-gray-600">Telefon:</span>
+                        <span className="text-[#687067]">Telefon:</span>
                         <p className="font-medium">{orderData.customerInfo.phone}</p>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="rounded-[28px] border-black/8 shadow-none">
                   <CardHeader>
                     <CardTitle>Destek</CardTitle>
                   </CardHeader>

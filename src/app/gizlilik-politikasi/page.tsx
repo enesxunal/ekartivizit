@@ -113,16 +113,16 @@ export default function PrivacyPolicyPage() {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-[#59af05] to-[#4a9321] text-white py-16">
-          <div className="container mx-auto px-4">
+        <section className="bg-[#171a16] text-white py-16 sm:py-20 lg:py-24">
+          <div className="site-container">
             <div className="text-center max-w-4xl mx-auto">
               <Shield className="h-16 w-16 mx-auto mb-6" />
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">
+              <h1 className="text-[clamp(2.8rem,6vw,6rem)] font-semibold leading-[.9] tracking-[-0.06em] mb-6">
                 Gizlilik Politikası
               </h1>
-              <p className="text-xl mb-8">
+              <p className="text-base sm:text-lg leading-7 text-white/65 mb-8">
                 Kişisel verilerinizin güvenliği ve gizliliği bizim için önceliktir. 
                 Bu politika, verilerinizi nasıl topladığımızı, kullandığımızı ve koruduğumuzu açıklar.
               </p>
@@ -135,7 +135,7 @@ export default function PrivacyPolicyPage() {
 
         {/* Quick Navigation */}
         <section className="py-8 bg-white border-b">
-          <div className="container mx-auto px-4">
+          <div className="site-container">
             <div className="flex flex-wrap justify-center gap-4">
               {sections.map((section) => (
                 <Button
@@ -143,7 +143,7 @@ export default function PrivacyPolicyPage() {
                   variant="outline"
                   size="sm"
                   onClick={() => document.getElementById(section.id)?.scrollIntoView({ behavior: 'smooth' })}
-                  className="hover:bg-[#59af05] hover:text-white"
+                  className="hover:bg-[#579d32] hover:text-white"
                 >
                   <section.icon className="h-4 w-4 mr-2" />
                   {section.title}
@@ -154,12 +154,12 @@ export default function PrivacyPolicyPage() {
         </section>
 
         {/* Main Content */}
-        <div className="container mx-auto px-4 py-12">
+        <div className="site-container py-12">
           <div className="max-w-4xl mx-auto space-y-8">
             {/* Introduction */}
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
-                <CardTitle className="text-2xl text-[#59af05] flex items-center">
+                <CardTitle className="text-2xl text-[#579d32] flex items-center">
                   <Shield className="h-6 w-6 mr-3" />
                   Giriş
                 </CardTitle>
@@ -179,7 +179,7 @@ export default function PrivacyPolicyPage() {
             {sections.map((section) => (
               <Card key={section.id} id={section.id}>
                 <CardHeader>
-                  <CardTitle className="text-2xl text-[#59af05] flex items-center">
+                  <CardTitle className="text-2xl text-[#579d32] flex items-center">
                     <section.icon className="h-6 w-6 mr-3" />
                     {section.title}
                   </CardTitle>
@@ -207,9 +207,9 @@ export default function PrivacyPolicyPage() {
             ))}
 
             {/* Contact Information */}
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
-                <CardTitle className="text-2xl text-[#59af05]">
+                <CardTitle className="text-2xl text-[#579d32]">
                   İletişim ve Başvuru
                 </CardTitle>
               </CardHeader>
@@ -219,7 +219,7 @@ export default function PrivacyPolicyPage() {
                     KVKK kapsamındaki haklarınızı kullanmak için aşağıdaki kanallardan bizimle iletişime geçebilirsiniz:
                   </p>
                   
-                  <div className="bg-gray-50 p-6 rounded-lg">
+                  <div className="bg-[#f4f4ef] p-6 rounded-2xl">
                     <h4 className="font-semibold text-gray-900 mb-4">İletişim Bilgileri:</h4>
                     <div className="space-y-2 text-gray-700">
                       <p><strong>E-posta:</strong> kvkk@ekartvizit.tr</p>
@@ -239,9 +239,9 @@ export default function PrivacyPolicyPage() {
             </Card>
 
             {/* Updates */}
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
-                <CardTitle className="text-2xl text-[#59af05]">
+                <CardTitle className="text-2xl text-[#579d32]">
                   Politika Güncellemeleri
                 </CardTitle>
               </CardHeader>
@@ -265,17 +265,17 @@ export default function PrivacyPolicyPage() {
         </div>
 
         {/* CTA Section */}
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-4 text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+        <section className="py-14 sm:py-18 bg-[#fbfbf8]">
+          <div className="site-container text-center">
+            <h2 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-4">
               Sorularınız mı Var?
             </h2>
-            <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
+            <p className="text-[#687067] mb-8 max-w-2xl mx-auto">
               Gizlilik politikamız hakkında herhangi bir sorunuz varsa, 
               bizimle iletişime geçmekten çekinmeyin.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-[#59af05] hover:bg-[#4a9321]">
+              <Button size="lg" className="rounded-full bg-[#171a16] hover:bg-black">
                 İletişime Geç
               </Button>
               <Button size="lg" variant="outline">

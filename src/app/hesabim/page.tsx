@@ -205,18 +205,18 @@ export default function AccountPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
         <Header />
         
         <main className="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <Card>
+          <Card className="rounded-[28px] border-black/8 shadow-none">
             <CardHeader>
               <div className="flex space-x-1 mb-4">
                 <button
                   onClick={() => setActiveTab('login')}
-                  className={`flex-1 py-2 px-4 text-sm font-medium rounded-lg transition-colors ${
+                  className={`flex-1 py-2 px-4 text-sm font-medium rounded-2xl transition-colors ${
                     activeTab === 'login'
-                      ? 'bg-[#59af05] text-white'
+                      ? 'bg-[#171a16] text-white'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
@@ -224,9 +224,9 @@ export default function AccountPage() {
                 </button>
                 <button
                   onClick={() => setActiveTab('register')}
-                  className={`flex-1 py-2 px-4 text-sm font-medium rounded-lg transition-colors ${
+                  className={`flex-1 py-2 px-4 text-sm font-medium rounded-2xl transition-colors ${
                     activeTab === 'register'
-                      ? 'bg-[#59af05] text-white'
+                      ? 'bg-[#171a16] text-white'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
@@ -284,7 +284,7 @@ export default function AccountPage() {
                   
                   <Button 
                     type="submit" 
-                    className="w-full bg-[#59af05] hover:bg-[#4a9321]"
+                    className="w-full rounded-full bg-[#171a16] hover:bg-black"
                     disabled={isLoading}
                   >
                     {isLoading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
@@ -370,7 +370,7 @@ export default function AccountPage() {
                   
                   <Button 
                     type="submit" 
-                    className="w-full bg-[#59af05] hover:bg-[#4a9321]"
+                    className="w-full rounded-full bg-[#171a16] hover:bg-black"
                     disabled={isLoading}
                   >
                     {isLoading ? 'Kayıt yapılıyor...' : 'Kayıt Ol'}
@@ -387,19 +387,19 @@ export default function AccountPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
       <Header />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="site-container py-10 sm:py-12 lg:py-16">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Hoş Geldiniz, {user?.name}!</h1>
-          <p className="text-gray-600">Hesap bilgilerinizi yönetin ve siparişlerinizi takip edin</p>
+          <h1 className="text-2xl font-semibold tracking-[-0.035em] text-[#171a16]">Hoş Geldiniz, {user?.name}!</h1>
+          <p className="text-[#687067]">Hesap bilgilerinizi yönetin ve siparişlerinizi takip edin</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sol menü */}
           <div className="lg:col-span-1">
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <User className="w-5 h-5" />
@@ -409,37 +409,37 @@ export default function AccountPage() {
               <CardContent className="space-y-2">
                 <button
                   onClick={() => setActiveTab('profile')}
-                  className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
+                  className={`w-full text-left px-3 py-2 rounded-2xl transition-colors ${
                     activeTab === 'profile'
-                      ? 'bg-[#59af05] text-white'
-                      : 'hover:bg-gray-100'
+                      ? 'bg-[#171a16] text-white'
+                      : 'hover:bg-black/5'
                   }`}
                 >
                   Profil Bilgileri
                 </button>
                 <button
                   onClick={() => setActiveTab('orders')}
-                  className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
+                  className={`w-full text-left px-3 py-2 rounded-2xl transition-colors ${
                     activeTab === 'orders'
-                      ? 'bg-[#59af05] text-white'
-                      : 'hover:bg-gray-100'
+                      ? 'bg-[#171a16] text-white'
+                      : 'hover:bg-black/5'
                   }`}
                 >
                   Sipariş Geçmişi
                 </button>
                 <button
                   onClick={() => setActiveTab('addresses')}
-                  className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
+                  className={`w-full text-left px-3 py-2 rounded-2xl transition-colors ${
                     activeTab === 'addresses'
-                      ? 'bg-[#59af05] text-white'
-                      : 'hover:bg-gray-100'
+                      ? 'bg-[#171a16] text-white'
+                      : 'hover:bg-black/5'
                   }`}
                 >
                   Adreslerim
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-red-50 text-red-600 flex items-center space-x-2"
+                  className="w-full text-left px-3 py-2 rounded-2xl hover:bg-red-50 text-red-600 flex items-center space-x-2"
                 >
                   <LogOut className="w-4 h-4" />
                   <span>Çıkış Yap</span>
@@ -451,7 +451,7 @@ export default function AccountPage() {
           {/* Ana içerik */}
           <div className="lg:col-span-3">
             {activeTab === 'profile' && (
-              <Card>
+              <Card className="rounded-[28px] border-black/8 shadow-none">
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle>Profil Bilgileri</CardTitle>
@@ -548,28 +548,28 @@ export default function AccountPage() {
                         <div className="flex items-center space-x-3">
                           <User className="w-5 h-5 text-gray-400" />
                           <div>
-                            <p className="text-sm text-gray-600">Ad Soyad</p>
+                            <p className="text-sm text-[#687067]">Ad Soyad</p>
                             <p className="font-medium">{user?.name}</p>
                           </div>
                         </div>
                         <div className="flex items-center space-x-3">
                           <Mail className="w-5 h-5 text-gray-400" />
                           <div>
-                            <p className="text-sm text-gray-600">E-posta</p>
+                            <p className="text-sm text-[#687067]">E-posta</p>
                             <p className="font-medium">{user?.email}</p>
                           </div>
                         </div>
                         <div className="flex items-center space-x-3">
                           <Phone className="w-5 h-5 text-gray-400" />
                           <div>
-                            <p className="text-sm text-gray-600">Telefon</p>
+                            <p className="text-sm text-[#687067]">Telefon</p>
                             <p className="font-medium">{user?.phone || 'Belirtilmemiş'}</p>
                           </div>
                         </div>
                         <div className="flex items-center space-x-3">
                           <MapPin className="w-5 h-5 text-gray-400" />
                           <div>
-                            <p className="text-sm text-gray-600">Adres</p>
+                            <p className="text-sm text-[#687067]">Adres</p>
                             <p className="font-medium">
                               {user?.address?.street ? 
                                 `${user.address.street}, ${user.address.district}, ${user.address.city}` : 
@@ -586,7 +586,7 @@ export default function AccountPage() {
             )}
 
             {activeTab === 'orders' && (
-              <Card>
+              <Card className="rounded-[28px] border-black/8 shadow-none">
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
                     <Package className="w-5 h-5" />
@@ -598,9 +598,9 @@ export default function AccountPage() {
                     <div className="text-center py-8">
                       <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                       <h3 className="text-lg font-medium text-gray-900 mb-2">Henüz sipariş yok</h3>
-                      <p className="text-gray-600 mb-4">İlk siparişinizi vererek alışverişe başlayın</p>
+                      <p className="text-[#687067] mb-4">İlk siparişinizi vererek alışverişe başlayın</p>
                       <Link href="/">
-                        <Button className="bg-[#59af05] hover:bg-[#4a9321]">
+                        <Button className="rounded-full bg-[#171a16] hover:bg-black">
                           Alışverişe Başla
                         </Button>
                       </Link>
@@ -608,11 +608,11 @@ export default function AccountPage() {
                   ) : (
                     <div className="space-y-4">
                       {orderHistory.map((order: { id: string; date: string; status: string; total: number; items: string[] }) => (
-                      <div key={order.id} className="border border-gray-200 rounded-lg p-4">
+                      <div key={order.id} className="border border-black/8 rounded-2xl p-4">
                         <div className="flex justify-between items-start mb-3">
                           <div>
                             <h3 className="font-semibold">Sipariş #{order.id}</h3>
-                            <p className="text-sm text-gray-600">{order.date}</p>
+                            <p className="text-sm text-[#687067]">{order.date}</p>
                           </div>
                           <div className="text-right">
                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -627,7 +627,7 @@ export default function AccountPage() {
                         </div>
                         <div className="space-y-1">
                           {order.items.map((item: string, index: number) => (
-                            <p key={index} className="text-sm text-gray-600">• {item}</p>
+                            <p key={index} className="text-sm text-[#687067]">• {item}</p>
                           ))}
                         </div>
                         <div className="mt-3 pt-3 border-t border-gray-100">
@@ -646,7 +646,7 @@ export default function AccountPage() {
             )}
 
             {activeTab === 'addresses' && (
-              <Card>
+              <Card className="rounded-[28px] border-black/8 shadow-none">
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
                     <MapPin className="w-5 h-5" />
@@ -657,9 +657,9 @@ export default function AccountPage() {
                   <div className="text-center py-8">
                     <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-900 mb-2">Henüz adres eklenmemiş</h3>
-                    <p className="text-gray-600 mb-4">Hızlı teslimat için adres bilgilerinizi ekleyin</p>
+                    <p className="text-[#687067] mb-4">Hızlı teslimat için adres bilgilerinizi ekleyin</p>
                     <Button 
-                      className="bg-[#59af05] hover:bg-[#4a9321]"
+                      className="rounded-full bg-[#171a16] hover:bg-black"
                       onClick={() => setActiveTab('profile')}
                     >
                       Adres Ekle

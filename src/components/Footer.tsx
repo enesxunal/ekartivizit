@@ -1,156 +1,88 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Mail, Phone, MapPin, Instagram, Package, User, Truck, FileText } from 'lucide-react'
-import { CATEGORIES } from '@/data/products'
+import { ArrowUpRight, Mail, Phone } from 'lucide-react'
+
+const columns = [
+  {
+    title: 'Ürünler',
+    links: [
+      ['Tüm Ürünler', '/tum-urunler'],
+      ['Kurumsal', '/kurumsal'],
+      ['Reklam', '/reklam'],
+      ['Promosyon', '/promosyon'],
+      ['Çok Satanlar', '/cok-satanlar'],
+    ],
+  },
+  {
+    title: 'Sipariş',
+    links: [
+      ['Tasarımını Yükle', '/tasarim'],
+      ['Sepet', '/sepet'],
+      ['Sipariş Takip', '/siparis-takip'],
+      ['Hesabım', '/hesabim'],
+      ['Sık Sorulanlar', '/sss'],
+    ],
+  },
+  {
+    title: 'E-Kartvizit',
+    links: [
+      ['Hakkımızda', '/hakkimizda'],
+      ['İletişim', '/iletisim'],
+      ['Blog', '/blog'],
+      ['Gizlilik', '/gizlilik-politikasi'],
+      ['Kullanım Şartları', '/kullanim-sartlari'],
+    ],
+  },
+]
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-          {/* Logo ve Açıklama */}
-          <div className="col-span-1 md:col-span-2 lg:col-span-2">
-            <Link href="/" className="flex items-center mb-4">
-              <Image
-                src="/logo.png"
-                alt="E-Kartvizit Logo"
-                width={120}
-                height={40}
-                className="h-10 w-auto brightness-0 invert"
-              />
-            </Link>
-            <p className="text-gray-300 mb-6 max-w-md">
-              Profesyonel baskı çözümleri ile işinizi bir adım öne taşıyın. 
-              Kartvizit, broşür, magnet ve daha fazlası için güvenilir adresiniz.
+    <footer className="bg-[#171a16] text-white">
+      <div className="site-container py-14 sm:py-16 lg:py-20">
+        <div className="grid gap-12 border-b border-white/12 pb-12 lg:grid-cols-[1.15fr_1fr] lg:gap-20 lg:pb-16">
+          <div>
+            <Image src="/logo.png" alt="E-Kartvizit" width={150} height={46} className="mb-8 h-11 w-auto brightness-0 invert" />
+            <p className="max-w-xl text-[clamp(2rem,4.2vw,4.4rem)] font-semibold leading-[.94] tracking-[-0.055em] text-white">
+              Baskıyı daha kolay sipariş edilen bir ürüne dönüştürüyoruz.
             </p>
-            <div className="space-y-3">
-              <div className="flex items-center space-x-3">
-                <Phone className="h-4 w-4 text-[#59af05] flex-shrink-0" />
-                <span className="text-gray-300">0 850 840 30 11</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Mail className="h-4 w-4 text-[#59af05] flex-shrink-0" />
-                <span className="text-gray-300">info@ekartvizit.tr</span>
-              </div>
-              <div className="flex items-start space-x-3">
-                <MapPin className="h-4 w-4 text-[#59af05] flex-shrink-0 mt-0.5" />
-                <span className="text-gray-300">Mustafa Kemal Mah. 2139 Sk. 15/5 Çankaya/Ankara</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Instagram className="h-4 w-4 text-[#59af05] flex-shrink-0" />
-                <a href="https://instagram.com/e.kartvizit" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-[#59af05] transition-colors">
-                  @e.kartvizit
-                </a>
-              </div>
-            </div>
           </div>
-
-          {/* Kategoriler */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4 flex items-center">
-              <Package className="h-5 w-5 text-[#59af05] mr-2" />
-              Kategoriler
-            </h3>
-            <ul className="space-y-2">
-              {CATEGORIES.slice(0, 6).map((category) => (
-                <li key={category.id}>
-                  <Link href={category.href} className="text-gray-300 hover:text-[#59af05] transition-colors text-sm">
-                    {category.name}
-                  </Link>
-                </li>
-              ))}
-
-            </ul>
-          </div>
-
-          {/* Müşteri Hizmetleri */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4 flex items-center">
-              <User className="h-5 w-5 text-[#59af05] mr-2" />
-              Müşteri Hizmetleri
-            </h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/siparis-takip" className="text-gray-300 hover:text-[#59af05] transition-colors text-sm flex items-center">
-                  <Truck className="h-4 w-4 mr-2" />
-                  Sipariş Takip
-                </Link>
-              </li>
-              <li>
-                <Link href="/hesabim" className="text-gray-300 hover:text-[#59af05] transition-colors text-sm flex items-center">
-                  <User className="h-4 w-4 mr-2" />
-                  Hesabım
-                </Link>
-              </li>
-              <li>
-                <Link href="/sss" className="text-gray-300 hover:text-[#59af05] transition-colors text-sm">
-                  Sık Sorulan Sorular
-                </Link>
-              </li>
-
-            </ul>
-          </div>
-
-          {/* Kurumsal */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4 flex items-center">
-              <FileText className="h-5 w-5 text-[#59af05] mr-2" />
-              Kurumsal
-            </h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/hakkimizda" className="text-gray-300 hover:text-[#59af05] transition-colors text-sm">
-                  Hakkımızda
-                </Link>
-              </li>
-              <li>
-                <Link href="/iletisim" className="text-gray-300 hover:text-[#59af05] transition-colors text-sm">
-                  İletişim
-                </Link>
-              </li>
-              <li>
-                <Link href="/blog" className="text-gray-300 hover:text-[#59af05] transition-colors text-sm">
-                  Blog
-                </Link>
-              </li>
-
-              <li>
-                <Link href="/gizlilik-politikasi" className="text-gray-300 hover:text-[#59af05] transition-colors text-sm">
-                  Gizlilik Politikası
-                </Link>
-              </li>
-              <li>
-                <Link href="/kullanim-sartlari" className="text-gray-300 hover:text-[#59af05] transition-colors text-sm">
-                  Kullanım Şartları
-                </Link>
-              </li>
-            </ul>
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
+            {columns.map((column) => (
+              <div key={column.title}>
+                <h3 className="mb-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/45">{column.title}</h3>
+                <ul className="space-y-3">
+                  {column.links.map(([label, href]) => (
+                    <li key={href}>
+                      <Link href={href} className="text-sm font-medium text-white/72 transition hover:text-white">
+                        {label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Alt Bilgi */}
-        <div className="border-t border-gray-800 mt-8 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-gray-400 text-sm">
-              © {new Date().getFullYear()} E-Kartvizit. Tüm hakları saklıdır.
-            </p>
-            <div className="flex items-center space-x-6">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-5 bg-blue-600 rounded flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">VISA</span>
-                </div>
-                <div className="w-8 h-5 bg-red-600 rounded flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">MC</span>
-                </div>
-                <div className="w-8 h-5 bg-orange-500 rounded flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">AX</span>
-                </div>
-              </div>
-              <span className="text-gray-400 text-sm">Güvenli Ödeme</span>
-            </div>
+        <div className="grid gap-8 py-10 sm:grid-cols-2 lg:grid-cols-[1fr_auto] lg:items-center">
+          <div className="flex flex-col gap-3 text-sm text-white/64 sm:flex-row sm:gap-6">
+            <a href="tel:+908508403011" className="inline-flex items-center gap-2 transition hover:text-white">
+              <Phone className="size-4" /> 0 850 840 30 11
+            </a>
+            <a href="mailto:info@ekartvizit.tr" className="inline-flex items-center gap-2 transition hover:text-white">
+              <Mail className="size-4" /> info@ekartvizit.tr
+            </a>
           </div>
+          <Link href="/iletisim" className="inline-flex items-center gap-2 text-sm font-semibold text-[#9fe468]">
+            Bize ulaşın <ArrowUpRight className="size-4" />
+          </Link>
+        </div>
+
+        <div className="flex flex-col gap-3 border-t border-white/12 pt-6 text-xs text-white/38 sm:flex-row sm:items-center sm:justify-between">
+          <span>© {new Date().getFullYear()} E-Kartvizit. Tüm hakları saklıdır.</span>
+          <span>Online baskı sipariş platformu</span>
         </div>
       </div>
     </footer>
   )
-} 
+}

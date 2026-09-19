@@ -120,16 +120,16 @@ export default function TermsOfServicePage() {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-[#59af05] to-[#4a9321] text-white py-16">
-        <div className="container mx-auto px-4">
+      <section className="bg-[#171a16] text-white py-16 sm:py-20 lg:py-24">
+        <div className="site-container">
           <div className="text-center max-w-4xl mx-auto">
             <Scale className="h-16 w-16 mx-auto mb-6" />
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
+            <h1 className="text-[clamp(2.8rem,6vw,6rem)] font-semibold leading-[.9] tracking-[-0.06em] mb-6">
               Kullanım Şartları
             </h1>
-            <p className="text-xl mb-8">
+            <p className="text-base sm:text-lg leading-7 text-white/65 mb-8">
               E-Kartvizit hizmetlerini kullanırken uymanız gereken şartlar ve koşullar. 
               Bu şartları dikkatlice okuyup anladığınızdan emin olun.
             </p>
@@ -142,7 +142,7 @@ export default function TermsOfServicePage() {
 
       {/* Quick Navigation */}
       <section className="py-8 bg-white border-b">
-        <div className="container mx-auto px-4">
+        <div className="site-container">
           <div className="flex flex-wrap justify-center gap-4">
             {sections.map((section) => (
               <Button
@@ -150,7 +150,7 @@ export default function TermsOfServicePage() {
                 variant="outline"
                 size="sm"
                 onClick={() => document.getElementById(section.id)?.scrollIntoView({ behavior: 'smooth' })}
-                className="hover:bg-[#59af05] hover:text-white"
+                className="hover:bg-[#579d32] hover:text-white"
               >
                 <section.icon className="h-4 w-4 mr-2" />
                 {section.title}
@@ -161,12 +161,12 @@ export default function TermsOfServicePage() {
       </section>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-12">
+      <div className="site-container py-12">
         <div className="max-w-4xl mx-auto space-y-8">
           {/* Introduction */}
-          <Card>
+          <Card className="rounded-[28px] border-black/8 shadow-none">
             <CardHeader>
-              <CardTitle className="text-2xl text-[#59af05] flex items-center">
+              <CardTitle className="text-2xl text-[#579d32] flex items-center">
                 <FileText className="h-6 w-6 mr-3" />
                 Giriş
               </CardTitle>
@@ -189,7 +189,7 @@ export default function TermsOfServicePage() {
           {sections.map((section) => (
             <Card key={section.id} id={section.id}>
               <CardHeader>
-                <CardTitle className="text-2xl text-[#59af05] flex items-center">
+                <CardTitle className="text-2xl text-[#579d32] flex items-center">
                   <section.icon className="h-6 w-6 mr-3" />
                   {section.title}
                 </CardTitle>
@@ -217,9 +217,9 @@ export default function TermsOfServicePage() {
           ))}
 
           {/* User Responsibilities */}
-          <Card>
+          <Card className="rounded-[28px] border-black/8 shadow-none">
             <CardHeader>
-              <CardTitle className="text-2xl text-[#59af05]">
+              <CardTitle className="text-2xl text-[#579d32]">
                 Kullanıcı Sorumlulukları
               </CardTitle>
             </CardHeader>
@@ -229,7 +229,7 @@ export default function TermsOfServicePage() {
                   Web sitemizi ve hizmetlerimizi kullanırken aşağıdaki kurallara uymanız gerekmektedir:
                 </p>
                 
-                <div className="bg-red-50 border border-red-200 p-6 rounded-lg mb-6">
+                <div className="bg-red-50 border border-red-200 p-6 rounded-2xl mb-6">
                   <h4 className="font-semibold text-red-800 mb-3">Yasak Faaliyetler:</h4>
                   <ul className="text-red-700 space-y-1">
                     <li>• Telif hakkı ihlali yapan içerik gönderme</li>
@@ -240,7 +240,7 @@ export default function TermsOfServicePage() {
                   </ul>
                 </div>
                 
-                <div className="bg-green-50 border border-green-200 p-6 rounded-lg">
+                <div className="bg-green-50 border border-green-200 p-6 rounded-2xl">
                   <h4 className="font-semibold text-green-800 mb-3">Beklenen Davranışlar:</h4>
                   <ul className="text-green-700 space-y-1">
                     <li>• Doğru ve güncel bilgi sağlama</li>
@@ -255,9 +255,9 @@ export default function TermsOfServicePage() {
           </Card>
 
           {/* Dispute Resolution */}
-          <Card>
+          <Card className="rounded-[28px] border-black/8 shadow-none">
             <CardHeader>
-              <CardTitle className="text-2xl text-[#59af05]">
+              <CardTitle className="text-2xl text-[#579d32]">
                 Uyuşmazlık Çözümü
               </CardTitle>
             </CardHeader>
@@ -268,21 +268,21 @@ export default function TermsOfServicePage() {
                 </p>
                 
                 <div className="space-y-4">
-                  <div className="border-l-4 border-[#59af05] pl-4">
+                  <div className="border-l-4 border-[#579d32] pl-4">
                     <h4 className="font-semibold text-gray-900 mb-2">1. Dostane Çözüm</h4>
                     <p className="text-gray-700 text-sm">
                       Öncelikle müşteri hizmetlerimizle iletişime geçerek sorunu çözmeye çalışırız.
                     </p>
                   </div>
                   
-                  <div className="border-l-4 border-[#59af05] pl-4">
+                  <div className="border-l-4 border-[#579d32] pl-4">
                     <h4 className="font-semibold text-gray-900 mb-2">2. Arabuluculuk</h4>
                     <p className="text-gray-700 text-sm">
                       Gerekirse bağımsız arabulucu ile çözüm aranabilir.
                     </p>
                   </div>
                   
-                  <div className="border-l-4 border-[#59af05] pl-4">
+                  <div className="border-l-4 border-[#579d32] pl-4">
                     <h4 className="font-semibold text-gray-900 mb-2">3. Yasal Süreç</h4>
                     <p className="text-gray-700 text-sm">
                       Son çare olarak Ankara mahkemelerinde dava açılabilir.
@@ -299,9 +299,9 @@ export default function TermsOfServicePage() {
           </Card>
 
           {/* Contact Information */}
-          <Card>
+          <Card className="rounded-[28px] border-black/8 shadow-none">
             <CardHeader>
-              <CardTitle className="text-2xl text-[#59af05]">
+              <CardTitle className="text-2xl text-[#579d32]">
                 İletişim Bilgileri
               </CardTitle>
             </CardHeader>
@@ -311,7 +311,7 @@ export default function TermsOfServicePage() {
                   Kullanım şartları hakkında sorularınız için bizimle iletişime geçebilirsiniz:
                 </p>
                 
-                <div className="bg-gray-50 p-6 rounded-lg">
+                <div className="bg-[#f4f4ef] p-6 rounded-2xl">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
                     <div>
                       <p><strong>Şirket:</strong> E-Kartvizit</p>
@@ -329,9 +329,9 @@ export default function TermsOfServicePage() {
           </Card>
 
           {/* Final Terms */}
-          <Card>
+          <Card className="rounded-[28px] border-black/8 shadow-none">
             <CardHeader>
-              <CardTitle className="text-2xl text-[#59af05]">
+              <CardTitle className="text-2xl text-[#579d32]">
                 Son Hükümler
               </CardTitle>
             </CardHeader>
@@ -354,17 +354,17 @@ export default function TermsOfServicePage() {
       </div>
 
       {/* CTA Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+      <section className="py-14 sm:py-18 bg-[#fbfbf8]">
+        <div className="site-container text-center">
+          <h2 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-4">
             Sorularınız mı Var?
           </h2>
-          <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-[#687067] mb-8 max-w-2xl mx-auto">
             Kullanım şartlarımız hakkında herhangi bir sorunuz varsa, 
             müşteri hizmetlerimizle iletişime geçin.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-[#59af05] hover:bg-[#4a9321]">
+            <Button size="lg" className="rounded-full bg-[#171a16] hover:bg-black">
               İletişime Geç
             </Button>
             <Button size="lg" variant="outline">

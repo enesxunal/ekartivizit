@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -27,37 +27,31 @@ export default function ProductContent({ product }: ProductContentProps) {
   const [customHeight, setCustomHeight] = useState('')
   const [activeTab, setActiveTab] = useState('details')
 
-  // Mevcut seçeneklere göre adet seçeneklerini getir
-  const getAvailableQuantities = () => {
+  const availableQuantities = useMemo(() => {
     if (!product.quantityPricing) return []
-    
+
     return product.quantityPricing
-      .filter(p => {
-        const materialMatch = !p.material || p.material === selectedMaterial
-        const sizeMatch = !p.size || p.size === selectedSize
+      .filter((pricing) => {
+        const materialMatch = !pricing.material || !selectedMaterial || pricing.material === selectedMaterial
+        const sizeMatch = !pricing.size || !selectedSize || pricing.size === selectedSize
         return materialMatch && sizeMatch
       })
-      .map(p => p.quantity)
-      .filter((value, index, self) => self.indexOf(value) === index) // Unique values
+      .map((pricing) => pricing.quantity)
+      .filter((value, index, values) => values.indexOf(value) === index)
       .sort((a, b) => a - b)
-  }
+  }, [product.quantityPricing, selectedMaterial, selectedSize])
 
-  // İlk malzemeyi ve boyutu varsayılan olarak seç
-  if (!selectedMaterial && product.materials && product.materials.length > 0) {
-    setSelectedMaterial(product.materials[0])
-  }
-  if (!selectedSize && product.sizes && product.sizes.length > 0) {
-    setSelectedSize(product.sizes[0])
-  }
-  if (!selectedWindow && product.windowOptions && product.windowOptions.length > 0) {
-    setSelectedWindow(product.windowOptions[0])
-  }
-  
-  // İlk adet seçeneğini varsayılan olarak seç
-  const availableQuantities = getAvailableQuantities()
-  if (availableQuantities.length > 0 && !availableQuantities.includes(quantity)) {
-    setQuantity(availableQuantities[0])
-  }
+  useEffect(() => {
+    if (product.materials?.length) setSelectedMaterial((current) => current || product.materials![0])
+    if (product.sizes?.length) setSelectedSize((current) => current || product.sizes![0])
+    if (product.windowOptions?.length) setSelectedWindow((current) => current || product.windowOptions![0])
+  }, [product.materials, product.sizes, product.windowOptions])
+
+  useEffect(() => {
+    if (availableQuantities.length && !availableQuantities.includes(quantity)) {
+      setQuantity(availableQuantities[0])
+    }
+  }, [availableQuantities, quantity])
 
   const calculatePrice = () => {
     let basePrice = product.price?.min || 0
@@ -150,9 +144,9 @@ Detaylı bilgi alabilir miyim?`
   }
 
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main className="site-container py-10 sm:py-10 lg:py-14">
       {/* Breadcrumb */}
-      <div className="flex items-center space-x-2 text-sm text-gray-600 mb-6">
+      <div className="mb-8 flex flex-wrap items-center gap-2 text-xs font-medium text-[#777d74]">
         <Link href="/" className="hover:text-[#59af05]">Ana Sayfa</Link>
         <span>/</span>
         <Link href={`/${product.category}`} className="hover:text-[#59af05] capitalize">
@@ -162,32 +156,32 @@ Detaylı bilgi alabilir miyim?`
         <span className="text-gray-900">{product.name}</span>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(420px,.95fr)] lg:gap-12">
         {/* Sol taraf - Ürün Görselleri */}
         <div className="space-y-4">
           {/* Ana görsel */}
-          <div className="aspect-square bg-white rounded-lg shadow-lg overflow-hidden">
+          <div className="aspect-[4/3] overflow-hidden rounded-[32px] border border-black/8 bg-[#e9ece4]">
             <Image
               src={product.image}
               alt={product.name}
               width={600}
               height={600}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain p-8"
               priority
             />
           </div>
           
           {/* Küçük görseller */}
           {product.images && product.images.length > 1 && (
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-4 gap-3">
               {product.images.map((image, index) => (
-                <div key={index} className="aspect-square bg-white rounded-lg shadow overflow-hidden cursor-pointer hover:shadow-md transition-shadow">
+                <div key={index} className="aspect-square cursor-pointer overflow-hidden rounded-2xl border border-black/8 bg-white transition hover:border-black/20">
                   <Image
                     src={image}
                     alt={`${product.name} ${index + 1}`}
                     width={150}
                     height={150}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain p-8"
                   />
                 </div>
               ))}
@@ -196,15 +190,15 @@ Detaylı bilgi alabilir miyim?`
         </div>
 
         {/* Sağ taraf - Ürün Bilgileri */}
-        <div className="space-y-6">
+        <div className="space-y-7 rounded-[32px] border border-black/8 bg-white p-6 sm:p-8 lg:sticky lg:top-32 lg:h-fit">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="mb-3 text-[clamp(2.2rem,4vw,4.4rem)] font-semibold leading-[.92] tracking-[-0.055em] text-[#171a16]">
               {product.name}
             </h1>
-            <div className="text-3xl font-bold text-[#59af05] mb-4">
+            <div className="mb-5 text-3xl font-semibold tracking-[-0.04em] text-[#579d32]">
               ₺{calculatePrice()}
             </div>
-            <p className="text-gray-600 leading-relaxed">
+            <p className="text-[#697067] leading-7">
               {product.description}
             </p>
           </div>
@@ -212,7 +206,7 @@ Detaylı bilgi alabilir miyim?`
           {/* Özellikler */}
           {product.features && (
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">Özellikler</h3>
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.08em] text-[#333832]">Özellikler</h3>
               <div className="grid grid-cols-2 gap-2">
                 {product.features.map((feature, index) => (
                   <div key={index} className="flex items-center space-x-2">
@@ -227,16 +221,16 @@ Detaylı bilgi alabilir miyim?`
           {/* Boyut Seçimi */}
           {product.sizes && product.sizes.length > 0 && (
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">Boyut</h3>
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.08em] text-[#333832]">Boyut</h3>
               <div className="grid grid-cols-1 gap-3">
                 {product.sizes.map((size) => (
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
-                    className={`p-3 border-2 rounded-lg text-left transition-colors ${
+                    className={`rounded-2xl border px-4 py-3 text-left text-sm font-medium transition ${
                       selectedSize === size
-                        ? 'border-[#59af05] bg-[#59af05]/5 text-[#59af05]'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-[#579d32] bg-[#edf7e6] text-[#355f22]'
+                        : 'border-black/10 bg-white hover:border-black/25'
                     }`}
                   >
                     {size}
@@ -246,7 +240,7 @@ Detaylı bilgi alabilir miyim?`
               
               {/* Özel Ölçü Girişi */}
               {product.customSizing?.enabled && selectedSize === 'Özel Ölçü' && (
-                <div className="mt-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
+                <div className="mt-4 rounded-2xl border border-black/8 bg-[#f4f4ef] p-4">
                   <h4 className="font-medium text-gray-900 mb-3">Özel Ölçü Bilgileri</h4>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
@@ -258,7 +252,7 @@ Detaylı bilgi alabilir miyim?`
                         min={product.customSizing.minSize}
                         value={customWidth}
                         onChange={(e) => setCustomWidth(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#59af05]"
+                        className="w-full rounded-xl border border-black/12 bg-white px-3 py-2.5 outline-none focus:border-[#579d32] focus:ring-2 focus:ring-[#59af05]/15"
                         placeholder={`Min ${product.customSizing.minSize}cm`}
                       />
                     </div>
@@ -271,7 +265,7 @@ Detaylı bilgi alabilir miyim?`
                         min={product.customSizing.minSize}
                         value={customHeight}
                         onChange={(e) => setCustomHeight(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#59af05]"
+                        className="w-full rounded-xl border border-black/12 bg-white px-3 py-2.5 outline-none focus:border-[#579d32] focus:ring-2 focus:ring-[#59af05]/15"
                         placeholder={`Min ${product.customSizing.minSize}cm`}
                       />
                     </div>
@@ -292,16 +286,16 @@ Detaylı bilgi alabilir miyim?`
 
           {/* Adet Seçimi */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Adet</h3>
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.08em] text-[#333832]">Adet</h3>
             <div className="grid grid-cols-2 gap-3">
-              {getAvailableQuantities().map((qty) => (
+              {availableQuantities.map((qty) => (
                 <button
                   key={qty}
                   onClick={() => setQuantity(qty)}
-                  className={`p-3 border-2 rounded-lg text-center transition-colors ${
+                  className={`rounded-2xl border px-4 py-3 text-center text-sm font-medium transition ${
                     quantity === qty
-                      ? 'border-[#59af05] bg-[#59af05]/5 text-[#59af05]'
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-[#579d32] bg-[#edf7e6] text-[#355f22]'
+                      : 'border-black/10 bg-white hover:border-black/25'
                   }`}
                 >
                   {qty.toLocaleString()} adet
@@ -316,16 +310,16 @@ Detaylı bilgi alabilir miyim?`
           {/* Malzeme Seçimi */}
           {product.materials && product.materials.length > 0 && (
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">Malzeme</h3>
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.08em] text-[#333832]">Malzeme</h3>
               <div className="grid grid-cols-1 gap-3">
                 {product.materials.map((material) => (
                   <button
                     key={material}
                     onClick={() => setSelectedMaterial(material)}
-                    className={`p-3 border-2 rounded-lg text-left transition-colors ${
+                    className={`rounded-2xl border px-4 py-3 text-left text-sm font-medium transition ${
                       selectedMaterial === material
-                        ? 'border-[#59af05] bg-[#59af05]/5 text-[#59af05]'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-[#579d32] bg-[#edf7e6] text-[#355f22]'
+                        : 'border-black/10 bg-white hover:border-black/25'
                     }`}
                   >
                     {material}
@@ -338,16 +332,16 @@ Detaylı bilgi alabilir miyim?`
           {/* Pencere Seçimi (Zarf için) */}
           {product.windowOptions && product.windowOptions.length > 0 && (
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">Pencere Seçeneği</h3>
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.08em] text-[#333832]">Pencere Seçeneği</h3>
               <div className="grid grid-cols-2 gap-3">
                 {product.windowOptions.map((windowOption) => (
                   <button
                     key={windowOption}
                     onClick={() => setSelectedWindow(windowOption)}
-                    className={`p-3 border-2 rounded-lg text-center transition-colors ${
+                    className={`rounded-2xl border px-4 py-3 text-center text-sm font-medium transition ${
                       selectedWindow === windowOption
-                        ? 'border-[#59af05] bg-[#59af05]/5 text-[#59af05]'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-[#579d32] bg-[#edf7e6] text-[#355f22]'
+                        : 'border-black/10 bg-white hover:border-black/25'
                     }`}
                   >
                     {windowOption}
@@ -360,7 +354,7 @@ Detaylı bilgi alabilir miyim?`
           {/* Ek Seçenekler */}
           {product.extraOptions && product.extraOptions.length > 0 && (
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">Ek Seçenekler</h3>
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.08em] text-[#333832]">Ek Seçenekler</h3>
               <div className="space-y-2">
                 {product.extraOptions.map((extra) => (
                   <label key={extra.name} className="flex items-center space-x-3 cursor-pointer">
@@ -382,19 +376,19 @@ Detaylı bilgi alabilir miyim?`
           <div className="space-y-3">
             <Button 
               onClick={handleWhatsApp}
-              className="w-full bg-[#25D366] hover:bg-[#20BA5A] text-white py-3 text-lg flex items-center justify-center space-x-2"
+              className="h-12 w-full rounded-full bg-[#171a16] text-sm font-semibold text-white hover:bg-black flex items-center justify-center space-x-2"
             >
               <MessageCircle className="w-5 h-5" />
               <span>WhatsApp ile Sipariş Ver</span>
             </Button>
             <Button 
               onClick={handleAddToCart}
-              className="w-full bg-[#59af05] hover:bg-[#4a9321] text-white py-3 text-lg flex items-center justify-center space-x-2"
+              className="h-12 w-full rounded-full bg-[#9fe468] text-sm font-semibold text-[#171a16] hover:bg-[#8bd653] flex items-center justify-center space-x-2"
             >
               <ShoppingCart className="w-5 h-5" />
               <span>Sepete Ekle</span>
             </Button>
-            <Button variant="outline" className="w-full py-3 text-lg border-[#59af05] text-[#59af05] hover:bg-[#59af05]/5">
+            <Button variant="outline" className="h-12 w-full rounded-full border-black/15 text-sm font-semibold text-[#171a16] hover:bg-[#f4f4ef]">
               Tasarıma Başla
             </Button>
           </div>
@@ -423,9 +417,9 @@ Detaylı bilgi alabilir miyim?`
       </div>
 
       {/* Ürün Detayları ve Yorumlar */}
-      <div className="mt-16">
-        <div className="border-b border-gray-200">
-          <nav className="-mb-px flex space-x-8">
+      <div className="mt-16 rounded-[32px] border border-black/8 bg-white p-6 sm:p-8 lg:p-10">
+        <div className="border-b border-black/8">
+          <nav className="-mb-px flex gap-7 overflow-x-auto">
             <button 
               onClick={() => setActiveTab('details')}
               className={`border-b-2 py-2 px-1 text-sm font-medium transition-colors ${
@@ -459,7 +453,7 @@ Detaylı bilgi alabilir miyim?`
           </nav>
         </div>
         
-        <div className="py-8">
+        <div className="py-10">
           {/* Ürün Detayları Tab */}
           {activeTab === 'details' && (
             <div className="prose max-w-none">

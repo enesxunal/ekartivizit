@@ -104,14 +104,14 @@ export default function OdemePage() {
 
   if (!items || items.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
         <Header />
-        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="site-container max-w-5xl py-10 sm:py-12 lg:py-16">
           <Card className="text-center p-8">
             <ShoppingCart className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Sepetiniz Boş</h1>
-            <p className="text-gray-600 mb-6">Ödeme yapabilmek için sepetinize ürün eklemeniz gerekiyor.</p>
-            <Button onClick={() => router.push('/')} className="bg-[#59af05] hover:bg-[#4a9321]">
+            <h1 className="text-2xl font-semibold tracking-[-0.035em] text-[#171a16] mb-2">Sepetiniz Boş</h1>
+            <p className="text-[#687067] mb-6">Ödeme yapabilmek için sepetinize ürün eklemeniz gerekiyor.</p>
+            <Button onClick={() => router.push('/')} className="rounded-full bg-[#171a16] hover:bg-black">
               Alışverişe Devam Et
             </Button>
           </Card>
@@ -347,20 +347,20 @@ export default function OdemePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
       <Header />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Ödeme</h1>
-          <p className="text-gray-600">Sipariş bilgilerinizi kontrol edin ve ödeme yöntemini seçin</p>
+      <main className="site-container py-10 sm:py-12 lg:py-16">
+        <div className="mb-8 rounded-[28px] border-black/8 shadow-none">
+          <h1 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">Ödeme</h1>
+          <p className="text-[#687067]">Sipariş bilgilerinizi kontrol edin ve ödeme yöntemini seçin</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Sol taraf - Müşteri Bilgileri ve Ödeme */}
           <div className="lg:col-span-2 space-y-6">
             {/* Müşteri Bilgileri */}
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <User className="w-5 h-5" />
@@ -403,7 +403,7 @@ export default function OdemePage() {
             </Card>
 
             {/* Teslimat Adresi */}
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MapPin className="w-5 h-5" />
@@ -467,7 +467,7 @@ export default function OdemePage() {
             </Card>
 
             {/* Fatura Bilgileri */}
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Building2 className="w-5 h-5" />
@@ -520,7 +520,7 @@ export default function OdemePage() {
 
                 {/* Kurumsal fatura için ek alanlar */}
                 {invoiceInfo.type === 'corporate' && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-blue-50 rounded-lg">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-blue-50 rounded-2xl">
                     <div>
                       <Label htmlFor="taxNumber">Vergi Numarası *</Label>
                       <Input
@@ -544,7 +544,7 @@ export default function OdemePage() {
 
                 {/* Fatura bilgileri (teslimat adresi ile aynı değilse) */}
                 {!sameAsShipping && (
-                  <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+                  <div className="space-y-4 p-4 bg-[#f4f4ef] rounded-2xl">
                     <h4 className="font-medium text-gray-900">Fatura Adresi</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
@@ -621,7 +621,7 @@ export default function OdemePage() {
             </Card>
 
             {/* Ödeme Yöntemleri */}
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
                 <CardTitle>Ödeme Yöntemi</CardTitle>
               </CardHeader>
@@ -629,10 +629,10 @@ export default function OdemePage() {
                 {Object.entries(paymentMethods).map(([key, method]) => (
                   <div
                     key={key}
-                    className={`p-4 border-2 rounded-lg cursor-pointer transition-colors ${
+                    className={`p-4 border-2 rounded-2xl cursor-pointer transition-colors ${
                       selectedPaymentMethod === key
                         ? 'border-[#59af05] bg-[#59af05]/5'
-                        : 'border-gray-200 hover:border-gray-300'
+                        : 'border-black/8 hover:border-gray-300'
                     }`}
                     onClick={() => setSelectedPaymentMethod(key as 'whatsapp' | 'credit-card' | 'bank-transfer')}
                   >
@@ -641,11 +641,11 @@ export default function OdemePage() {
                         {getPaymentIcon(key)}
                         <div>
                           <h3 className="font-medium text-gray-900">{method.name}</h3>
-                          <p className="text-sm text-gray-600">{method.description}</p>
+                          <p className="text-sm text-[#687067]">{method.description}</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-sm text-gray-600">{method.processingTime}</div>
+                        <div className="text-sm text-[#687067]">{method.processingTime}</div>
                         {method.fee > 0 && (
                           <div className="text-sm text-orange-600">+{method.fee}₺</div>
                         )}
@@ -656,7 +656,7 @@ export default function OdemePage() {
 
                 {/* Kredi Kartı Bilgileri */}
                 {selectedPaymentMethod === 'credit-card' && (
-                  <div className="mt-6 p-4 bg-gray-50 rounded-lg space-y-4">
+                  <div className="mt-6 p-4 bg-[#f4f4ef] rounded-2xl space-y-4">
                     <h4 className="font-medium text-gray-900">Kart Bilgileri</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="md:col-span-2">
@@ -717,14 +717,14 @@ export default function OdemePage() {
 
           {/* Sağ taraf - Sipariş Özeti */}
           <div className="space-y-6">
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
                 <CardTitle>Sipariş Özeti</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {items?.map((item) => (
                   <div key={item.id} className="flex gap-3">
-                    <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center">
                       <Image
                         src={item.product.image}
                         alt={item.product.name}
@@ -735,7 +735,7 @@ export default function OdemePage() {
                     </div>
                     <div className="flex-1">
                       <h3 className="font-medium text-gray-900">{item.product.name}</h3>
-                      <div className="text-sm text-gray-600">
+                      <div className="text-sm text-[#687067]">
                         <div>Adet: {item.quantity.toLocaleString()}</div>
                         {item.selectedMaterial && <div>Malzeme: {item.selectedMaterial}</div>}
                         {item.selectedSize && <div>Boyut: {item.selectedSize}</div>}
@@ -776,13 +776,13 @@ export default function OdemePage() {
             <Button
               onClick={handlePayment}
               disabled={isProcessing}
-              className="w-full bg-[#59af05] hover:bg-[#4a9321] text-white py-3 text-lg"
+              className="w-full rounded-full bg-[#171a16] hover:bg-black text-white py-3 text-lg"
             >
               {isProcessing ? 'İşleniyor...' : `₺${totalPrice.toFixed(0)} Öde`}
             </Button>
 
             {/* Güvenlik Bilgisi */}
-            <div className="text-center text-sm text-gray-600">
+            <div className="text-center text-sm text-[#687067]">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <Truck className="w-4 h-4" />
                 <span>Güvenli Ödeme</span>

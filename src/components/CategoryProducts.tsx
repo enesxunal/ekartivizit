@@ -1,77 +1,35 @@
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import Link from 'next/link'
+import { ArrowUpRight, Building2, Gift, Megaphone } from 'lucide-react'
 import { CATEGORIES, getProductsByCategory } from '@/data/products'
-import { Building2, Megaphone, Gift } from 'lucide-react'
 
-const iconMap = {
-  Building2,
-  Megaphone,
-  Gift
-}
+const iconMap = { Building2, Megaphone, Gift }
 
 export default function CategoryProducts() {
   return (
-    <section className="py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-            Ürün Kategorilerimiz
-          </h2>
-          <p className="text-lg text-gray-600">
-            İhtiyacınıza uygun kategoriyi seçin ve ürünlerimizi keşfedin
-          </p>
+    <section className="bg-[#171a16] py-14 text-white sm:py-18 lg:py-24">
+      <div className="site-container">
+        <div className="mb-10 max-w-3xl">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-[#9fe468]">Kategoriler</p>
+          <h2 className="text-[clamp(2.3rem,4.7vw,5.1rem)] font-semibold leading-[.92] tracking-[-0.06em]">İhtiyaca göre değil, işe göre düzenlendi.</h2>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid gap-3 lg:grid-cols-3">
           {CATEGORIES.map((category) => {
-            const products = getProductsByCategory(category.id)
-            const IconComponent = iconMap[category.icon as keyof typeof iconMap]
-            
+            const Icon = iconMap[category.icon as keyof typeof iconMap]
+            const count = getProductsByCategory(category.id).length
             return (
-              <Card key={category.id} className="group hover:shadow-xl transition-all duration-300">
-                <CardContent className="p-6">
-                  <div className="text-center mb-6">
-                    <div className="w-16 h-16 bg-[#59af05]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <IconComponent className="w-8 h-8 text-[#59af05]" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                      {category.name}
-                    </h3>
-                    <p className="text-gray-600 mb-4">
-                      {category.description}
-                    </p>
-                  </div>
-
-                  <div className="space-y-2 mb-6">
-                    {products.slice(0, 4).map((product) => (
-                      <div key={product.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
-                        <span className="text-sm text-gray-700">{product.name}</span>
-                        <span className="text-xs text-[#59af05] font-medium">
-                          {product.price ? `${product.price.min}₺+` : 'Fiyat Al'}
-                        </span>
-                      </div>
-                    ))}
-                    {products.length > 4 && (
-                      <div className="text-center text-sm text-gray-500 pt-2">
-                        +{products.length - 4} ürün daha
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-                
-                <CardFooter className="px-6 pb-6">
-                  <Link href={category.href} className="w-full">
-                    <Button className="w-full bg-[#59af05] hover:bg-[#4a9321]">
-                      Tüm {category.name} Ürünleri
-                    </Button>
-                  </Link>
-                </CardFooter>
-              </Card>
+              <Link href={category.href} key={category.id} className="group rounded-[28px] border border-white/12 bg-white/[.035] p-6 transition hover:bg-white hover:text-[#171a16] sm:p-8">
+                <div className="mb-16 flex items-start justify-between">
+                  <span className="flex size-12 items-center justify-center rounded-full bg-white/10 text-[#9fe468] transition group-hover:bg-[#edf7e6] group-hover:text-[#579d32]"><Icon className="size-5" /></span>
+                  <ArrowUpRight className="size-5 text-white/45 transition group-hover:text-[#171a16]" />
+                </div>
+                <p className="mb-3 text-xs font-medium uppercase tracking-[0.14em] text-white/40 group-hover:text-[#777d74]">{count} ürün</p>
+                <h3 className="text-3xl font-semibold tracking-[-0.04em]">{category.name}</h3>
+                <p className="mt-3 max-w-sm text-sm leading-6 text-white/50 group-hover:text-[#697067]">{category.description}</p>
+              </Link>
             )
           })}
         </div>
       </div>
     </section>
   )
-} 
+}

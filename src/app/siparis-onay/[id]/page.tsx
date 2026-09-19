@@ -20,13 +20,13 @@ export default function SiparisOnayPage() {
 
   if (!order) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
         <Header />
-        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="site-container max-w-5xl py-10 sm:py-12 lg:py-16">
           <Card className="text-center p-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Sipariş Bulunamadı</h1>
-            <p className="text-gray-600 mb-6">Aradığınız sipariş bulunamadı.</p>
-            <Button onClick={() => router.push('/')} className="bg-[#59af05] hover:bg-[#4a9321]">
+            <h1 className="text-2xl font-semibold tracking-[-0.035em] text-[#171a16] mb-2">Sipariş Bulunamadı</h1>
+            <p className="text-[#687067] mb-6">Aradığınız sipariş bulunamadı.</p>
+            <Button onClick={() => router.push('/')} className="rounded-full bg-[#171a16] hover:bg-black">
               Ana Sayfaya Dön
             </Button>
           </Card>
@@ -69,17 +69,17 @@ export default function SiparisOnayPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
       <Header />
       
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="site-container max-w-5xl py-10 sm:py-12 lg:py-16">
         {/* Başarı Mesajı */}
         <div className="text-center mb-8">
           <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">
             Siparişiniz Alındı!
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-[#687067]">
             Sipariş numaranız: <span className="font-semibold text-[#59af05]">#{order.id}</span>
           </p>
         </div>
@@ -88,7 +88,7 @@ export default function SiparisOnayPage() {
           {/* Sol taraf - Sipariş Detayları */}
           <div className="space-y-6">
             {/* Sipariş Durumu */}
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
                 <CardTitle>Sipariş Durumu</CardTitle>
               </CardHeader>
@@ -97,7 +97,7 @@ export default function SiparisOnayPage() {
                   {getStatusIcon(order.status)}
                   <div>
                     <div className="font-medium text-gray-900">{getStatusText(order.status)}</div>
-                    <div className="text-sm text-gray-600">
+                    <div className="text-sm text-[#687067]">
                       Sipariş Tarihi: {new Date(order.createdAt).toLocaleDateString('tr-TR')}
                     </div>
                   </div>
@@ -105,7 +105,7 @@ export default function SiparisOnayPage() {
                 
                 <div className="border-t pt-4">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-gray-600">Ödeme Durumu:</span>
+                    <span className="text-sm text-[#687067]">Ödeme Durumu:</span>
                     <span className={`text-sm font-medium ${
                       order.paymentStatus === 'paid' ? 'text-green-600' : 'text-orange-600'
                     }`}>
@@ -114,7 +114,7 @@ export default function SiparisOnayPage() {
                   </div>
                   {order.trackingNumber && (
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Takip Numarası:</span>
+                      <span className="text-sm text-[#687067]">Takip Numarası:</span>
                       <span className="text-sm font-medium text-[#59af05]">{order.trackingNumber}</span>
                     </div>
                   )}
@@ -123,7 +123,7 @@ export default function SiparisOnayPage() {
             </Card>
 
             {/* Müşteri Bilgileri */}
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
                 <CardTitle>Teslimat Bilgileri</CardTitle>
               </CardHeader>
@@ -132,14 +132,14 @@ export default function SiparisOnayPage() {
                   <div>
                     <span className="font-medium">{order.customerInfo.name}</span>
                   </div>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-[#687067]">
                     {order.customerInfo.email}
                   </div>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-[#687067]">
                     {order.customerInfo.phone}
                   </div>
                   {order.customerInfo.address && (
-                    <div className="text-sm text-gray-600 mt-3">
+                    <div className="text-sm text-[#687067] mt-3">
                       <div className="font-medium mb-1">Adres:</div>
                       <div>{order.customerInfo.address.street}</div>
                       <div>
@@ -154,7 +154,7 @@ export default function SiparisOnayPage() {
 
           {/* Sağ taraf - Sipariş Özeti */}
           <div className="space-y-6">
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
                 <CardTitle>Sipariş Özeti</CardTitle>
               </CardHeader>
@@ -164,7 +164,7 @@ export default function SiparisOnayPage() {
                     <div key={index} className="flex justify-between items-start">
                       <div className="flex-1">
                         <h3 className="font-medium text-gray-900">{item.product.name}</h3>
-                        <div className="text-sm text-gray-600">
+                        <div className="text-sm text-[#687067]">
                           <div>Adet: {item.quantity.toLocaleString()}</div>
                           {item.selectedMaterial && <div>Malzeme: {item.selectedMaterial}</div>}
                           {item.selectedSize && <div>Boyut: {item.selectedSize}</div>}
@@ -205,19 +205,19 @@ export default function SiparisOnayPage() {
             </Card>
 
             {/* Sonraki Adımlar */}
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
                 <CardTitle>Sonraki Adımlar</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-[#59af05] text-white rounded-full flex items-center justify-center text-sm font-bold">
+                    <div className="w-6 h-6 bg-[#171a16] text-white rounded-full flex items-center justify-center text-sm font-bold">
                       1
                     </div>
                     <div>
                       <div className="font-medium">Sipariş Onayı</div>
-                      <div className="text-sm text-gray-600">
+                      <div className="text-sm text-[#687067]">
                         Siparişinizi 1 iş günü içinde onaylayacağız
                       </div>
                     </div>
@@ -228,7 +228,7 @@ export default function SiparisOnayPage() {
                     </div>
                     <div>
                       <div className="font-medium">Üretim</div>
-                      <div className="text-sm text-gray-600">
+                      <div className="text-sm text-[#687067]">
                         Ürünleriniz 4-5 iş günü içinde hazırlanacak
                       </div>
                     </div>
@@ -239,7 +239,7 @@ export default function SiparisOnayPage() {
                     </div>
                     <div>
                       <div className="font-medium">Kargo</div>
-                      <div className="text-sm text-gray-600">
+                      <div className="text-sm text-[#687067]">
                         Ürünleriniz kargoya verilecek ve takip numarası gönderilecek
                       </div>
                     </div>
@@ -251,7 +251,7 @@ export default function SiparisOnayPage() {
             {/* Aksiyon Butonları */}
             <div className="space-y-3">
               <Link href="/siparislerim" className="block">
-                <Button className="w-full bg-[#59af05] hover:bg-[#4a9321]">
+                <Button className="w-full rounded-full bg-[#171a16] hover:bg-black">
                   Siparişlerimi Görüntüle
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>

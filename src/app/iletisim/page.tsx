@@ -87,19 +87,19 @@ export default function ContactPage() {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-[#59af05] to-[#4a9321] text-white py-16">
-        <div className="container mx-auto px-4">
+      <section className="bg-[#171a16] text-white py-16 sm:py-20 lg:py-24">
+        <div className="site-container">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
+            <h1 className="text-[clamp(2.8rem,6vw,6rem)] font-semibold leading-[.9] tracking-[-0.06em] mb-6">
               İletişim
             </h1>
-            <p className="text-xl mb-8">
+            <p className="text-base sm:text-lg leading-7 text-white/65 mb-8">
               Sorularınız, önerileriniz veya projeleriniz için bizimle iletişime geçin. 
               Uzman ekibimiz size en iyi hizmeti sunmaya hazır.
             </p>
-            <Button size="lg" variant="secondary" className="bg-white text-[#59af05] hover:bg-gray-100">
+            <Button size="lg" variant="secondary" className="rounded-full bg-[#9fe468] text-[#171a16] hover:bg-white">
               <MessageCircle className="h-5 w-5 mr-2" />
               WhatsApp ile İletişim
             </Button>
@@ -107,16 +107,16 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <div className="container mx-auto px-4 py-12">
+      <div className="site-container py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Contact Form */}
           <div className="lg:col-span-2">
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
-                <CardTitle className="text-2xl text-[#59af05]">
+                <CardTitle className="text-2xl text-[#579d32]">
                   Bize Mesaj Gönderin
                 </CardTitle>
-                <p className="text-gray-600">
+                <p className="text-[#687067]">
                   Aşağıdaki formu doldurarak bizimle iletişime geçebilirsiniz. 
                   En kısa sürede size dönüş yapacağız.
                 </p>
@@ -196,14 +196,14 @@ export default function ContactPage() {
                       value={formData.message}
                       onChange={handleInputChange}
                       placeholder="Mesajınızı detaylı olarak yazın..."
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#59af05] focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#579d32] focus:border-transparent"
                     />
                   </div>
                   
                   <Button 
                     type="submit" 
                     size="lg" 
-                    className="w-full bg-[#59af05] hover:bg-[#4a9321]"
+                    className="w-full rounded-full bg-[#171a16] hover:bg-black"
                   >
                     <Send className="h-5 w-5 mr-2" />
                     Mesajı Gönder
@@ -216,9 +216,9 @@ export default function ContactPage() {
           {/* Contact Info Sidebar */}
           <div className="lg:col-span-1 space-y-6">
             {/* Contact Information */}
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
-                <CardTitle className="text-xl text-[#59af05]">
+                <CardTitle className="text-xl text-[#579d32]">
                   İletişim Bilgileri
                 </CardTitle>
               </CardHeader>
@@ -226,7 +226,7 @@ export default function ContactPage() {
                 {contactInfo.map((info, index) => (
                   <div key={index} className="flex items-start space-x-4">
                     <div className="flex-shrink-0">
-                      <div className="w-12 h-12 bg-[#59af05] text-white rounded-lg flex items-center justify-center">
+                      <div className="w-12 h-12 bg-[#171a16] text-white rounded-2xl flex items-center justify-center">
                         <info.icon className="h-6 w-6" />
                       </div>
                     </div>
@@ -234,7 +234,7 @@ export default function ContactPage() {
                       <h3 className="font-semibold text-gray-900 mb-1">
                         {info.title}
                       </h3>
-                      <p className="text-gray-600 text-sm whitespace-pre-line mb-2">
+                      <p className="text-[#687067] text-sm whitespace-pre-line mb-2">
                         {info.content}
                       </p>
                       {info.action && (
@@ -249,22 +249,22 @@ export default function ContactPage() {
             </Card>
 
             {/* Social Media */}
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
-                <CardTitle className="text-xl text-[#59af05]">
+                <CardTitle className="text-xl text-[#579d32]">
                   Sosyal Medya
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   {socialMedia.map((social, index) => (
-                    <div key={index} className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                      <div className={`w-10 h-10 ${social.color} text-white rounded-lg flex items-center justify-center`}>
+                    <div key={index} className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-[#f4f4ef] transition-colors">
+                      <div className={`w-10 h-10 ${social.color} text-white rounded-2xl flex items-center justify-center`}>
                         <social.icon className="h-5 w-5" />
                       </div>
                       <div>
                         <p className="font-medium text-gray-900">{social.name}</p>
-                        <p className="text-sm text-gray-600">{social.handle}</p>
+                        <p className="text-sm text-[#687067]">{social.handle}</p>
                       </div>
                     </div>
                   ))}
@@ -273,9 +273,9 @@ export default function ContactPage() {
             </Card>
 
             {/* Quick Contact */}
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
-                <CardTitle className="text-xl text-[#59af05]">
+                <CardTitle className="text-xl text-[#579d32]">
                   Hızlı İletişim
                 </CardTitle>
               </CardHeader>
@@ -299,13 +299,13 @@ export default function ContactPage() {
       </div>
 
       {/* Map Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
+      <section className="py-14 sm:py-18 bg-[#fbfbf8]">
+        <div className="site-container">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-4">
               Ofisimizi Ziyaret Edin
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <p className="text-[#687067] max-w-2xl mx-auto">
               Ankara Çankaya&apos;da bulunan ofisimize gelerek ürünlerimizi yakından inceleyebilir, 
               uzman ekibimizle yüz yüze görüşebilirsiniz.
             </p>
@@ -314,7 +314,7 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
               {/* Google Maps Embed */}
-              <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden">
+              <div className="aspect-video bg-gray-200 rounded-2xl overflow-hidden">
                 <div className="w-full h-full bg-gradient-to-br from-[#59af05] to-[#4a9321] flex items-center justify-center text-white">
                   <div className="text-center">
                     <MapPin className="h-16 w-16 mx-auto mb-4" />
@@ -326,16 +326,16 @@ export default function ContactPage() {
             </div>
             
             <div className="lg:col-span-1">
-              <Card>
+              <Card className="rounded-[28px] border-black/8 shadow-none">
                 <CardHeader>
-                  <CardTitle className="text-xl text-[#59af05]">
+                  <CardTitle className="text-xl text-[#579d32]">
                     Nasıl Ulaşırsınız?
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-2">Toplu Taşıma</h4>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-[#687067]">
                       Kızılay Metro İstasyonu&apos;ndan 15 dakika yürüme mesafesinde. 
                       Çankaya Belediyesi durağından 5 dakika.
                     </p>
@@ -343,7 +343,7 @@ export default function ContactPage() {
                   
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-2">Araç ile</h4>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-[#687067]">
                       Çankaya Caddesi üzerinden kolayca ulaşabilirsiniz. 
                       Ücretsiz otopark imkanı mevcuttur.
                     </p>
@@ -351,14 +351,14 @@ export default function ContactPage() {
                   
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-2">Çalışma Saatleri</h4>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-[#687067]">
                       Pazartesi - Cuma: 09:00 - 18:00<br />
                       Cumartesi: 09:00 - 14:00<br />
                       Pazar: Kapalı
                     </p>
                   </div>
                   
-                  <Button className="w-full bg-[#59af05] hover:bg-[#4a9321]">
+                  <Button className="w-full rounded-full bg-[#171a16] hover:bg-black">
                     <MapPin className="h-4 w-4 mr-2" />
                     Haritada Aç
                   </Button>
@@ -371,12 +371,12 @@ export default function ContactPage() {
 
       {/* FAQ Section */}
       <section className="py-16">
-        <div className="container mx-auto px-4">
+        <div className="site-container">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-4">
               Sık Sorulan Sorular
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <p className="text-[#687067] max-w-2xl mx-auto">
               En çok merak edilen sorular ve cevapları. Daha fazlası için SSS sayfamızı ziyaret edin.
             </p>
           </div>
@@ -387,7 +387,7 @@ export default function ContactPage() {
                 <h3 className="font-bold text-gray-900 mb-3">
                   Minimum sipariş adedi nedir?
                 </h3>
-                <p className="text-gray-600 text-sm">
+                <p className="text-[#687067] text-sm">
                   Kartvizit için 1000 adet, broşür için 1000 adet minimum sipariş alıyoruz.
                 </p>
               </CardContent>
@@ -398,7 +398,7 @@ export default function ContactPage() {
                 <h3 className="font-bold text-gray-900 mb-3">
                   Üretim süresi ne kadar?
                 </h3>
-                <p className="text-gray-600 text-sm">
+                <p className="text-[#687067] text-sm">
                   Standart ürünler için 2-3 iş günü, özel tasarım için 3-5 iş günü.
                 </p>
               </CardContent>
@@ -409,7 +409,7 @@ export default function ContactPage() {
                 <h3 className="font-bold text-gray-900 mb-3">
                   Kargo ücreti var mı?
                 </h3>
-                <p className="text-gray-600 text-sm">
+                <p className="text-[#687067] text-sm">
                   500₺ ve üzeri siparişlerde kargo ücretsiz, altında 25₺ kargo ücreti.
                 </p>
               </CardContent>

@@ -16,11 +16,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
   
   if (!product) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
         <Header />
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="site-container py-10 sm:py-12 lg:py-16">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Ürün Bulunamadı</h1>
+            <h1 className="text-2xl font-semibold tracking-[-0.035em] text-[#171a16] mb-4">Ürün Bulunamadı</h1>
             <Link href="/" className="text-[#59af05] hover:underline">
               Ana Sayfaya Dön
             </Link>
@@ -32,7 +32,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
       <Header />
       <ProductContent product={product} />
       <Footer />

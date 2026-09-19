@@ -90,12 +90,12 @@ export default function PaymentSuccessPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
         <Header />
-        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="site-container max-w-5xl py-10 sm:py-12 lg:py-16">
           <div className="text-center py-16">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#59af05] mx-auto"></div>
-            <p className="mt-4 text-gray-600">Sipariş bilgileri yükleniyor...</p>
+            <p className="mt-4 text-[#687067]">Sipariş bilgileri yükleniyor...</p>
           </div>
         </main>
         <Footer />
@@ -105,14 +105,14 @@ export default function PaymentSuccessPage() {
 
   if (!orderDetails) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
         <Header />
-        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="site-container max-w-5xl py-10 sm:py-12 lg:py-16">
           <div className="text-center py-16">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Sipariş Bulunamadı</h1>
-            <p className="text-gray-600 mb-8">Aradığınız sipariş bulunamadı.</p>
+            <h1 className="text-2xl font-semibold tracking-[-0.035em] text-[#171a16] mb-4">Sipariş Bulunamadı</h1>
+            <p className="text-[#687067] mb-8">Aradığınız sipariş bulunamadı.</p>
             <Link href="/">
-              <Button className="bg-[#59af05] hover:bg-[#4a9321]">
+              <Button className="rounded-full bg-[#171a16] hover:bg-black">
                 Ana Sayfaya Dön
               </Button>
             </Link>
@@ -124,17 +124,17 @@ export default function PaymentSuccessPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
       <Header />
       
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="site-container max-w-5xl py-10 sm:py-12 lg:py-16">
         {/* Başarı Mesajı */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
             <CheckCircle className="w-8 h-8 text-green-600" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">{orderDetails.status === 'paid' ? 'Ödemeniz Başarılı! 🎉' : orderDetails.status === 'failed' ? 'Ödeme Başarısız' : 'Ödemeniz Doğrulanıyor'}</h1>
-          <p className="text-lg text-gray-600">
+          <h1 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">{orderDetails.status === 'paid' ? 'Ödemeniz Başarılı! 🎉' : orderDetails.status === 'failed' ? 'Ödeme Başarısız' : 'Ödemeniz Doğrulanıyor'}</h1>
+          <p className="text-lg text-[#687067]">
             {orderDetails.status === 'paid' ? 'Siparişiniz alındı ve işleme konuldu.' : 'Ödeme sağlayıcısından kesin sonuç bekleniyor.'}
           </p>
         </div>
@@ -142,7 +142,7 @@ export default function PaymentSuccessPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Sol Taraf - Sipariş Detayları */}
           <div className="space-y-6">
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Package className="w-5 h-5" />
@@ -152,19 +152,19 @@ export default function PaymentSuccessPage() {
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <span className="text-gray-600">Sipariş No:</span>
+                    <span className="text-[#687067]">Sipariş No:</span>
                     <p className="font-semibold">{orderDetails.orderId}</p>
                   </div>
                   <div>
-                    <span className="text-gray-600">Ödeme ID:</span>
+                    <span className="text-[#687067]">Ödeme ID:</span>
                     <p className="font-semibold">{orderDetails.paymentId}</p>
                   </div>
                   <div>
-                    <span className="text-gray-600">Takip No:</span>
+                    <span className="text-[#687067]">Takip No:</span>
                     <p className="font-semibold">{orderDetails.trackingNumber}</p>
                   </div>
                   <div>
-                    <span className="text-gray-600">Durum:</span>
+                    <span className="text-[#687067]">Durum:</span>
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                       Onaylandı
                     </span>
@@ -174,16 +174,16 @@ export default function PaymentSuccessPage() {
                 <div className="border-t pt-4">
                   <h4 className="font-semibold mb-3">Sipariş Edilen Ürünler</h4>
                   {orderDetails.items.map((item, index: number) => (
-                    <div key={index} className="bg-gray-50 p-3 rounded-lg">
+                    <div key={index} className="bg-[#f4f4ef] p-3 rounded-2xl">
                       <div className="flex justify-between items-start">
                         <div>
                           <h5 className="font-medium">{item.name}</h5>
-                          <p className="text-sm text-gray-600">Adet: {item.quantity.toLocaleString()}</p>
+                          <p className="text-sm text-[#687067]">Adet: {item.quantity.toLocaleString()}</p>
                           {item.material && (
-                            <p className="text-sm text-gray-600">Malzeme: {item.material}</p>
+                            <p className="text-sm text-[#687067]">Malzeme: {item.material}</p>
                           )}
                           {item.size && (
-                            <p className="text-sm text-gray-600">Boyut: {item.size}</p>
+                            <p className="text-sm text-[#687067]">Boyut: {item.size}</p>
                           )}
                         </div>
                         <div className="text-right">
@@ -203,7 +203,7 @@ export default function PaymentSuccessPage() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Truck className="w-5 h-5" />
@@ -213,10 +213,10 @@ export default function PaymentSuccessPage() {
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Tahmini Teslimat:</span>
+                    <span className="text-[#687067]">Tahmini Teslimat:</span>
                     <span className="font-semibold">{orderDetails.estimatedDelivery}</span>
                   </div>
-                  <div className="bg-blue-50 p-3 rounded-lg">
+                  <div className="bg-blue-50 p-3 rounded-2xl">
                     <p className="text-sm text-blue-800">
                       📦 Siparişiniz hazırlanmaya başlandı. Kargo takip numaranız ile durumunu takip edebilirsiniz.
                     </p>
@@ -228,7 +228,7 @@ export default function PaymentSuccessPage() {
 
           {/* Sağ Taraf - Aksiyonlar */}
           <div className="space-y-6">
-            <Card>
+            <Card className="rounded-[28px] border-black/8 shadow-none">
               <CardHeader>
                 <CardTitle>Sonraki Adımlar</CardTitle>
               </CardHeader>
@@ -305,7 +305,7 @@ export default function PaymentSuccessPage() {
           <CardContent className="p-6">
             <div className="text-center">
               <h3 className="text-lg font-semibold mb-2">📧 E-posta Onayı Gönderildi</h3>
-              <p className="text-gray-600">
+              <p className="text-[#687067]">
                 Sipariş detaylarınız <strong>{orderDetails.customerInfo.email}</strong> adresine gönderildi.
                 E-postanızı kontrol etmeyi unutmayın.
               </p>

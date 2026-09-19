@@ -40,10 +40,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
       {/* Header */}
       <section className="bg-white border-b">
-        <div className="container mx-auto px-4 py-6">
+        <div className="site-container py-6">
           <Link href="/blog">
             <Button variant="ghost" className="mb-4">
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -91,7 +91,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </div>
       </section>
 
-      <div className="container mx-auto px-4 py-12">
+      <div className="site-container py-10 sm:py-12 lg:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-3">
@@ -172,13 +172,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {relatedPosts.length > 0 && (
               <Card>
                 <CardContent className="p-6">
-                  <h3 className="font-bold text-lg mb-4 text-[#59af05]">
+                  <h3 className="font-bold text-lg mb-4 text-[#579d32]">
                     İlgili Yazılar
                   </h3>
                   <div className="space-y-4">
                     {relatedPosts.map((relatedPost) => (
                       <Link key={relatedPost.id} href={`/blog/${relatedPost.id}`}>
-                        <div className="border rounded-lg p-3 hover:bg-gray-50 transition-colors">
+                        <div className="border rounded-2xl p-3 hover:bg-gray-50 transition-colors">
                           <h4 className="font-semibold text-sm mb-1 line-clamp-2">
                             {relatedPost.title}
                           </h4>
@@ -196,7 +196,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {/* Newsletter */}
             <Card className="mt-6">
               <CardContent className="p-6">
-                <h3 className="font-bold text-lg mb-3 text-[#59af05]">
+                <h3 className="font-bold text-lg mb-3 text-[#579d32]">
                   Bülten Aboneliği
                 </h3>
                 <p className="text-sm text-gray-600 mb-4">
@@ -208,7 +208,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     placeholder="E-posta adresiniz"
                     className="w-full px-3 py-2 border rounded-md text-sm"
                   />
-                  <Button className="w-full bg-[#59af05] hover:bg-[#4a9321]">
+                  <Button className="w-full rounded-full bg-[#171a16] hover:bg-black">
                     Abone Ol
                   </Button>
                 </div>
@@ -218,7 +218,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {/* Contact */}
             <Card className="mt-6">
               <CardContent className="p-6">
-                <h3 className="font-bold text-lg mb-3 text-[#59af05]">
+                <h3 className="font-bold text-lg mb-3 text-[#579d32]">
                   İletişim
                 </h3>
                 <p className="text-sm text-gray-600 mb-4">

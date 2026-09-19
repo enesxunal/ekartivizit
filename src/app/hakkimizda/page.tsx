@@ -88,19 +88,19 @@ export default function AboutPage() {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-[#59af05] to-[#4a9321] text-white py-20">
-        <div className="container mx-auto px-4">
+      <section className="bg-[#171a16] text-white py-16 sm:py-20 lg:py-24">
+        <div className="site-container">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
+            <h1 className="text-[clamp(2.8rem,6vw,6rem)] font-semibold leading-[.9] tracking-[-0.06em] mb-6">
               Hakkımızda
             </h1>
-            <p className="text-xl mb-8 leading-relaxed">
+            <p className="text-base sm:text-lg leading-7 text-white/65 mb-8">
               2019 yılından bu yana baskı sektöründe kaliteli hizmet veren E-Kartvizit, 
               müşteri memnuniyetini ön planda tutarak sektörde öncü konumda yer almaktadır.
             </p>
-            <Button size="lg" variant="secondary" className="bg-white text-[#59af05] hover:bg-gray-100">
+            <Button size="lg" variant="secondary" className="rounded-full bg-[#9fe468] text-[#171a16] hover:bg-white">
               İletişime Geç
             </Button>
           </div>
@@ -108,18 +108,18 @@ export default function AboutPage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
+      <section className="py-14 sm:py-18 bg-[#fbfbf8]">
+        <div className="site-container">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-[#59af05] text-white rounded-full mb-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-[#171a16] text-white rounded-full mb-4">
                   <stat.icon className="h-8 w-8" />
                 </div>
-                <div className="text-3xl font-bold text-gray-900 mb-2">
+                <div className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">
                   {stat.number}
                 </div>
-                <div className="text-gray-600">
+                <div className="text-[#687067]">
                   {stat.label}
                 </div>
               </div>
@@ -130,10 +130,10 @@ export default function AboutPage() {
 
       {/* Story Section */}
       <section className="py-16">
-        <div className="container mx-auto px-4">
+        <div className="site-container">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              <h2 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-6">
                 Hikayemiz
               </h2>
               <div className="space-y-4 text-gray-700 leading-relaxed">
@@ -156,7 +156,7 @@ export default function AboutPage() {
               </div>
             </div>
             
-            <div className="bg-gradient-to-br from-[#59af05] to-[#4a9321] rounded-lg p-8 text-white">
+            <div className="bg-gradient-to-br from-[#59af05] to-[#4a9321] rounded-2xl p-8 text-white">
               <h3 className="text-2xl font-bold mb-6">Misyonumuz</h3>
               <p className="mb-6 leading-relaxed">
                 Müşterilerimizin marka kimliklerini güçlendiren, kaliteli ve uygun fiyatlı 
@@ -174,13 +174,13 @@ export default function AboutPage() {
       </section>
 
       {/* Values Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
+      <section className="py-14 sm:py-18 bg-[#fbfbf8]">
+        <div className="site-container">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-4">
               Değerlerimiz
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <p className="text-[#687067] max-w-2xl mx-auto">
               İş yapış şeklimizi belirleyen temel değerlerimiz, her projede rehberimiz oluyor.
             </p>
           </div>
@@ -189,13 +189,13 @@ export default function AboutPage() {
             {values.map((value, index) => (
               <Card key={index} className="hover:shadow-lg transition-shadow">
                 <CardContent className="p-6 text-center">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-[#59af05] text-white rounded-full mb-4">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-[#171a16] text-white rounded-full mb-4">
                     <value.icon className="h-8 w-8" />
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-3">
                     {value.title}
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-[#687067]">
                     {value.description}
                   </p>
                 </CardContent>
@@ -207,12 +207,12 @@ export default function AboutPage() {
 
       {/* Team Section */}
       <section className="py-16">
-        <div className="container mx-auto px-4">
+        <div className="site-container">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-4">
               Ekibimiz
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <p className="text-[#687067] max-w-2xl mx-auto">
               Deneyimli ve uzman kadromuzla, projelerinizi en iyi şekilde hayata geçiriyoruz.
             </p>
           </div>
@@ -229,13 +229,13 @@ export default function AboutPage() {
                   <h3 className="text-xl font-bold text-gray-900 mb-1">
                     {member.name}
                   </h3>
-                  <Badge className="bg-[#59af05] text-white mb-2">
+                  <Badge className="bg-[#171a16] text-white mb-2">
                     {member.position}
                   </Badge>
                   <p className="text-sm text-gray-500 mb-3">
                     {member.experience}
                   </p>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-[#687067] text-sm">
                     {member.description}
                   </p>
                 </CardContent>
@@ -246,13 +246,13 @@ export default function AboutPage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
+      <section className="py-14 sm:py-18 bg-[#fbfbf8]">
+        <div className="site-container">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-4">
               Neden E-Kartvizit?
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <p className="text-[#687067] max-w-2xl mx-auto">
               Sektördeki deneyimimiz ve kalite anlayışımızla fark yaratıyoruz.
             </p>
           </div>
@@ -260,11 +260,11 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <Card className="border-l-4 border-l-[#59af05]">
               <CardContent className="p-6">
-                <Shield className="h-12 w-12 text-[#59af05] mb-4" />
+                <Shield className="h-12 w-12 text-[#579d32] mb-4" />
                 <h3 className="text-xl font-bold text-gray-900 mb-3">
                   Güvenilir Hizmet
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-[#687067]">
                   5+ yıllık deneyimimiz ve binlerce mutlu müşterimizle güvenilir hizmet sunuyoruz.
                 </p>
               </CardContent>
@@ -272,11 +272,11 @@ export default function AboutPage() {
             
             <Card className="border-l-4 border-l-[#59af05]">
               <CardContent className="p-6">
-                <Truck className="h-12 w-12 text-[#59af05] mb-4" />
+                <Truck className="h-12 w-12 text-[#579d32] mb-4" />
                 <h3 className="text-xl font-bold text-gray-900 mb-3">
                   Hızlı Teslimat
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-[#687067]">
                   Türkiye geneline hızlı ve güvenli kargo ile siparişlerinizi ulaştırıyoruz.
                 </p>
               </CardContent>
@@ -284,11 +284,11 @@ export default function AboutPage() {
             
             <Card className="border-l-4 border-l-[#59af05]">
               <CardContent className="p-6">
-                <Target className="h-12 w-12 text-[#59af05] mb-4" />
+                <Target className="h-12 w-12 text-[#579d32] mb-4" />
                 <h3 className="text-xl font-bold text-gray-900 mb-3">
                   Özel Çözümler
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-[#687067]">
                   Her müşterinin ihtiyacına özel tasarım ve baskı çözümleri geliştiriyoruz.
                 </p>
               </CardContent>
@@ -298,20 +298,20 @@ export default function AboutPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-[#59af05] to-[#4a9321] text-white">
-        <div className="container mx-auto px-4 text-center">
+      <section className="py-16 sm:py-20 bg-[#171a16] text-white">
+        <div className="site-container text-center">
           <h2 className="text-3xl font-bold mb-4">
             Projelerinizi Hayata Geçirelim
           </h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg leading-7 text-white/65 mb-8 max-w-2xl mx-auto">
             Kaliteli baskı çözümleri için bizimle iletişime geçin. 
             Uzman ekibimiz size en uygun çözümü sunmaya hazır.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" variant="secondary" className="bg-white text-[#59af05] hover:bg-gray-100">
+            <Button size="lg" variant="secondary" className="rounded-full bg-[#9fe468] text-[#171a16] hover:bg-white">
               Teklif Al
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-[#59af05]">
+            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-[#579d32]">
               İletişim
             </Button>
           </div>

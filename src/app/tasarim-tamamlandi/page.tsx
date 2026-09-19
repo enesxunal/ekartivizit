@@ -5,7 +5,7 @@ import { CheckCircle, Download, ShoppingCart, ArrowLeft, AlertCircle, TestTube }
 function TasarimTamamlandiContent() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12">
-      <div className="container mx-auto px-4">
+      <div className="site-container">
         <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-8">
           {/* URL parametrelerini kontrol et */}
           <URLParamsHandler />
@@ -50,10 +50,10 @@ function DefaultContent({ source }: { source?: string | null }) {
         <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-4">
           <CheckCircle className="w-10 h-10 text-green-600" />
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">
           Tasarımınız Başarıyla Tamamlandı!
         </h1>
-        <p className="text-gray-600">
+        <p className="text-[#687067]">
           {source === 'canva' 
             ? 'Canva&apos;da oluşturduğunuz tasarım başarıyla kaydedildi.'
             : 'Tasarımınız başarıyla kaydedildi.'
@@ -63,13 +63,13 @@ function DefaultContent({ source }: { source?: string | null }) {
 
       {/* Bilgi Kartları */}
       <div className="grid md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-blue-50 rounded-lg p-6">
+        <div className="bg-blue-50 rounded-2xl p-6">
           <h3 className="font-semibold text-blue-900 mb-2">Tasarım Hazır</h3>
           <p className="text-blue-700 text-sm">
             Tasarımınız baskıya hazır halde kaydedildi ve siparişinize eklendi.
           </p>
         </div>
-        <div className="bg-green-50 rounded-lg p-6">
+        <div className="bg-green-50 rounded-2xl p-6">
           <h3 className="font-semibold text-green-900 mb-2">Yüksek Kalite</h3>
           <p className="text-green-700 text-sm">
             300 DPI çözünürlükte profesyonel baskı kalitesi garantisi.
@@ -81,21 +81,21 @@ function DefaultContent({ source }: { source?: string | null }) {
       <div className="space-y-4">
         <Link 
           href="/sepet"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-2xl transition-colors flex items-center justify-center gap-2"
         >
           <ShoppingCart className="w-5 h-5" />
           Sepete Git ve Siparişi Tamamla
         </Link>
         
         <div className="grid md:grid-cols-2 gap-4">
-          <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
+          <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-4 rounded-2xl transition-colors flex items-center justify-center gap-2">
             <Download className="w-4 h-4" />
             Tasarımı İndir
           </button>
           
           <Link 
             href="/tum-urunler"
-            className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+            className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-4 rounded-2xl transition-colors flex items-center justify-center gap-2"
           >
             Yeni Ürün Ekle
           </Link>
@@ -111,7 +111,7 @@ function DefaultContent({ source }: { source?: string | null }) {
       </div>
 
       {/* Yardım Bölümü */}
-      <div className="mt-8 pt-6 border-t border-gray-200">
+      <div className="mt-8 pt-6 border-t border-black/8">
         <h3 className="font-semibold text-gray-900 mb-3">Yardıma mı ihtiyacınız var?</h3>
         <div className="grid md:grid-cols-2 gap-4 text-sm">
           <Link href="/sss" className="text-blue-600 hover:text-blue-700">
@@ -120,10 +120,10 @@ function DefaultContent({ source }: { source?: string | null }) {
           <Link href="/iletisim" className="text-blue-600 hover:text-blue-700">
             • Canlı Destek
           </Link>
-          <span className="text-gray-600">
+          <span className="text-[#687067]">
             • Telefon: 0850 840 30 11
           </span>
-          <span className="text-gray-600">
+          <span className="text-[#687067]">
             • E-posta: info@ekartvizit.tr
           </span>
         </div>
@@ -139,15 +139,15 @@ function TestContent() {
         <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-100 rounded-full mb-4">
           <TestTube className="w-10 h-10 text-blue-600" />
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">
           Test Başarılı!
         </h1>
-        <p className="text-gray-600">
+        <p className="text-[#687067]">
           Canva callback endpoint&apos;i çalışıyor.
         </p>
       </div>
 
-      <div className="bg-green-50 p-6 rounded-lg mb-6">
+      <div className="bg-green-50 p-6 rounded-2xl mb-6">
         <h3 className="font-semibold text-green-900 mb-2">✅ Test Sonucu</h3>
         <p className="text-green-700 text-sm mb-4">
           OAuth callback URL&apos;i başarıyla çalışıyor. Artık Canva geliştirici panelinde submission yapabilirsiniz.
@@ -179,15 +179,15 @@ function OAuthTestContent() {
         <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-4">
           <CheckCircle className="w-10 h-10 text-green-600" />
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">
           OAuth Test Başarılı!
         </h1>
-        <p className="text-gray-600">
+        <p className="text-[#687067]">
           OAuth testi başarıyla tamamlandı.
         </p>
       </div>
 
-      <div className="bg-green-50 p-6 rounded-lg mb-6">
+      <div className="bg-green-50 p-6 rounded-2xl mb-6">
         <h3 className="font-semibold text-green-900 mb-2">✅ Test Sonucu</h3>
         <p className="text-green-700 text-sm mb-4">
           OAuth testi başarıyla tamamlandı.
@@ -219,15 +219,15 @@ function ErrorContent({ error, message }: { error: string; message?: string | nu
         <div className="inline-flex items-center justify-center w-20 h-20 bg-red-100 rounded-full mb-4">
           <AlertCircle className="w-10 h-10 text-red-600" />
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">
           Bir Hata Oluştu
         </h1>
-        <p className="text-gray-600">
+        <p className="text-[#687067]">
           Tasarım işlemi sırasında bir sorun yaşandı.
         </p>
       </div>
 
-      <div className="bg-red-50 p-6 rounded-lg mb-6">
+      <div className="bg-red-50 p-6 rounded-2xl mb-6">
         <h3 className="font-semibold text-red-900 mb-2">Hata Detayları</h3>
         <p className="text-red-700 text-sm mb-2">
           <strong>Hata Kodu:</strong> {error}
@@ -242,7 +242,7 @@ function ErrorContent({ error, message }: { error: string; message?: string | nu
       <div className="space-y-4">
         <Link 
           href="/canva-test"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-2xl transition-colors flex items-center justify-center gap-2"
         >
           <TestTube className="w-5 h-5" />
           Test Sayfasına Git
