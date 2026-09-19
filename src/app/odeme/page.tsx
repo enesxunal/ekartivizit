@@ -4,9 +4,8 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -16,7 +15,7 @@ import { useOrders } from '@/contexts/OrderContext'
 import { useToast } from '@/contexts/ToastContext'
 import { paymentMethods, processCreditCardPayment, processWhatsAppPayment, processBankTransferPayment } from '@/lib/payment'
 // E-posta şablonları artık API üzerinden kullanılacak
-import { CreditCard, Smartphone, Building2, Truck, ShoppingCart, User, MapPin } from 'lucide-react'
+import { ArrowLeft, Building2, Check, ChevronRight, CreditCard, LockKeyhole, MapPin, ShieldCheck, ShoppingCart, Smartphone, Truck, User } from 'lucide-react'
 
 export default function OdemePage() {
   const router = useRouter()
@@ -91,15 +90,6 @@ export default function OdemePage() {
 
   const [sameAsShipping, setSameAsShipping] = useState(true)
 
-  // Kredi kartı bilgileri
-  const [cardInfo, setCardInfo] = useState({
-    cardNumber: '',
-    expiryMonth: '',
-    expiryYear: '',
-    cvc: '',
-    cardHolderName: ''
-  })
-
   const totalPrice = getDiscountedTotal()
 
   if (!items || items.length === 0) {
@@ -137,13 +127,6 @@ export default function OdemePage() {
         [field]: value
       }))
     }
-  }
-
-  const handleCardInputChange = (field: string, value: string) => {
-    setCardInfo(prev => ({
-      ...prev,
-      [field]: value
-    }))
   }
 
   const handleInvoiceInputChange = (field: string, value: string) => {
@@ -347,453 +330,165 @@ export default function OdemePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
+    <div className="min-h-screen bg-[#f7f8f5] text-[#171a16]">
       <Header />
-      
-      <main className="site-container py-10 sm:py-12 lg:py-16">
-        <div className="mb-8 rounded-[28px] border-black/8 shadow-none">
-          <h1 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-2">Ödeme</h1>
-          <p className="text-[#687067]">Sipariş bilgilerinizi kontrol edin ve ödeme yöntemini seçin</p>
-        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Sol taraf - Müşteri Bilgileri ve Ödeme */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Müşteri Bilgileri */}
-            <Card className="rounded-[28px] border-black/8 shadow-none">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="w-5 h-5" />
-                  Müşteri Bilgileri
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="name">Ad Soyad *</Label>
-                    <Input
-                      id="name"
-                      value={customerInfo.name}
-                      onChange={(e) => handleInputChange('name', e.target.value)}
-                      placeholder="Adınız ve soyadınız"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="email">E-posta *</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={customerInfo.email}
-                      onChange={(e) => handleInputChange('email', e.target.value)}
-                      placeholder="ornek@email.com"
-                    />
-                  </div>
+      <main className="site-container py-8 sm:py-12 lg:py-14">
+        <div className="mb-8 border-b border-[#dfe3dc] pb-7">
+          <button type="button" onClick={() => router.push('/sepet')} className="mb-5 inline-flex items-center gap-2 text-xs font-semibold text-[#6d746a] hover:text-[#171a16]">
+            <ArrowLeft className="size-4" /> Sepete dön
+          </button>
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[.16em] text-[#579d32]">Sipariş</p>
+              <h1 className="text-[clamp(2.8rem,6vw,5.4rem)] font-semibold leading-[.9] tracking-[-.065em]">Teslimat ve ödeme</h1>
+              <p className="mt-3 text-sm text-[#777d74]">Bilgilerinizi tamamlayın, ödeme yöntemini seçin ve siparişi oluşturun.</p>
+            </div>
+
+            <div className="flex items-center gap-2 text-[11px] font-semibold text-[#899087]">
+              {[['01','Sepet', true], ['02','Teslimat', true], ['03','Ödeme', true], ['04','Onay', false]].map(([no,label,active], index) => (
+                <div key={String(no)} className="flex items-center gap-2">
+                  <span className={`flex size-7 items-center justify-center rounded-full border ${active ? 'border-[#171a16] bg-[#171a16] text-white' : 'border-[#d5d9d2] bg-white text-[#949a91]'}`}>{no}</span>
+                  <span className={active ? 'text-[#31362f]' : ''}>{String(label)}</span>
+                  {index < 3 && <ChevronRight className="size-3.5 text-[#b2b7af]" />}
                 </div>
-                <div>
-                  <Label htmlFor="phone">Telefon *</Label>
-                  <Input
-                    id="phone"
-                    value={customerInfo.phone}
-                    onChange={(e) => handleInputChange('phone', e.target.value)}
-                    placeholder="0555 123 45 67"
-                    required
-                  />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Teslimat Adresi */}
-            <Card className="rounded-[28px] border-black/8 shadow-none">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5" />
-                  Teslimat Adresi
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label htmlFor="street">Adres *</Label>
-                  <Textarea
-                    id="street"
-                    value={customerInfo.address.street}
-                    onChange={(e) => handleInputChange('address.street', e.target.value)}
-                    placeholder="Mahalle, sokak, bina no, daire no"
-                    rows={3}
-                    required
-                  />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <Label htmlFor="city">İl *</Label>
-                    <Input
-                      id="city"
-                      value={customerInfo.address.city}
-                      onChange={(e) => handleInputChange('address.city', e.target.value)}
-                      placeholder="İstanbul"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="district">İlçe *</Label>
-                    <Input
-                      id="district"
-                      value={customerInfo.address.district}
-                      onChange={(e) => handleInputChange('address.district', e.target.value)}
-                      placeholder="Kadıköy"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="postalCode">Posta Kodu</Label>
-                    <Input
-                      id="postalCode"
-                      value={customerInfo.address.postalCode}
-                      onChange={(e) => handleInputChange('address.postalCode', e.target.value)}
-                      placeholder="34000"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="notes">Sipariş Notları (Opsiyonel)</Label>
-                  <Textarea
-                    id="notes"
-                    value={customerInfo.notes}
-                    onChange={(e) => handleInputChange('notes', e.target.value)}
-                    placeholder="Özel talepleriniz varsa buraya yazabilirsiniz"
-                    rows={2}
-                  />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Fatura Bilgileri */}
-            <Card className="rounded-[28px] border-black/8 shadow-none">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Building2 className="w-5 h-5" />
-                  Fatura Bilgileri
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Fatura Türü */}
-                <div className="space-y-3">
-                  <Label>Fatura Türü</Label>
-                  <div className="flex gap-4">
-                    <label className="flex items-center space-x-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="invoiceType"
-                        value="individual"
-                        checked={invoiceInfo.type === 'individual'}
-                        onChange={(e) => handleInvoiceInputChange('type', e.target.value)}
-                        className="text-[#59af05] focus:ring-[#59af05]"
-                      />
-                      <span>Bireysel</span>
-                    </label>
-                    <label className="flex items-center space-x-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="invoiceType"
-                        value="corporate"
-                        checked={invoiceInfo.type === 'corporate'}
-                        onChange={(e) => handleInvoiceInputChange('type', e.target.value)}
-                        className="text-[#59af05] focus:ring-[#59af05]"
-                      />
-                      <span>Kurumsal</span>
-                    </label>
-                  </div>
-                </div>
-
-                {/* Teslimat adresi ile aynı checkbox */}
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="sameAsShipping"
-                    checked={sameAsShipping}
-                    onChange={(e) => handleSameAsShippingChange(e.target.checked)}
-                    className="text-[#59af05] focus:ring-[#59af05]"
-                  />
-                  <Label htmlFor="sameAsShipping" className="cursor-pointer">
-                    Fatura adresi teslimat adresi ile aynı
-                  </Label>
-                </div>
-
-                {/* Kurumsal fatura için ek alanlar */}
-                {invoiceInfo.type === 'corporate' && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-blue-50 rounded-2xl">
-                    <div>
-                      <Label htmlFor="taxNumber">Vergi Numarası *</Label>
-                      <Input
-                        id="taxNumber"
-                        value={invoiceInfo.taxNumber}
-                        onChange={(e) => handleInvoiceInputChange('taxNumber', e.target.value)}
-                        placeholder="1234567890"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="taxOffice">Vergi Dairesi *</Label>
-                      <Input
-                        id="taxOffice"
-                        value={invoiceInfo.taxOffice}
-                        onChange={(e) => handleInvoiceInputChange('taxOffice', e.target.value)}
-                        placeholder="Kadıköy Vergi Dairesi"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {/* Fatura bilgileri (teslimat adresi ile aynı değilse) */}
-                {!sameAsShipping && (
-                  <div className="space-y-4 p-4 bg-[#f4f4ef] rounded-2xl">
-                    <h4 className="font-medium text-gray-900">Fatura Adresi</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="invoiceName">Ad Soyad / Firma Adı *</Label>
-                        <Input
-                          id="invoiceName"
-                          value={invoiceInfo.name}
-                          onChange={(e) => handleInvoiceInputChange('name', e.target.value)}
-                          placeholder={invoiceInfo.type === 'corporate' ? 'Firma Adı' : 'Ad Soyad'}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="invoiceEmail">E-posta</Label>
-                        <Input
-                          id="invoiceEmail"
-                          type="email"
-                          value={invoiceInfo.email}
-                          onChange={(e) => handleInvoiceInputChange('email', e.target.value)}
-                          placeholder="fatura@email.com"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <Label htmlFor="invoicePhone">Telefon</Label>
-                      <Input
-                        id="invoicePhone"
-                        value={invoiceInfo.phone}
-                        onChange={(e) => handleInvoiceInputChange('phone', e.target.value)}
-                        placeholder="0555 123 45 67"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="invoiceStreet">Fatura Adresi</Label>
-                      <Textarea
-                        id="invoiceStreet"
-                        value={invoiceInfo.address.street}
-                        onChange={(e) => handleInvoiceInputChange('address.street', e.target.value)}
-                        placeholder="Mahalle, sokak, bina no, daire no"
-                        rows={3}
-                      />
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div>
-                        <Label htmlFor="invoiceCity">İl</Label>
-                        <Input
-                          id="invoiceCity"
-                          value={invoiceInfo.address.city}
-                          onChange={(e) => handleInvoiceInputChange('address.city', e.target.value)}
-                          placeholder="İstanbul"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="invoiceDistrict">İlçe</Label>
-                        <Input
-                          id="invoiceDistrict"
-                          value={invoiceInfo.address.district}
-                          onChange={(e) => handleInvoiceInputChange('address.district', e.target.value)}
-                          placeholder="Kadıköy"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="invoicePostalCode">Posta Kodu</Label>
-                        <Input
-                          id="invoicePostalCode"
-                          value={invoiceInfo.address.postalCode}
-                          onChange={(e) => handleInvoiceInputChange('address.postalCode', e.target.value)}
-                          placeholder="34000"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Ödeme Yöntemleri */}
-            <Card className="rounded-[28px] border-black/8 shadow-none">
-              <CardHeader>
-                <CardTitle>Ödeme Yöntemi</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {Object.entries(paymentMethods).map(([key, method]) => (
-                  <div
-                    key={key}
-                    className={`p-4 border-2 rounded-2xl cursor-pointer transition-colors ${
-                      selectedPaymentMethod === key
-                        ? 'border-[#59af05] bg-[#59af05]/5'
-                        : 'border-black/8 hover:border-gray-300'
-                    }`}
-                    onClick={() => setSelectedPaymentMethod(key as 'whatsapp' | 'credit-card' | 'bank-transfer')}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        {getPaymentIcon(key)}
-                        <div>
-                          <h3 className="font-medium text-gray-900">{method.name}</h3>
-                          <p className="text-sm text-[#687067]">{method.description}</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-sm text-[#687067]">{method.processingTime}</div>
-                        {method.fee > 0 && (
-                          <div className="text-sm text-orange-600">+{method.fee}₺</div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-
-                {/* Kredi Kartı Bilgileri */}
-                {selectedPaymentMethod === 'credit-card' && (
-                  <div className="mt-6 p-4 bg-[#f4f4ef] rounded-2xl space-y-4">
-                    <h4 className="font-medium text-gray-900">Kart Bilgileri</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="md:col-span-2">
-                        <Label htmlFor="cardHolderName">Kart Üzerindeki İsim</Label>
-                        <Input
-                          id="cardHolderName"
-                          value={cardInfo.cardHolderName}
-                          onChange={(e) => handleCardInputChange('cardHolderName', e.target.value)}
-                          placeholder="AHMET YILMAZ"
-                        />
-                      </div>
-                      <div className="md:col-span-2">
-                        <Label htmlFor="cardNumber">Kart Numarası</Label>
-                        <Input
-                          id="cardNumber"
-                          value={cardInfo.cardNumber}
-                          onChange={(e) => handleCardInputChange('cardNumber', e.target.value)}
-                          placeholder="1234 5678 9012 3456"
-                          maxLength={19}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="expiryMonth">Ay</Label>
-                        <Input
-                          id="expiryMonth"
-                          value={cardInfo.expiryMonth}
-                          onChange={(e) => handleCardInputChange('expiryMonth', e.target.value)}
-                          placeholder="12"
-                          maxLength={2}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="expiryYear">Yıl</Label>
-                        <Input
-                          id="expiryYear"
-                          value={cardInfo.expiryYear}
-                          onChange={(e) => handleCardInputChange('expiryYear', e.target.value)}
-                          placeholder="25"
-                          maxLength={2}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="cvc">CVC</Label>
-                        <Input
-                          id="cvc"
-                          value={cardInfo.cvc}
-                          onChange={(e) => handleCardInputChange('cvc', e.target.value)}
-                          placeholder="123"
-                          maxLength={3}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Sağ taraf - Sipariş Özeti */}
-          <div className="space-y-6">
-            <Card className="rounded-[28px] border-black/8 shadow-none">
-              <CardHeader>
-                <CardTitle>Sipariş Özeti</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {items?.map((item) => (
-                  <div key={item.id} className="flex gap-3">
-                    <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center">
-                      <Image
-                        src={item.product.image}
-                        alt={item.product.name}
-                        width={40}
-                        height={40}
-                        className="object-contain"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-medium text-gray-900">{item.product.name}</h3>
-                      <div className="text-sm text-[#687067]">
-                        <div>Adet: {item.quantity.toLocaleString()}</div>
-                        {item.selectedMaterial && <div>Malzeme: {item.selectedMaterial}</div>}
-                        {item.selectedSize && <div>Boyut: {item.selectedSize}</div>}
-                        {item.selectedWindow && <div>Pencere: {item.selectedWindow}</div>}
-                        {item.selectedExtras && item.selectedExtras.length > 0 && (
-                          <div>Ekstra: {item.selectedExtras.join(', ')}</div>
-                        )}
-                      </div>
-                      <div className="font-medium text-[#59af05]">₺{item.price.toFixed(0)}</div>
-                    </div>
-                  </div>
-                ))}
-
-                <div className="border-t pt-4 space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Ara Toplam:</span>
-                    <span>₺{getTotalPrice().toFixed(0)}</span>
-                  </div>
-                  {appliedDiscount && (
-                    <div className="flex justify-between text-sm text-green-600">
-                      <span>İndirim ({appliedDiscount.code}):</span>
-                      <span>-₺{(getTotalPrice() - totalPrice).toFixed(0)}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between text-sm">
-                    <span>Kargo:</span>
-                    <span className="text-green-600">Ücretsiz</span>
-                  </div>
-                  <div className="flex justify-between font-bold text-lg border-t pt-2">
-                    <span>Toplam:</span>
-                    <span className="text-[#59af05]">₺{totalPrice.toFixed(0)}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Ödeme Butonu */}
-            <Button
-              onClick={handlePayment}
-              disabled={isProcessing}
-              className="w-full rounded-full bg-[#171a16] hover:bg-black text-white py-3 text-lg"
-            >
-              {isProcessing ? 'İşleniyor...' : `₺${totalPrice.toFixed(0)} Öde`}
-            </Button>
-
-            {/* Güvenlik Bilgisi */}
-            <div className="text-center text-sm text-[#687067]">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Truck className="w-4 h-4" />
-                <span>Güvenli Ödeme</span>
-              </div>
-              <p>Tüm ödemeleriniz SSL ile şifrelenir ve güvenli bir şekilde işlenir.</p>
+              ))}
             </div>
           </div>
         </div>
-      </main>
 
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-12">
+          <div className="space-y-5">
+            <CheckoutSection number="01" icon={User} title="İletişim bilgileri" description="Sipariş ve teslimat güncellemelerini bu bilgiler üzerinden paylaşacağız.">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field label="Ad Soyad" required><Input value={customerInfo.name} onChange={(e) => handleInputChange('name', e.target.value)} placeholder="Adınız ve soyadınız" /></Field>
+                <Field label="E-posta" required><Input type="email" value={customerInfo.email} onChange={(e) => handleInputChange('email', e.target.value)} placeholder="ornek@email.com" /></Field>
+              </div>
+              <div className="mt-4"><Field label="Telefon" required><Input value={customerInfo.phone} onChange={(e) => handleInputChange('phone', e.target.value)} placeholder="05xx xxx xx xx" /></Field></div>
+            </CheckoutSection>
+
+            <CheckoutSection number="02" icon={MapPin} title="Teslimat adresi" description="Siparişiniz bu adrese gönderilecek.">
+              <Field label="Açık adres" required><Textarea value={customerInfo.address.street} onChange={(e) => handleInputChange('address.street', e.target.value)} placeholder="Mahalle, sokak, bina ve daire bilgisi" rows={3} /></Field>
+              <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                <Field label="İl" required><Input value={customerInfo.address.city} onChange={(e) => handleInputChange('address.city', e.target.value)} /></Field>
+                <Field label="İlçe" required><Input value={customerInfo.address.district} onChange={(e) => handleInputChange('address.district', e.target.value)} /></Field>
+                <Field label="Posta kodu"><Input value={customerInfo.address.postalCode} onChange={(e) => handleInputChange('address.postalCode', e.target.value)} /></Field>
+              </div>
+              <div className="mt-4"><Field label="Sipariş notu"><Textarea value={customerInfo.notes} onChange={(e) => handleInputChange('notes', e.target.value)} placeholder="Üretim veya teslimat için eklemek istediğiniz not" rows={2} /></Field></div>
+            </CheckoutSection>
+
+            <CheckoutSection number="03" icon={Building2} title="Fatura bilgileri" description="Bireysel veya kurumsal fatura tercihinizi belirleyin.">
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  ['individual', 'Bireysel'],
+                  ['corporate', 'Kurumsal'],
+                ].map(([key,label]) => (
+                  <button key={key} type="button" onClick={() => setInvoiceInfo((current) => ({ ...current, type: key as 'individual' | 'corporate' }))} className={`rounded-[12px] border px-4 py-3 text-sm font-semibold transition ${invoiceInfo.type === key ? 'border-[#171a16] bg-[#171a16] text-white' : 'border-[#dfe3dc] bg-white text-[#555c53] hover:border-[#aeb4aa]'}`}>{label}</button>
+                ))}
+              </div>
+
+              <label className="mt-4 flex cursor-pointer items-center gap-3 rounded-[12px] bg-[#f6f7f4] px-4 py-3 text-sm text-[#555c53]">
+                <input type="checkbox" checked={sameAsShipping} onChange={(e) => handleSameAsShippingChange(e.target.checked)} className="size-4 accent-[#171a16]" />
+                Fatura adresim teslimat adresimle aynı
+              </label>
+
+              {invoiceInfo.type === 'corporate' && (
+                <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                  <Field label="Firma / Unvan"><Input value={invoiceInfo.name} onChange={(e) => handleInvoiceInputChange('name', e.target.value)} /></Field>
+                  <Field label="Vergi numarası"><Input value={invoiceInfo.taxNumber} onChange={(e) => handleInvoiceInputChange('taxNumber', e.target.value)} /></Field>
+                  <Field label="Vergi dairesi"><Input value={invoiceInfo.taxOffice} onChange={(e) => handleInvoiceInputChange('taxOffice', e.target.value)} /></Field>
+                  <Field label="Fatura e-postası"><Input type="email" value={invoiceInfo.email} onChange={(e) => handleInvoiceInputChange('email', e.target.value)} /></Field>
+                </div>
+              )}
+
+              {!sameAsShipping && (
+                <div className="mt-4 border-t border-[#eceee9] pt-4">
+                  <Field label="Fatura adresi"><Textarea value={invoiceInfo.address.street} onChange={(e) => handleInvoiceInputChange('address.street', e.target.value)} rows={2} /></Field>
+                  <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                    <Field label="İl"><Input value={invoiceInfo.address.city} onChange={(e) => handleInvoiceInputChange('address.city', e.target.value)} /></Field>
+                    <Field label="İlçe"><Input value={invoiceInfo.address.district} onChange={(e) => handleInvoiceInputChange('address.district', e.target.value)} /></Field>
+                    <Field label="Posta kodu"><Input value={invoiceInfo.address.postalCode} onChange={(e) => handleInvoiceInputChange('address.postalCode', e.target.value)} /></Field>
+                  </div>
+                </div>
+              )}
+            </CheckoutSection>
+
+            <CheckoutSection number="04" icon={CreditCard} title="Ödeme yöntemi" description="Ödeme altyapısından bağımsız, sade bir seçim akışı.">
+              <div className="grid gap-2">
+                {Object.entries(paymentMethods).map(([key, method]) => {
+                  const selected = selectedPaymentMethod === key
+                  return (
+                    <button key={key} type="button" onClick={() => setSelectedPaymentMethod(key as typeof selectedPaymentMethod)} className={`flex items-center gap-4 rounded-[14px] border p-4 text-left transition ${selected ? 'border-[#171a16] bg-[#f6f7f4]' : 'border-[#dfe3dc] bg-white hover:border-[#aeb4aa]'}`}>
+                      <span className={`flex size-10 shrink-0 items-center justify-center rounded-full ${selected ? 'bg-[#171a16] text-white' : 'bg-[#f2f3ef] text-[#697067]'}`}>{getPaymentIcon(key)}</span>
+                      <span className="min-w-0 flex-1"><span className="block text-sm font-semibold text-[#171a16]">{method.name}</span><span className="mt-1 block text-xs leading-5 text-[#7b8178]">{method.description}</span></span>
+                      <span className={`flex size-5 shrink-0 items-center justify-center rounded-full border ${selected ? 'border-[#171a16] bg-[#171a16] text-white' : 'border-[#c9cec6]'}`}>{selected && <Check className="size-3" />}</span>
+                    </button>
+                  )
+                })}
+              </div>
+
+              {selectedPaymentMethod === 'credit-card' && <div className="mt-3 flex gap-3 rounded-[12px] bg-[#eef6e9] p-4 text-xs leading-5 text-[#4f6443]"><ShieldCheck className="mt-0.5 size-4 shrink-0" /> Kart bilgileri güvenli ödeme sağlayıcısının ekranında girilir.</div>}
+              {selectedPaymentMethod === 'bank-transfer' && <div className="mt-3 flex gap-3 rounded-[12px] bg-[#f5f6f2] p-4 text-xs leading-5 text-[#697067]"><Building2 className="mt-0.5 size-4 shrink-0" /> Sipariş oluşturulduktan sonra havale bilgileri ve ödeme onay akışı gösterilir.</div>}
+              {selectedPaymentMethod === 'whatsapp' && <div className="mt-3 flex gap-3 rounded-[12px] bg-[#f5f6f2] p-4 text-xs leading-5 text-[#697067]"><Smartphone className="mt-0.5 size-4 shrink-0" /> Sipariş oluşturulur ve görüşmeye sipariş numarasıyla devam edilir.</div>}
+            </CheckoutSection>
+          </div>
+
+          <aside className="lg:sticky lg:top-[124px] lg:h-fit">
+            <div className="rounded-[20px] border border-[#dfe3dc] bg-white p-5 sm:p-6">
+              <div className="flex items-center justify-between"><p className="text-xs font-semibold uppercase tracking-[.14em] text-[#8a9087]">Sipariş özeti</p><span className="text-xs text-[#8a9087]">{items.length} ürün</span></div>
+
+              <div className="mt-5 space-y-4 border-b border-[#e8eae6] pb-5">
+                {items.map((item) => (
+                  <div key={item.id} className="grid grid-cols-[52px_1fr_auto] gap-3">
+                    <div className="relative size-[52px] overflow-hidden rounded-[10px] bg-[#f2f3f0]"><Image src={item.product.image} alt={item.product.name} fill sizes="52px" className="object-contain p-2" /></div>
+                    <div className="min-w-0"><p className="truncate text-xs font-semibold text-[#31362f]">{item.product.name}</p><p className="mt-1 text-[11px] text-[#8a9087]">{item.quantity.toLocaleString('tr-TR')} adet · {item.cartQuantity} paket</p></div>
+                    <p className="text-xs font-semibold text-[#31362f]">{(item.price * item.cartQuantity).toLocaleString('tr-TR')} TL</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="space-y-3 py-5 text-sm">
+                <div className="flex justify-between"><span className="text-[#777d74]">Ara toplam</span><span>{getTotalPrice().toLocaleString('tr-TR')} TL</span></div>
+                {appliedDiscount && <div className="flex justify-between text-[#579d32]"><span>İndirim</span><span>-{(getTotalPrice() - totalPrice).toLocaleString('tr-TR')} TL</span></div>}
+                <div className="flex justify-between"><span className="text-[#777d74]">Kargo</span><span className="font-medium text-[#579d32]">Ücretsiz</span></div>
+              </div>
+
+              <div className="border-t border-[#e8eae6] pt-5">
+                <div className="flex items-end justify-between"><span className="text-sm font-semibold">Toplam</span><span className="text-[30px] font-semibold tracking-[-.045em]">{totalPrice.toLocaleString('tr-TR')} TL</span></div>
+                <p className="mt-1 text-right text-[11px] text-[#949a91]">KDV dahil</p>
+              </div>
+
+              <button type="button" onClick={handlePayment} disabled={isProcessing} className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-[12px] bg-[#171a16] px-5 text-sm font-semibold text-white transition hover:bg-[#2b3029] disabled:cursor-not-allowed disabled:opacity-55">
+                {isProcessing ? 'Sipariş oluşturuluyor...' : <>Siparişi oluştur <ChevronRight className="size-4" /></>}
+              </button>
+
+              <div className="mt-5 flex items-start gap-3 border-t border-[#eceee9] pt-5 text-xs leading-5 text-[#777d74]"><LockKeyhole className="mt-0.5 size-4 shrink-0 text-[#579d32]" /> Bilgileriniz sipariş işlemi için güvenli bağlantı üzerinden işlenir.</div>
+            </div>
+
+            <div className="mt-3 grid grid-cols-2 gap-3">
+              <div className="rounded-[14px] border border-[#e0e3dd] bg-white p-4"><Truck className="mb-4 size-4 text-[#579d32]" /><p className="text-xs font-semibold">Gönderim</p><p className="mt-1 text-[11px] leading-4 text-[#858b82]">Sipariş durumundan takip edilir.</p></div>
+              <div className="rounded-[14px] border border-[#e0e3dd] bg-white p-4"><ShieldCheck className="mb-4 size-4 text-[#579d32]" /><p className="text-xs font-semibold">Dosya kontrolü</p><p className="mt-1 text-[11px] leading-4 text-[#858b82]">Üretim öncesi siparişle eşleşir.</p></div>
+            </div>
+          </aside>
+        </div>
+      </main>
       <Footer />
     </div>
   )
-} 
+}
+
+function CheckoutSection({ number, icon: Icon, title, description, children }: { number: string; icon: typeof User; title: string; description: string; children: React.ReactNode }) {
+  return (
+    <section className="rounded-[20px] border border-[#dfe3dc] bg-white p-5 sm:p-6">
+      <div className="mb-6 flex items-start gap-4 border-b border-[#eceee9] pb-5">
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#171a16] text-xs font-semibold text-white">{number}</span>
+        <div className="flex-1"><div className="flex items-center gap-2"><Icon className="size-4 text-[#579d32]" /><h2 className="text-base font-semibold tracking-[-.02em]">{title}</h2></div><p className="mt-1 text-xs leading-5 text-[#7d837a]">{description}</p></div>
+      </div>
+      {children}
+    </section>
+  )
+}
+
+function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+  return <label className="block"><span className="mb-2 block text-xs font-semibold text-[#555c53]">{label}{required && <span className="text-[#579d32]"> *</span>}</span>{children}</label>
+}

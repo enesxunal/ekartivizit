@@ -1,32 +1,19 @@
 import Link from 'next/link'
-import { ArrowUpRight, Building2, Gift, Megaphone } from 'lucide-react'
+import { ArrowRight, Building2, Gift, Megaphone } from 'lucide-react'
 import { CATEGORIES, getProductsByCategory } from '@/data/products'
 
-const iconMap = { Building2, Megaphone, Gift }
+const icons = { Building2, Megaphone, Gift }
 
 export default function CategoryProducts() {
   return (
-    <section className="bg-[#171a16] py-14 text-white sm:py-18 lg:py-24">
+    <section className="bg-[#f7f8f5] py-12 sm:py-16">
       <div className="site-container">
-        <div className="mb-10 max-w-3xl">
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-[#9fe468]">Kategoriler</p>
-          <h2 className="text-[clamp(2.3rem,4.7vw,5.1rem)] font-semibold leading-[.92] tracking-[-0.06em]">İhtiyaca göre değil, işe göre düzenlendi.</h2>
-        </div>
-        <div className="grid gap-3 lg:grid-cols-3">
+        <div className="mb-8 flex items-end justify-between gap-4"><div><p className="site-kicker mb-3">Kategoriler</p><h2 className="text-[clamp(2rem,4.2vw,4rem)] font-semibold leading-[.94] tracking-[-.055em]">İşine uygun baskıyı seç.</h2></div><Link href="/tum-urunler" className="hidden items-center gap-2 text-sm font-semibold sm:flex">Tüm ürünler <ArrowRight className="size-4" /></Link></div>
+        <div className="grid gap-3 md:grid-cols-3">
           {CATEGORIES.map((category) => {
-            const Icon = iconMap[category.icon as keyof typeof iconMap]
-            const count = getProductsByCategory(category.id).length
-            return (
-              <Link href={category.href} key={category.id} className="group rounded-[28px] border border-white/12 bg-white/[.035] p-6 transition hover:bg-white hover:text-[#171a16] sm:p-8">
-                <div className="mb-16 flex items-start justify-between">
-                  <span className="flex size-12 items-center justify-center rounded-full bg-white/10 text-[#9fe468] transition group-hover:bg-[#edf7e6] group-hover:text-[#579d32]"><Icon className="size-5" /></span>
-                  <ArrowUpRight className="size-5 text-white/45 transition group-hover:text-[#171a16]" />
-                </div>
-                <p className="mb-3 text-xs font-medium uppercase tracking-[0.14em] text-white/40 group-hover:text-[#777d74]">{count} ürün</p>
-                <h3 className="text-3xl font-semibold tracking-[-0.04em]">{category.name}</h3>
-                <p className="mt-3 max-w-sm text-sm leading-6 text-white/50 group-hover:text-[#697067]">{category.description}</p>
-              </Link>
-            )
+            const Icon = icons[category.icon as keyof typeof icons]
+            const count = getProductsByCategory(category.id).filter((p) => !p.id.startsWith('test-')).length
+            return <Link href={category.href} key={category.id} className="group rounded-[18px] border border-[#e0e3dd] bg-white p-5 transition hover:border-[#aeb4aa] sm:p-6"><div className="flex items-start justify-between"><span className="flex size-11 items-center justify-center rounded-[12px] bg-[#eef6e9] text-[#579d32]"><Icon className="size-5" /></span><ArrowRight className="size-4 text-[#a1a69f] transition group-hover:translate-x-1 group-hover:text-[#171a16]" /></div><h3 className="mt-10 text-2xl font-semibold tracking-[-.035em]">{category.name}</h3><p className="mt-2 text-sm leading-6 text-[#737970]">{category.description}</p><p className="mt-5 text-xs font-semibold text-[#579d32]">{count} ürün</p></Link>
           })}
         </div>
       </div>

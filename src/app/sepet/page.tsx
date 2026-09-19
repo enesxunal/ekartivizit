@@ -1,66 +1,26 @@
 'use client'
 
-import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { useCart } from '@/contexts/CartContext'
-import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft, MessageCircle } from 'lucide-react'
+import { ArrowLeft, Check, Minus, Plus, ShieldCheck, ShoppingBag, Trash2, Truck } from 'lucide-react'
 
 export default function CartPage() {
   const { items, removeFromCart, updateQuantity, getTotalPrice, getItemCount, clearCart } = useCart()
-  const [promoCode, setPromoCode] = useState('')
-
-  const handleWhatsAppOrder = () => {
-    if (items.length === 0) return
-
-    const orderDetails = items.map(item => {
-      let sizeInfo = item.selectedSize || ''
-      if (item.selectedSize === 'Özel Ölçü' && item.customWidth && item.customHeight) {
-        sizeInfo = `Özel Ölçü: ${item.customWidth}x${item.customHeight}cm`
-      }
-
-      return `• ${item.product.name}
-  - Paket Sayısı: ${item.cartQuantity} paket
-  - Paket İçeriği: ${item.quantity.toLocaleString()} adet
-  - Toplam Adet: ${(item.quantity * item.cartQuantity).toLocaleString()} adet
-  - Boyut: ${sizeInfo}
-  - Malzeme: ${item.selectedMaterial || ''}
-  ${item.selectedWindow ? `- Pencere: ${item.selectedWindow}` : ''}
-  ${item.selectedExtras && item.selectedExtras.length > 0 ? `- Ek Seçenekler: ${item.selectedExtras.join(', ')}` : ''}
-  - Fiyat: ₺${(item.price * item.cartQuantity).toLocaleString()}`
-    }).join('\n\n')
-
-    const message = `Merhaba! Sepetimde bulunan ürünler için sipariş vermek istiyorum:
-
-${orderDetails}
-
-TOPLAM: ₺${getTotalPrice().toLocaleString()}
-
-Sipariş detayları hakkında bilgi alabilir miyim?`
-
-    const encodedMessage = encodeURIComponent(message)
-    window.open(`https://wa.me/908508403011?text=${encodedMessage}`, '_blank')
-  }
+  const total = getTotalPrice()
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
+      <div className="min-h-screen bg-white text-[#171a16]">
         <Header />
-        <main className="site-container py-10 sm:py-12 lg:py-16">
-          <div className="text-center py-16">
-            <ShoppingBag className="w-24 h-24 text-gray-300 mx-auto mb-6" />
-            <h1 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16] mb-4">Sepetiniz Boş</h1>
-            <p className="text-[#687067] mb-8">Henüz sepetinize ürün eklemediniz. Hemen alışverişe başlayın!</p>
-            <Link href="/tum-urunler">
-              <Button className="rounded-full bg-[#171a16] hover:bg-black text-white px-8 py-3">
-                Alışverişe Başla
-              </Button>
-            </Link>
+        <main className="site-container py-16 sm:py-24">
+          <div className="mx-auto max-w-xl text-center">
+            <span className="mx-auto flex size-14 items-center justify-center rounded-full bg-[#f2f4ef]"><ShoppingBag className="size-5" /></span>
+            <h1 className="mt-7 text-[clamp(2.6rem,6vw,5rem)] font-semibold leading-[.92] tracking-[-.06em]">Sepetiniz boş.</h1>
+            <p className="mx-auto mt-4 max-w-md text-sm leading-6 text-[#71776e]">Baskı ürününü seçin, özelliklerini belirleyin ve sipariş akışına ekleyin.</p>
+            <Link href="/tum-urunler" className="mt-8 inline-flex h-12 items-center gap-2 rounded-[12px] bg-[#171a16] px-6 text-sm font-semibold text-white">Ürünleri incele <ArrowLeft className="size-4 rotate-180" /></Link>
           </div>
         </main>
         <Footer />
@@ -69,211 +29,93 @@ Sipariş detayları hakkında bilgi alabilir miyim?`
   }
 
   return (
-    <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
+    <div className="min-h-screen bg-[#f7f8f5] text-[#171a16]">
       <Header />
-      
-      <main className="site-container py-10 sm:py-12 lg:py-16">
-        {/* Başlık */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center space-x-4">
-            <Link href="/tum-urunler" className="text-[#59af05] hover:text-[#4a9321]">
-              <ArrowLeft className="w-6 h-6" />
-            </Link>
-            <h1 className="text-[clamp(2.1rem,4vw,3.8rem)] font-semibold leading-[.94] tracking-[-0.05em] text-[#171a16]">Sepetim ({getItemCount()} paket)</h1>
+      <main className="site-container py-8 sm:py-12 lg:py-14">
+        <div className="mb-8 flex flex-col gap-5 border-b border-[#dfe3dc] pb-8 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <Link href="/tum-urunler" className="mb-4 inline-flex items-center gap-2 text-xs font-semibold text-[#687067] hover:text-[#171a16]"><ArrowLeft className="size-4" /> Alışverişe devam et</Link>
+            <h1 className="text-[clamp(2.8rem,6vw,5.4rem)] font-semibold leading-[.9] tracking-[-.065em]">Sepet</h1>
+            <p className="mt-3 text-sm text-[#777d74]">{getItemCount()} paket · sipariş detaylarını son kez kontrol edin.</p>
           </div>
-          <Button 
-            variant="outline" 
-            onClick={clearCart}
-            className="text-red-600 border-red-600 hover:bg-red-50"
-          >
-            <Trash2 className="w-4 h-4 mr-2" />
-            Sepeti Temizle
-          </Button>
+          <button type="button" onClick={clearCart} className="inline-flex items-center gap-2 self-start text-xs font-semibold text-[#9a3b35] hover:underline"><Trash2 className="size-4" /> Sepeti temizle</button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Sol taraf - Sepet ürünleri */}
-          <div className="lg:col-span-2 space-y-4">
-            {items.map((item) => (
-              <Card key={item.id} className="overflow-hidden rounded-[24px] border-black/8 shadow-none">
-                <CardContent className="p-6">
-                  <div className="flex items-start space-x-4">
-                    {/* Ürün görseli */}
-                    <div className="w-24 h-24 rounded-[24px] border border-black/8 bg-white shadow-none overflow-hidden flex-shrink-0">
-                      <Image
-                        src={item.product.image}
-                        alt={item.product.name}
-                        width={96}
-                        height={96}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-12">
+          <section className="space-y-3">
+            {items.map((item, index) => {
+              const totalQty = item.quantity * item.cartQuantity
+              return (
+                <article key={item.id} className="grid gap-5 rounded-[20px] border border-[#e0e3dd] bg-white p-4 sm:grid-cols-[120px_1fr_auto] sm:p-5">
+                  <div className="relative aspect-square overflow-hidden rounded-[14px] bg-[#f2f3f0]">
+                    <Image src={item.product.image} alt={item.product.name} fill sizes="120px" className="object-contain p-4" />
+                  </div>
 
-                    {/* Ürün bilgileri */}
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                        {item.product.name}
-                      </h3>
-                      
-                      <div className="space-y-1 text-sm text-[#687067] mb-4">
-                        <p><strong>Paket İçeriği:</strong> {item.quantity.toLocaleString()} adet</p>
-                        {item.selectedMaterial && (
-                          <p>Malzeme: {item.selectedMaterial}</p>
-                        )}
-                        {item.selectedSize && (
-                          <p>
-                            Boyut: {item.selectedSize === 'Özel Ölçü' && item.customWidth && item.customHeight 
-                              ? `Özel Ölçü: ${item.customWidth}x${item.customHeight}cm`
-                              : item.selectedSize
-                            }
-                          </p>
-                        )}
-                        {item.selectedWindow && (
-                          <p>Pencere: {item.selectedWindow}</p>
-                        )}
-                        {item.selectedExtras && item.selectedExtras.length > 0 && (
-                          <p>Ek Seçenekler: {item.selectedExtras.join(', ')}</p>
-                        )}
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        {/* Sepet adedi kontrolü */}
-                        <div className="flex items-center space-x-2">
-                          <span className="text-sm text-[#687067]">Sepet Adedi:</span>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => updateQuantity(item.id, item.cartQuantity - 1)}
-                            className="w-8 h-8 p-0"
-                          >
-                            <Minus className="w-4 h-4" />
-                          </Button>
-                          <span className="w-12 text-center font-medium">{item.cartQuantity}</span>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => updateQuantity(item.id, item.cartQuantity + 1)}
-                            className="w-8 h-8 p-0"
-                          >
-                            <Plus className="w-4 h-4" />
-                          </Button>
-                        </div>
-
-                        {/* Fiyat ve silme */}
-                        <div className="flex items-center space-x-4">
-                          <div className="text-right">
-                            <p className="text-lg font-bold text-[#59af05]">
-                              ₺{(item.price * item.cartQuantity).toLocaleString()}
-                            </p>
-                            <p className="text-sm text-gray-500">
-                              ₺{item.price.toLocaleString()} / {item.quantity.toLocaleString()} adet
-                            </p>
-                            <p className="text-xs text-gray-400">
-                              Toplam: {(item.quantity * item.cartQuantity).toLocaleString()} adet
-                            </p>
-                          </div>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => removeFromCart(item.id)}
-                            className="text-red-600 border-red-600 hover:bg-red-50"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
+                  <div className="min-w-0">
+                    <div className="mb-4 flex items-start gap-3">
+                      <span className="mt-1 text-[10px] font-bold tracking-[.12em] text-[#a0a59e]">{String(index + 1).padStart(2, '0')}</span>
+                      <div>
+                        <h2 className="text-lg font-semibold tracking-[-.025em] text-[#171a16]">{item.product.name}</h2>
+                        <p className="mt-1 text-xs text-[#878d84]">{item.product.category}</p>
                       </div>
                     </div>
+
+                    <dl className="grid gap-x-6 gap-y-2 text-xs text-[#60675e] sm:grid-cols-2">
+                      <div className="flex gap-2"><dt className="text-[#9a9f98]">Adet</dt><dd className="font-medium text-[#31362f]">{item.quantity.toLocaleString('tr-TR')}</dd></div>
+                      {item.selectedMaterial && <div className="flex gap-2"><dt className="text-[#9a9f98]">Malzeme</dt><dd className="font-medium text-[#31362f]">{item.selectedMaterial}</dd></div>}
+                      {item.selectedSize && <div className="flex gap-2"><dt className="text-[#9a9f98]">Ölçü</dt><dd className="font-medium text-[#31362f]">{item.selectedSize === 'Özel Ölçü' && item.customWidth && item.customHeight ? `${item.customWidth} × ${item.customHeight} cm` : item.selectedSize}</dd></div>}
+                      {item.selectedExtras?.length ? <div className="flex gap-2"><dt className="text-[#9a9f98]">Ekler</dt><dd className="font-medium text-[#31362f]">{item.selectedExtras.join(', ')}</dd></div> : null}
+                    </dl>
+
+                    <div className="mt-5 flex flex-wrap items-center gap-4">
+                      <div className="inline-flex h-9 items-center rounded-[10px] border border-[#dde1da] bg-[#fafbf8]">
+                        <button type="button" onClick={() => updateQuantity(item.id, item.cartQuantity - 1)} className="flex size-9 items-center justify-center text-[#666d63] hover:text-black"><Minus className="size-3.5" /></button>
+                        <span className="min-w-8 text-center text-xs font-semibold">{item.cartQuantity}</span>
+                        <button type="button" onClick={() => updateQuantity(item.id, item.cartQuantity + 1)} className="flex size-9 items-center justify-center text-[#666d63] hover:text-black"><Plus className="size-3.5" /></button>
+                      </div>
+                      <span className="text-xs text-[#858b82]">Toplam {totalQty.toLocaleString('tr-TR')} adet</span>
+                      <button type="button" onClick={() => removeFromCart(item.id)} className="ml-auto text-xs font-semibold text-[#9a3b35] hover:underline">Sil</button>
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
 
-          {/* Sağ taraf - Sipariş özeti */}
-          <div className="space-y-6">
-            <Card className="rounded-[28px] border-black/8 shadow-none">
-              <CardHeader>
-                <CardTitle>Sipariş Özeti</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between">
-                  <span>Ara Toplam:</span>
-                  <span>₺{getTotalPrice().toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Kargo:</span>
-                  <span className="text-[#59af05] font-medium">Ücretsiz</span>
-                </div>
-                <div className="border-t pt-4">
-                  <div className="flex justify-between text-lg font-bold">
-                    <span>Toplam:</span>
-                    <span className="text-[#59af05]">₺{getTotalPrice().toLocaleString()}</span>
+                  <div className="border-t border-[#eceee9] pt-4 text-left sm:min-w-28 sm:border-l sm:border-t-0 sm:pl-5 sm:pt-0 sm:text-right">
+                    <p className="text-xs text-[#92978f]">Paket fiyatı</p>
+                    <p className="mt-1 text-xl font-semibold tracking-[-.03em]">{item.price.toLocaleString('tr-TR')} TL</p>
+                    {item.cartQuantity > 1 && <p className="mt-2 text-xs font-semibold text-[#579d32]">{(item.price * item.cartQuantity).toLocaleString('tr-TR')} TL toplam</p>}
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </article>
+              )
+            })}
+          </section>
 
-            {/* Promosyon kodu */}
-            <Card className="rounded-[28px] border-black/8 shadow-none">
-              <CardHeader>
-                <CardTitle className="text-base">Promosyon Kodu</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex space-x-2">
-                  <input
-                    type="text"
-                    placeholder="Promosyon kodunu girin"
-                    value={promoCode}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPromoCode(e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#59af05]"
-                  />
-                  <Button variant="outline">Uygula</Button>
-                </div>
-              </CardContent>
-            </Card>
+          <aside className="lg:sticky lg:top-[124px] lg:h-fit">
+            <div className="rounded-[20px] border border-[#dfe3dc] bg-white p-5 sm:p-6">
+              <p className="text-xs font-semibold uppercase tracking-[.14em] text-[#8a9087]">Sipariş özeti</p>
+              <div className="mt-6 space-y-3 text-sm">
+                <div className="flex items-center justify-between"><span className="text-[#737970]">Ürünler</span><span className="font-medium">{total.toLocaleString('tr-TR')} TL</span></div>
+                <div className="flex items-center justify-between"><span className="text-[#737970]">Kargo</span><span className="font-medium text-[#579d32]">Ücretsiz</span></div>
+              </div>
+              <div className="my-5 border-t border-[#e8eae6]" />
+              <div className="flex items-end justify-between"><span className="text-sm font-semibold">Toplam</span><span className="text-[30px] font-semibold tracking-[-.045em]">{total.toLocaleString('tr-TR')} TL</span></div>
+              <p className="mt-2 text-right text-[11px] text-[#949a91]">KDV dahil</p>
 
-            {/* Sipariş butonları */}
-            <div className="space-y-3">
-              <Button 
-                onClick={handleWhatsAppOrder}
-                className="w-full bg-[#25D366] hover:bg-[#20BA5A] text-white py-3 text-lg flex items-center justify-center space-x-2"
-              >
-                <MessageCircle className="w-5 h-5" />
-                <span>WhatsApp ile Sipariş Ver</span>
-              </Button>
-              
-              <Link href="/odeme" className="block">
-                <Button className="w-full rounded-full bg-[#171a16] hover:bg-black text-white py-3 text-lg">
-                  Ödemeye Geç
-                </Button>
-              </Link>
-              
-              <Link href="/tum-urunler" className="block">
-                <Button variant="outline" className="w-full py-3 text-lg">
-                  Alışverişe Devam Et
-                </Button>
-              </Link>
+              <Link href="/odeme" className="mt-6 flex h-12 items-center justify-center gap-2 rounded-[12px] bg-[#171a16] text-sm font-semibold text-white transition hover:bg-[#2b3029]">Siparişe devam et <ArrowLeft className="size-4 rotate-180" /></Link>
+
+              <div className="mt-6 space-y-3 border-t border-[#eceee9] pt-5">
+                {[
+                  [Check, 'Sipariş detaylarını sonraki adımda tekrar kontrol edebilirsiniz.'],
+                  [Truck, 'Gönderim bilgileri ödeme öncesinde girilir.'],
+                  [ShieldCheck, 'Dosyanız siparişinizle birlikte eşleştirilir.'],
+                ].map(([Icon, text]) => {
+                  const InfoIcon = Icon as typeof Check
+                  return <div key={String(text)} className="flex gap-3 text-xs leading-5 text-[#6f756c]"><InfoIcon className="mt-0.5 size-4 shrink-0 text-[#579d32]" /><span>{String(text)}</span></div>
+                })}
+              </div>
             </div>
-
-            {/* Güvenlik bilgisi */}
-            <Card className="bg-green-50 border-green-200">
-              <CardContent className="p-4">
-                <div className="flex items-center space-x-2 text-green-800">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span className="text-sm font-medium">Güvenli Ödeme</span>
-                </div>
-                <p className="text-sm text-green-700 mt-1">
-                  Tüm ödemeleriniz SSL ile korunmaktadır.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
+          </aside>
         </div>
       </main>
-
       <Footer />
     </div>
   )
-} 
+}
