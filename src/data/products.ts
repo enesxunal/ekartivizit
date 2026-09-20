@@ -279,7 +279,7 @@ export const PRODUCTS: Product[] = [
     href: '/urun/magnet',
     gradient: 'from-purple-400 to-purple-600',
     features: ['Buzdolabı Magneti', 'Güçlü Mıknatıs', 'Parlak Selefon'],
-    sizes: ['46x68mm (Standart)', 'Özel Ölçü'],
+    sizes: ['46x68mm (Standart)'],
     materials: ['Parlak Selefon'],
     colors: ['CMYK 4 Renk'],
     minQuantity: 1000,
@@ -289,12 +289,7 @@ export const PRODUCTS: Product[] = [
     ],
     quantityPricing: [
       { quantity: 1000, price: 1400, size: '46x68mm (Standart)' }
-    ],
-    customSizing: {
-      enabled: true,
-      pricePerCm2: 0.2,
-      minSize: 3
-    }
+    ]
   },
   {
     id: 'arac-magnet',

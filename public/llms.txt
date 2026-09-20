@@ -1,0 +1,22 @@
+# E-Kartvizit
+
+E-Kartvizit, Türkiye genelinde online baskı siparişi sunan bir e-ticaret sitesidir.
+
+## Ana ürün grupları
+- Kurumsal baskı: kartvizit, antetli kağıt, zarf, makbuz, cepli dosya
+- Reklam ve tanıtım: broşür, magnet, araç magnet, sticker ve etiket
+- Promosyon: kalem, kupa, çakmak, takvim ve diğer promosyon ürünleri
+
+## Önemli sayfalar
+- https://ekartvizit.tr/tum-urunler
+- https://ekartvizit.tr/kurumsal
+- https://ekartvizit.tr/reklam
+- https://ekartvizit.tr/promosyon
+- https://ekartvizit.tr/blog
+
+## Ürün bilgisi
+Ürün sayfalarında güncel fiyat, adet, ölçü, malzeme seçenekleri ve baskı hazırlama rehberleri yer alır. Gösterilen ürün fiyatlarında aksi belirtilmedikçe KDV ve kargo dahil bilgisi sayfada açıkça gösterilir.
+
+## İletişim
+- Web: https://ekartvizit.tr
+- E-posta: info@ekartvizit.tr

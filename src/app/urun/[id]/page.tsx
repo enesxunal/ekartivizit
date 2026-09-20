@@ -3,8 +3,10 @@ import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ProductContent from '@/components/ProductContent'
-import { BreadcrumbStructuredData, ProductStructuredData } from '@/components/StructuredData'
+import ProductSeoContent from '@/components/ProductSeoContent'
+import { BreadcrumbStructuredData, FaqStructuredData, ProductStructuredData } from '@/components/StructuredData'
 import { getProductById } from '@/data/products'
+import { getProductSeo } from '@/data/productSeo'
 
 interface ProductPageProps {
   params: Promise<{ id: string }>
@@ -40,6 +42,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 export default async function ProductPage({ params }: ProductPageProps) {
   const { id } = await params
   const product = getProductById(id)
+  const seoContent = getProductSeo(id)
 
   if (!product || product.id.startsWith('test-')) {
     return (
@@ -59,6 +62,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   return (
     <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
       <ProductStructuredData product={product} />
+      {seoContent?.faq?.length ? <FaqStructuredData items={seoContent.faq} /> : null}
       <BreadcrumbStructuredData
         items={[
           { name: 'Ana Sayfa', url: 'https://ekartvizit.tr' },
@@ -68,6 +72,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       />
       <Header />
       <ProductContent product={product} />
+      <ProductSeoContent product={product} />
       <Footer />
     </div>
   )

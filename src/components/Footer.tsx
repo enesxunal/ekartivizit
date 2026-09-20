@@ -49,7 +49,7 @@ export default function Footer() {
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
             {columns.map((column) => (
               <div key={column.title}>
-                <h3 className="mb-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/45">{column.title}</h3>
+                <h3 className="mb-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/70">{column.title}</h3>
                 <ul className="space-y-3">
                   {column.links.map(([label, href]) => (
                     <li key={href}>
@@ -78,7 +78,7 @@ export default function Footer() {
           </Link>
         </div>
 
-        <div className="flex flex-col gap-3 border-t border-white/12 pt-6 text-xs text-white/38 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 border-t border-white/12 pt-6 text-xs text-white/65 sm:flex-row sm:items-center sm:justify-between">
           <span>© {new Date().getFullYear()} E-Kartvizit. Tüm hakları saklıdır.</span>
           <span>Online baskı sipariş platformu</span>
         </div>

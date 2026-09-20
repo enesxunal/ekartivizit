@@ -333,23 +333,23 @@ export default function OdemePage() {
     <div className="min-h-screen bg-[#f7f8f5] text-[#171a16]">
       <Header />
 
-      <main className="site-container py-8 sm:py-12 lg:py-14">
-        <div className="mb-8 border-b border-[#dfe3dc] pb-7">
-          <button type="button" onClick={() => router.push('/sepet')} className="mb-5 inline-flex items-center gap-2 text-xs font-semibold text-[#6d746a] hover:text-[#171a16]">
+      <main className="site-container py-5 sm:py-10 lg:py-14">
+        <div className="mb-5 border-b border-[#dfe3dc] pb-5 sm:mb-8 sm:pb-7">
+          <button type="button" onClick={() => router.push('/sepet')} className="mb-3 inline-flex items-center gap-2 text-xs font-semibold text-[#6d746a] hover:text-[#171a16] sm:mb-5">
             <ArrowLeft className="size-4" /> Sepete dön
           </button>
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <p className="mb-3 text-xs font-semibold uppercase tracking-[.16em] text-[#579d32]">Sipariş</p>
-              <h1 className="text-[clamp(2.35rem,4.5vw,4.2rem)] font-semibold leading-[.9] tracking-[-.065em]">Teslimat ve ödeme</h1>
-              <p className="mt-3 text-sm text-[#777d74]">Bilgilerinizi tamamlayın, ödeme yöntemini seçin ve siparişi oluşturun.</p>
+              <p className="mb-2 text-[10px] font-semibold uppercase tracking-[.14em] text-[#579d32] sm:mb-3 sm:text-xs sm:tracking-[.16em]">Sipariş</p>
+              <h1 className="text-[clamp(2rem,8vw,4.2rem)] font-semibold leading-[.94] tracking-[-.055em]">Teslimat ve ödeme</h1>
+              <p className="mt-2 text-xs leading-5 text-[#777d74] sm:mt-3 sm:text-sm">Bilgilerinizi tamamlayın, ödeme yöntemini seçin ve siparişi oluşturun.</p>
             </div>
 
-            <div className="flex items-center gap-2 text-[11px] font-semibold text-[#899087]">
+            <div className="flex items-center gap-1 text-[10px] font-semibold text-[#899087] sm:gap-2 sm:text-[11px]">
               {[['01','Sepet', true], ['02','Teslimat', true], ['03','Ödeme', true], ['04','Onay', false]].map(([no,label,active], index) => (
                 <div key={String(no)} className="flex items-center gap-2">
                   <span className={`flex size-7 items-center justify-center rounded-full border ${active ? 'border-[#171a16] bg-[#171a16] text-white' : 'border-[#d5d9d2] bg-white text-[#949a91]'}`}>{no}</span>
-                  <span className={active ? 'text-[#31362f]' : ''}>{String(label)}</span>
+                  <span className={`${active ? 'text-[#31362f]' : ''} hidden sm:inline`}>{String(label)}</span>
                   {index < 3 && <ChevronRight className="size-3.5 text-[#b2b7af]" />}
                 </div>
               ))}
@@ -357,8 +357,8 @@ export default function OdemePage() {
           </div>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-12">
-          <div className="space-y-5">
+        <div className="grid gap-5 sm:gap-8 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-12">
+          <div className="space-y-4 sm:space-y-5">
             <CheckoutSection number="01" icon={User} title="İletişim bilgileri" description="Sipariş ve teslimat güncellemelerini bu bilgiler üzerinden paylaşacağız.">
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field label="Ad Soyad" required><Input value={customerInfo.name} onChange={(e) => handleInputChange('name', e.target.value)} placeholder="Adınız ve soyadınız" /></Field>
@@ -479,9 +479,9 @@ export default function OdemePage() {
 
 function CheckoutSection({ number, icon: Icon, title, description, children }: { number: string; icon: typeof User; title: string; description: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-[20px] border border-[#dfe3dc] bg-white p-5 sm:p-6">
-      <div className="mb-6 flex items-start gap-4 border-b border-[#eceee9] pb-5">
-        <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#171a16] text-xs font-semibold text-white">{number}</span>
+    <section className="rounded-[16px] border border-[#dfe3dc] bg-white p-4 sm:rounded-[20px] sm:p-6">
+      <div className="mb-4 flex items-start gap-3 border-b border-[#eceee9] pb-4 sm:mb-6 sm:gap-4 sm:pb-5">
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#171a16] text-[11px] font-semibold text-white sm:size-9 sm:text-xs">{number}</span>
         <div className="flex-1"><div className="flex items-center gap-2"><Icon className="size-4 text-[#579d32]" /><h2 className="text-base font-semibold tracking-[-.02em]">{title}</h2></div><p className="mt-1 text-xs leading-5 text-[#7d837a]">{description}</p></div>
       </div>
       {children}

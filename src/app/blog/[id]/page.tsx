@@ -1,239 +1,184 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, Calendar, Clock, User, Share2, Facebook, Twitter, Linkedin } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Calendar, Clock } from 'lucide-react'
 import { getBlogPost, getBlogPosts, getBlogCategories } from '@/data/blog'
+import { getProductById } from '@/data/products'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import { BlogPostingStructuredData, BreadcrumbStructuredData } from '@/components/StructuredData'
 
 interface BlogPostPageProps {
   params: Promise<{ id: string }>
 }
 
+const BASE_URL = 'https://ekartvizit.tr'
+
+export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
+  const { id } = await params
+  const post = getBlogPost(id)
+  if (!post) return { title: 'Yazı Bulunamadı', robots: { index: false, follow: false } }
+
+  const url = `${BASE_URL}/blog/${post.id}`
+  const image = post.image.startsWith('http') ? post.image : `${BASE_URL}${post.image}`
+
+  return {
+    title: post.title,
+    description: post.excerpt,
+    alternates: { canonical: url },
+    openGraph: {
+      type: 'article',
+      locale: 'tr_TR',
+      url,
+      title: post.title,
+      description: post.excerpt,
+      publishedTime: post.date,
+      authors: ['E-Kartvizit'],
+      tags: post.tags,
+      images: [{ url: image, alt: post.title }],
+    },
+  }
+}
+
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { id } = await params
   const post = getBlogPost(id)
-  
-  if (!post) {
-    notFound()
-  }
+  if (!post) notFound()
 
-  const allPosts = getBlogPosts()
   const categories = getBlogCategories()
-  const relatedPosts = allPosts
-    .filter(p => p.id !== post.id && p.category === post.category)
+  const categoryName = categories.find((category) => category.id === post.category)?.name
+  const relatedPosts = getBlogPosts()
+    .filter((item) => item.id !== post.id && item.category === post.category)
     .slice(0, 3)
+  const relatedProducts = (post.relatedProducts || [])
+    .map((productId) => getProductById(productId))
+    .filter((product): product is NonNullable<typeof product> => Boolean(product))
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return date.toLocaleDateString('tr-TR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })
-  }
-
-  const categoryName = categories.find(cat => cat.id === post.category)?.name
+  const url = `${BASE_URL}/blog/${post.id}`
+  const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString('tr-TR', {
+    year: 'numeric', month: 'long', day: 'numeric',
+  })
 
   return (
-    <>
+    <div className="min-h-screen bg-[#f7f8f5] text-[#171a16]">
+      <BlogPostingStructuredData
+        title={post.title}
+        description={post.excerpt}
+        url={url}
+        image={post.image}
+        datePublished={post.date}
+      />
+      <BreadcrumbStructuredData items={[
+        { name: 'Ana Sayfa', url: BASE_URL },
+        { name: 'Blog', url: `${BASE_URL}/blog` },
+        { name: post.title, url },
+      ]} />
+
       <Header />
-      <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
-      {/* Header */}
-      <section className="bg-white border-b">
-        <div className="site-container py-6">
-          <Link href="/blog">
-            <Button variant="ghost" className="mb-4">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Blog&apos;a Dön
-            </Button>
-          </Link>
-          
-          <div className="max-w-4xl">
-            <div className="flex items-center gap-2 mb-4">
-              <Badge className="bg-[#59af05] text-white">
-                {categoryName}
-              </Badge>
-              <div className="flex items-center text-sm text-gray-500">
-                <Clock className="h-4 w-4 mr-1" />
-                {post.readTime} dakika okuma
-              </div>
-            </div>
-            
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              {post.title}
-            </h1>
-            
-            <div className="flex items-center justify-between">
-              <div className="flex items-center text-gray-600">
-                <User className="h-5 w-5 mr-2" />
-                <span className="mr-4">{post.author}</span>
-                <Calendar className="h-5 w-5 mr-2" />
-                <span>{formatDate(post.date)}</span>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                <Share2 className="h-5 w-5 text-gray-500" />
-                <Button variant="ghost" size="sm">
-                  <Facebook className="h-4 w-4" />
-                </Button>
-                <Button variant="ghost" size="sm">
-                  <Twitter className="h-4 w-4" />
-                </Button>
-                <Button variant="ghost" size="sm">
-                  <Linkedin className="h-4 w-4" />
-                </Button>
+      <article>
+        <header className="border-b border-[#e4e7e1] bg-white">
+          <div className="site-container max-w-5xl py-8 sm:py-10 lg:py-12">
+            <Link href="/blog" className="inline-flex items-center gap-2 text-xs font-semibold text-[#697067] hover:text-[#171a16]">
+              <ArrowLeft className="size-4" /> Blog&apos;a dön
+            </Link>
+            <div className="mt-6 max-w-4xl">
+              <p className="site-kicker mb-3">{categoryName}</p>
+              <h1 className="text-[clamp(2.35rem,4.5vw,4.3rem)] font-semibold leading-[.93] tracking-[-.06em]">{post.title}</h1>
+              <p className="mt-5 max-w-3xl text-base leading-7 text-[#687067]">{post.excerpt}</p>
+              <div className="mt-6 flex flex-wrap items-center gap-4 text-xs text-[#838980]">
+                <span className="inline-flex items-center gap-1.5"><Calendar className="size-3.5" />{formatDate(post.date)}</span>
+                <span className="inline-flex items-center gap-1.5"><Clock className="size-3.5" />{post.readTime} dk okuma</span>
+                <span>E-Kartvizit Editör</span>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </header>
 
-      <div className="site-container py-8 sm:py-10 lg:py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-3">
-            <Card>
-              <div className="aspect-video bg-gradient-to-br from-[#59af05] to-[#4a9321] rounded-t-lg flex items-center justify-center">
-                <span className="text-white text-2xl font-bold">
-                  {post.title.split(' ').slice(0, 3).join(' ')}
-                </span>
+        <div className="site-container max-w-6xl py-8 sm:py-10 lg:py-12">
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-12">
+            <div className="rounded-[20px] border border-[#e1e4de] bg-white p-5 sm:p-8 lg:p-10">
+              <div className="article-content">
+                {renderMarkdown(post.content)}
               </div>
-              
-              <CardContent className="p-8">
-                <div className="prose prose-lg max-w-none">
-                  {post.content.split('\n').map((paragraph, index) => {
-                    if (paragraph.startsWith('# ')) {
-                      return (
-                        <h1 key={index} className="text-3xl font-bold text-gray-900 mt-8 mb-4">
-                          {paragraph.replace('# ', '')}
-                        </h1>
-                      )
-                    }
-                    if (paragraph.startsWith('## ')) {
-                      return (
-                        <h2 key={index} className="text-2xl font-bold text-gray-900 mt-6 mb-3">
-                          {paragraph.replace('## ', '')}
-                        </h2>
-                      )
-                    }
-                    if (paragraph.startsWith('### ')) {
-                      return (
-                        <h3 key={index} className="text-xl font-bold text-gray-900 mt-4 mb-2">
-                          {paragraph.replace('### ', '')}
-                        </h3>
-                      )
-                    }
-                    if (paragraph.startsWith('- ')) {
-                      return (
-                        <li key={index} className="text-gray-700 mb-1">
-                          {paragraph.replace('- ', '')}
-                        </li>
-                      )
-                    }
-                    if (paragraph.startsWith('**') && paragraph.endsWith('**')) {
-                      return (
-                        <p key={index} className="font-bold text-gray-900 mt-4 mb-2">
-                          {paragraph.replace(/\*\*/g, '')}
-                        </p>
-                      )
-                    }
-                    if (paragraph.trim() === '') {
-                      return <br key={index} />
-                    }
-                    return (
-                      <p key={index} className="text-gray-700 mb-4 leading-relaxed">
-                        {paragraph}
-                      </p>
-                    )
-                  })}
-                </div>
-                
-                {/* Tags */}
-                <div className="mt-8 pt-6 border-t">
-                  <h4 className="font-semibold text-gray-900 mb-3">Etiketler:</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {post.tags.map((tag) => (
-                      <Badge key={tag} variant="secondary">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
 
-          {/* Sidebar */}
-          <div className="lg:col-span-1">
-            {/* Related Posts */}
-            {relatedPosts.length > 0 && (
-              <Card>
-                <CardContent className="p-6">
-                  <h3 className="font-bold text-lg mb-4 text-[#579d32]">
-                    İlgili Yazılar
-                  </h3>
-                  <div className="space-y-4">
-                    {relatedPosts.map((relatedPost) => (
-                      <Link key={relatedPost.id} href={`/blog/${relatedPost.id}`}>
-                        <div className="border rounded-2xl p-3 hover:bg-gray-50 transition-colors">
-                          <h4 className="font-semibold text-sm mb-1 line-clamp-2">
-                            {relatedPost.title}
-                          </h4>
-                          <p className="text-xs text-gray-500">
-                            {formatDate(relatedPost.date)}
-                          </p>
-                        </div>
+              <div className="mt-10 border-t border-[#e6e9e3] pt-6">
+                <p className="text-xs font-semibold uppercase tracking-[.12em] text-[#626960]">Etiketler</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {post.tags.map((tag) => <span key={tag} className="rounded-full bg-[#f1f3ee] px-3 py-1.5 text-xs font-medium text-[#626960]">{tag}</span>)}
+                </div>
+              </div>
+            </div>
+
+            <aside className="space-y-4 lg:sticky lg:top-[82px] lg:h-fit">
+              {relatedProducts.length > 0 && (
+                <section className="rounded-[18px] border border-[#e1e4de] bg-white p-5">
+                  <p className="text-[10px] font-bold uppercase tracking-[.14em] text-[#326a1f]">İlgili ürünler</p>
+                  <div className="mt-3 divide-y divide-[#edf0ea]">
+                    {relatedProducts.map((product) => (
+                      <Link key={product.id} href={product.href} className="flex items-center justify-between gap-3 py-3 text-sm font-semibold text-[#31362f] hover:text-[#326a1f]">
+                        <span>{product.name}</span><ArrowRight className="size-3.5 shrink-0" />
                       </Link>
                     ))}
                   </div>
-                </CardContent>
-              </Card>
-            )}
+                </section>
+              )}
 
-            {/* Newsletter */}
-            <Card className="mt-6">
-              <CardContent className="p-6">
-                <h3 className="font-bold text-lg mb-3 text-[#579d32]">
-                  Bülten Aboneliği
-                </h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  Yeni blog yazılarımızdan haberdar olmak için e-posta adresinizi bırakın.
-                </p>
-                <div className="space-y-3">
-                  <input
-                    type="email"
-                    placeholder="E-posta adresiniz"
-                    className="w-full px-3 py-2 border rounded-md text-sm"
-                  />
-                  <Button className="w-full rounded-full bg-[#171a16] hover:bg-black">
-                    Abone Ol
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Contact */}
-            <Card className="mt-6">
-              <CardContent className="p-6">
-                <h3 className="font-bold text-lg mb-3 text-[#579d32]">
-                  İletişim
-                </h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  Sorularınız için bizimle iletişime geçin.
-                </p>
-                <Button variant="outline" className="w-full">
-                  Bize Yazın
-                </Button>
-              </CardContent>
-            </Card>
+              {relatedPosts.length > 0 && (
+                <section className="rounded-[18px] border border-[#e1e4de] bg-white p-5">
+                  <p className="text-[10px] font-bold uppercase tracking-[.14em] text-[#626960]">İlgili rehberler</p>
+                  <div className="mt-3 space-y-3">
+                    {relatedPosts.map((item) => (
+                      <Link key={item.id} href={`/blog/${item.id}`} className="block rounded-[12px] bg-[#f7f8f5] p-3 transition hover:bg-[#eef5e9]">
+                        <p className="text-xs font-semibold leading-5 text-[#31362f]">{item.title}</p>
+                        <p className="mt-1 text-[10px] text-[#626960]">{item.readTime} dk okuma</p>
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+              )}
+            </aside>
           </div>
         </div>
-      </div>
-      </div>
+      </article>
       <Footer />
-    </>
+    </div>
   )
-} 
+}
+
+function renderMarkdown(content: string) {
+  const lines = content.trim().split('\n')
+  const elements: React.ReactNode[] = []
+  let listItems: string[] = []
+
+  const flushList = () => {
+    if (!listItems.length) return
+    elements.push(
+      <ul key={`list-${elements.length}`} className="my-5 space-y-2 pl-1">
+        {listItems.map((item) => <li key={item} className="flex gap-2 text-sm leading-7 text-[#5f665d]"><span className="mt-[11px] size-1.5 shrink-0 rounded-full bg-[#579d32]" />{item}</li>)}
+      </ul>,
+    )
+    listItems = []
+  }
+
+  lines.forEach((line, index) => {
+    const trimmed = line.trim()
+    if (trimmed.startsWith('- ')) {
+      listItems.push(trimmed.slice(2))
+      return
+    }
+    flushList()
+    if (!trimmed) return
+    if (trimmed.startsWith('# ')) return
+    if (trimmed.startsWith('## ')) {
+      elements.push(<h2 key={index} className="mb-3 mt-8 text-2xl font-semibold tracking-[-.035em] text-[#171a16] first:mt-0">{trimmed.slice(3)}</h2>)
+      return
+    }
+    if (trimmed.startsWith('### ')) {
+      elements.push(<h3 key={index} className="mb-2 mt-6 text-lg font-semibold tracking-[-.02em] text-[#171a16]">{trimmed.slice(4)}</h3>)
+      return
+    }
+    elements.push(<p key={index} className="mb-4 text-[15px] leading-7 text-[#5f665d]">{trimmed}</p>)
+  })
+  flushList()
+  return elements
+}

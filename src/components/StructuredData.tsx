@@ -89,6 +89,66 @@ export function ProductStructuredData({ product }: { product: any }) {
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
 }
 
+export function FaqStructuredData({ items }: { items: Array<{ question: string; answer: string }> }) {
+  if (!items.length) return null
+
+  const data = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  }
+
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
+}
+
+export function BlogPostingStructuredData({
+  title,
+  description,
+  url,
+  image,
+  datePublished,
+  author = 'E-Kartvizit Editör',
+}: {
+  title: string
+  description: string
+  url: string
+  image: string
+  datePublished: string
+  author?: string
+}) {
+  const data = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: title,
+    description,
+    url,
+    image: image.startsWith('http') ? image : `${BASE_URL}${image}`,
+    datePublished,
+    dateModified: datePublished,
+    inLanguage: 'tr-TR',
+    author: {
+      '@type': 'Organization',
+      name: author,
+    },
+    publisher: {
+      '@id': `${BASE_URL}/#organization`,
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': url,
+    },
+  }
+
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
+}
+
 export function BreadcrumbStructuredData({ items }: { items: Array<{ name: string; url: string }> }) {
   const data = {
     '@context': 'https://schema.org',

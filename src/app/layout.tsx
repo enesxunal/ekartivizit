@@ -48,8 +48,8 @@ export const metadata: Metadata = {
     telephone: false,
   },
   metadataBase: new URL('https://ekartvizit.tr'),
-  alternates: {
-    canonical: 'https://ekartvizit.tr',
+  verification: {
+    google: 'z2Pwim5HU6RzkrpWjCg7k6zoobEpp_ShmleNBGgp-XY',
   },
   openGraph: {
     type: "website",
