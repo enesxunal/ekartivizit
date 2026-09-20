@@ -22,7 +22,7 @@ export default function TumUrunlerPage() {
         title="Baskı ürünleri, sade bir katalogda."
         description="Kurumsal evraktan reklam materyaline ve promosyon ürünlerine kadar tüm seçenekleri tek yerde karşılaştırın."
         actionHref="/tasarim"
-        actionLabel="Hazır tasarımını yükle"
+        actionLabel="Hızlı Tasarım"
       />
 
       <main className="site-container py-8 sm:py-10 lg:py-12">

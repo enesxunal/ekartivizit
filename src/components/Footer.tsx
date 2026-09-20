@@ -16,7 +16,7 @@ const columns = [
   {
     title: 'Sipariş',
     links: [
-      ['Tasarımını Yükle', '/tasarim'],
+      ['Hızlı Tasarım', '/tasarim'],
       ['Sepet', '/sepet'],
       ['Sipariş Takip', '/siparis-takip'],
       ['Hesabım', '/hesabim'],

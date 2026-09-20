@@ -66,7 +66,7 @@ export default function Header() {
 
         <div className="flex items-center gap-1.5">
           <Link href="/siparis-takip" className="hidden px-2 text-[12px] font-semibold text-[#666d63] transition hover:text-[#171a16] xl:block">Sipariş Takip</Link>
-          <Link href="/tasarim" className="hidden px-2 text-[12px] font-semibold text-[#326a1f] xl:block">Tasarımını Yükle</Link>
+          <Link href="/tasarim" className="hidden px-2 text-[12px] font-semibold text-[#326a1f] xl:block">Hızlı Tasarım</Link>
           <Link href="/tum-urunler" aria-label="Ürün ara" className="hidden size-9 items-center justify-center rounded-[9px] border border-[#e1e4de] text-[#50564e] hover:bg-[#f5f6f3] sm:flex"><Search className="size-4" /></Link>
           <Link href="/hesabim" aria-label="Hesabım" className="hidden size-9 items-center justify-center rounded-[9px] border border-[#e1e4de] text-[#50564e] hover:bg-[#f5f6f3] sm:flex"><User className="size-4" /></Link>
           <Link href="/sepet" aria-label={count > 0 ? `Sepet, ${count} ürün` : 'Sepet'} className="flex h-9 items-center gap-2 rounded-[9px] bg-[#171a16] px-3.5 text-[13px] font-semibold text-white">
@@ -121,7 +121,7 @@ export default function Header() {
             )}
 
             <Link href="/siparis-takip" onClick={() => setOpen(false)} className="block border-b border-[#eef0ec] py-3 text-sm font-semibold">Sipariş Takip</Link>
-            <Link href="/tasarim" onClick={() => setOpen(false)} className="block py-3 text-sm font-semibold text-[#326a1f]">Tasarımını Yükle</Link>
+            <Link href="/tasarim" onClick={() => setOpen(false)} className="block py-3 text-sm font-semibold text-[#326a1f]">Hızlı Tasarım</Link>
           </nav>
         </div>
       )}

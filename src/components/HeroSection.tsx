@@ -15,7 +15,7 @@ export default function HeroSection() {
           <p className="mt-4 max-w-xl text-[15px] leading-6 text-[#666d63] sm:text-lg">Kartvizitten broşüre, etiketten promosyon ürünlerine kadar baskı ürünlerini seçin, özelliklerini belirleyin ve online sipariş edin.</p>
           <div className="mt-6 flex flex-col gap-2.5 sm:flex-row">
             <Link href="/tum-urunler" className="inline-flex h-12 items-center justify-center gap-2 rounded-[12px] bg-[#171a16] px-6 text-sm font-semibold text-white">Ürünleri incele <ArrowRight className="size-4" /></Link>
-            <Link href="/tasarim" className="inline-flex h-12 items-center justify-center rounded-[12px] border border-[#dfe3dc] bg-white px-6 text-sm font-semibold text-[#343a32]">Tasarımını yükle</Link>
+            <Link href="/tasarim" className="inline-flex h-12 items-center justify-center rounded-[12px] border border-[#dfe3dc] bg-white px-6 text-sm font-semibold text-[#343a32]">Hızlı Tasarım</Link>
           </div>
           <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-xs text-[#6f756c]">{['KDV dahil fiyatlar','Dosya yükleme','Sipariş takibi'].map((item) => <span key={item} className="inline-flex items-center gap-2"><Check className="size-3.5 text-[#579d32]" />{item}</span>)}</div>
         </div>
