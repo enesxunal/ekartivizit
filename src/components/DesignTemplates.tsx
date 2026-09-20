@@ -38,7 +38,7 @@ export default function DesignTemplates() {
             Hazır Tasarım Şablonları
           </h2>
           <p className="text-lg text-gray-600">
-            Canva ile özgürleştirdiğimiz profesyonel şablonlarımızı keşfedin.
+            Hazır tasarım şablonlarını ve yaklaşan AI tasarım modunu keşfedin.
           </p>
         </div>
 

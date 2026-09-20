@@ -120,7 +120,7 @@ export default function AdminTasarimlarPage() {
             Müşteri Tasarımları
           </h1>
           <p className="text-gray-600">
-            Canva ile oluşturulmuş müşteri tasarımlarını görüntüleyin ve indirin
+            Siparişlere bağlı müşteri tasarım dosyalarını görüntüleyin ve indirin
           </p>
         </div>
 

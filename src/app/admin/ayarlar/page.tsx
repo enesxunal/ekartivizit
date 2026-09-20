@@ -47,10 +47,8 @@ export default function SettingsPage() {
     secondaryColor: '#10B981',
     logoUrl: '',
     
-    // Canva Ayarları
-    canvaApiKey: '',
-    canvaApiSecret: '',
-    canvaEnabled: false
+    // AI Tasarım Ayarları
+    aiDesignEnabled: false
   })
 
   const handleSave = () => {
@@ -468,61 +466,30 @@ export default function SettingsPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <div>
-                    <h4 className="font-medium mb-4">Canva Entegrasyonu</h4>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h5 className="font-medium">Canva Entegrasyonu Aktif</h5>
-                          <p className="text-sm text-gray-600">Canva ile tasarım editörünü aktifleştir</p>
-                        </div>
-                        <label className="relative inline-flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={settings.canvaEnabled}
-                            onChange={(e) => setSettings({...settings, canvaEnabled: e.target.checked})}
-                            className="sr-only peer"
-                          />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                        </label>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between gap-5">
+                      <div>
+                        <h4 className="font-medium">AI Tasarım Modu</h4>
+                        <p className="mt-1 text-sm text-gray-600">Boş mockup + müşteri bilgileri ile otomatik tasarım üretimi için planlanan mod.</p>
                       </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Canva API Key
-                          </label>
-                          <input
-                            type="password"
-                            value={settings.canvaApiKey}
-                            onChange={(e) => setSettings({...settings, canvaApiKey: e.target.value})}
-                            placeholder="Canva API anahtarınızı girin"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Canva API Secret
-                          </label>
-                          <input
-                            type="password"
-                            value={settings.canvaApiSecret}
-                            onChange={(e) => setSettings({...settings, canvaApiSecret: e.target.value})}
-                            placeholder="Canva API secret'ınızı girin"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="bg-blue-50 p-4 rounded-lg">
-                        <h6 className="font-medium text-blue-900 mb-2">Canva Entegrasyonu Hakkında</h6>
-                        <p className="text-sm text-blue-800">
-                          Canva entegrasyonu müşterilerinizin siteden ayrılmadan tasarım yapabilmelerini sağlar. 
-                          API bilgilerinizi Canva Developer portalından alabilirsiniz.
-                        </p>
-                      </div>
+                      <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">Yakında</span>
                     </div>
+                    <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+                      <p className="text-sm font-medium text-gray-900">Planlanan akış</p>
+                      <ol className="mt-2 space-y-1 text-sm text-gray-600">
+                        <li>1. Ürüne ait boş mockup seçilir.</li>
+                        <li>2. Logo, firma ve iletişim bilgileri alınır.</li>
+                        <li>3. AI birden fazla tasarım alternatifi üretir.</li>
+                        <li>4. Onaylanan tasarım siparişe bağlanır.</li>
+                      </ol>
+                    </div>
+                    <label className="flex items-center justify-between rounded-lg border border-gray-200 p-4 opacity-60">
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">AI tasarımı aktifleştir</p>
+                        <p className="text-xs text-gray-500">Backend/görsel üretim entegrasyonu tamamlandığında açılacak.</p>
+                      </div>
+                      <input type="checkbox" checked={settings.aiDesignEnabled} onChange={(e) => setSettings({...settings, aiDesignEnabled: e.target.checked})} disabled className="size-4" />
+                    </label>
                   </div>
                 </CardContent>
               </Card>

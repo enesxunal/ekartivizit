@@ -1,56 +1,30 @@
 'use client'
 
-import React, { useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import Link from 'next/link'
+import { useParams } from 'next/navigation'
+import { ArrowLeft, Image as ImageIcon, Sparkles, UserRound, WandSparkles } from 'lucide-react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import SimpleCanvaEditor from '@/components/SimpleCanvaEditor'
-import { templateCategories } from '@/lib/canva'
-import { ArrowLeft, Edit3, Palette, Plus } from 'lucide-react'
-// import Link from 'next/link'
 
-type CategoryType = 'kartvizit' | 'brosur' | 'magnet'
+const categories = {
+  kartvizit: { name: 'Kartvizit', productHref: '/urun/kartvizit', mockup: 'Boş kartvizit mockup' },
+  brosur: { name: 'Broşür', productHref: '/urun/brosur', mockup: 'Boş broşür mockup' },
+  magnet: { name: 'Magnet', productHref: '/urun/magnet', mockup: 'Boş magnet mockup' },
+} as const
 
-export default function TasarimPage() {
+type CategoryKey = keyof typeof categories
+
+export default function DesignCategoryPage() {
   const params = useParams()
-  const router = useRouter()
-  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null)
-  const [showEditor, setShowEditor] = useState(false)
+  const category = categories[params.category as CategoryKey]
 
-  const category = params.category as CategoryType
-  const categoryData = templateCategories[category]
-
-  if (!categoryData) {
+  if (!category) {
     return (
       <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
         <Header />
-        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <Card className="text-center p-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Kategori Bulunamadı</h1>
-            <p className="text-gray-600 mb-6">Aradığınız kategori bulunamadı.</p>
-            <Button onClick={() => router.push('/')} className="rounded-full bg-[#171a16] hover:bg-black">
-              Ana Sayfaya Dön
-            </Button>
-          </Card>
-        </main>
-        <Footer />
-      </div>
-    )
-  }
-
-  // Tasarım editörü gösteriliyorsa
-  if (showEditor) {
-    return (
-      <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
-        <Header />
-        <main className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                     <SimpleCanvaEditor
-             productCategory={category}
-             productId={`${category}-custom`}
-             templateId={selectedTemplate || undefined}
-           />
+        <main className="site-container py-16 text-center">
+          <h1 className="text-3xl font-semibold tracking-[-.04em]">Tasarım alanı bulunamadı.</h1>
+          <Link href="/tasarim" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#326a1f]"><ArrowLeft className="size-4" /> Tasarım merkezine dön</Link>
         </main>
         <Footer />
       </div>
@@ -60,159 +34,48 @@ export default function TasarimPage() {
   return (
     <div className="min-h-screen bg-[#f4f4ef] text-[#171a16]">
       <Header />
-      
-      <main className="site-container py-8 sm:py-10 lg:py-12">
-        {/* Başlık ve Geri Dön */}
-        <div className="mb-8">
-          <div className="flex items-center gap-4 mb-4">
-            <Button
-              variant="outline"
-              onClick={() => router.back()}
-              className="flex items-center gap-2"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Geri Dön
-            </Button>
-          </div>
-          
-          <div className="text-center">
-            <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              {categoryData.name} Tasarım Şablonları
-            </h1>
-            <p className="text-lg text-gray-600 mb-6">
-              Hazır şablonlardan birini seçin veya sıfırdan tasarlayın
-            </p>
-            
-            {/* Boyut Bilgisi */}
-            <div className="inline-block bg-blue-50 px-4 py-2 rounded-2xl text-sm text-blue-800">
-              📐 Standart Boyut: {categoryData.dimensions.width} x {categoryData.dimensions.height} piksel
+      <main>
+        <section className="border-b border-[#e1e4de] bg-white">
+          <div className="site-container py-8 sm:py-10 lg:py-12">
+            <Link href="/tasarim" className="inline-flex items-center gap-2 text-xs font-semibold text-[#5f665d]"><ArrowLeft className="size-4" /> Tasarım merkezine dön</Link>
+            <div className="mt-6 grid gap-7 lg:grid-cols-[1fr_360px] lg:items-end">
+              <div>
+                <p className="site-kicker mb-3">AI Tasarım · Yakında</p>
+                <h1 className="max-w-4xl text-[clamp(2.4rem,5vw,4.8rem)] font-semibold leading-[.92] tracking-[-.06em]">{category.name} tasarımını bilgilerinize göre AI hazırlayacak.</h1>
+                <p className="mt-4 max-w-2xl text-sm leading-7 text-[#5f665d] sm:text-base">Yeni sistemde boş ürün mockup&apos;ı temel alınacak; müşteri bilgileri ve marka içeriği AI tarafından tasarıma yerleştirilecek.</p>
+              </div>
+              <Link href={category.productHref} className="inline-flex h-11 items-center justify-center rounded-[10px] bg-[#171a16] px-5 text-sm font-semibold text-white">Şimdilik ürüne dön</Link>
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Yeni Tasarım Oluştur Butonu */}
-        <div className="mb-8">
-          <Card className="bg-[#171a16] text-white rounded-[28px] border border-white/10">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-xl font-semibold mb-2">Sıfırdan Tasarla</h3>
-                  <p className="text-green-100">
-                    Boş bir sayfa ile kendi tasarımınızı oluşturun
-                  </p>
-                </div>
-                <Button
-                  onClick={() => {
-                    setSelectedTemplate(null)
-                    setShowEditor(true)
-                  }}
-                  variant="secondary"
-                  size="lg"
-                  className="bg-white text-[#579d32] hover:bg-gray-100"
-                >
-                  <Plus className="w-5 h-5 mr-2" />
-                  Yeni Tasarım
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Şablon Seçenekleri */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-            <Palette className="w-6 h-6 text-[#579d32]" />
-            Hazır Şablonlar
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {categoryData.templates.map((template) => (
-              <Card key={template.id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
-                <CardContent className="p-0">
-                  {/* Şablon Önizleme */}
-                  <div className="relative h-48 bg-gray-100 flex items-center justify-center">
-                    <div className="text-center p-4">
-                      <div className="w-16 h-10 bg-gradient-to-br from-[#59af05] to-[#4a9321] rounded-2xl mb-3 mx-auto opacity-80"></div>
-                      <div className="text-sm text-gray-600">{template.name}</div>
-                    </div>
-                    
-                    {/* Hover Overlay */}
-                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <Button
-                        onClick={() => {
-                          setSelectedTemplate(template.id)
-                          setShowEditor(true)
-                        }}
-                        className="rounded-full bg-[#171a16] hover:bg-black"
-                      >
-                        <Edit3 className="w-4 h-4 mr-2" />
-                        Düzenle
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  {/* Şablon Bilgileri */}
-                  <div className="p-4">
-                    <h3 className="font-semibold text-gray-900 mb-2">{template.name}</h3>
-                    <p className="text-sm text-gray-600 mb-4">
-                      Profesyonel {categoryData.name.toLowerCase()} şablonu
-                    </p>
-                    <Button
-                      onClick={() => {
-                        setSelectedTemplate(template.id)
-                        setShowEditor(true)
-                      }}
-                      className="w-full rounded-full bg-[#171a16] hover:bg-black"
-                      size="sm"
-                    >
-                      <Edit3 className="w-4 h-4 mr-2" />
-                      Bu Şablonu Kullan
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+        <section className="site-container py-8 sm:py-10 lg:py-12">
+          <div className="grid gap-4 md:grid-cols-3">
+            {[
+              [ImageIcon, '1. Boş mockup', `${category.mockup} sisteme ürün şablonu olarak tanımlanacak.`],
+              [UserRound, '2. Müşteri bilgileri', 'Logo, firma adı, iletişim bilgileri, renk tercihleri ve istenen içerik alınacak.'],
+              [WandSparkles, '3. AI tasarım', 'AI, mockup yapısını bozmadan bilgileri yerleştirip tasarım alternatifleri üretecek.'],
+            ].map(([Icon, title, text]) => {
+              const StepIcon = Icon as typeof Sparkles
+              return (
+                <article key={String(title)} className="rounded-[18px] border border-[#e1e4de] bg-white p-5 sm:p-6">
+                  <StepIcon className="size-5 text-[#326a1f]" />
+                  <h2 className="mt-7 text-lg font-semibold tracking-[-.025em]">{String(title)}</h2>
+                  <p className="mt-2 text-sm leading-6 text-[#5f665d]">{String(text)}</p>
+                </article>
+              )
+            })}
           </div>
-        </div>
 
-        {/* Bilgi Kartları */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">🎨 Kolay Düzenleme</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600 text-sm">
-                Canva&apos;nın sürükle-bırak editörü ile kolayca tasarım yapın
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">📄 Baskıya Hazır</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600 text-sm">
-                Tüm tasarımlar 300 DPI çözünürlükte PDF olarak hazırlanır
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">🚀 Hızlı Teslimat</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600 text-sm">
-                Tasarımınızı onayladıktan sonra 4-5 iş günü içinde kargoya
-              </p>
-            </CardContent>
-          </Card>
-        </div>
+          <div className="mt-6 rounded-[20px] border border-[#dfe3dc] bg-[#171a16] p-6 text-white sm:p-8">
+            <p className="text-[10px] font-bold uppercase tracking-[.14em] text-[#a9e77b]">Planlanan giriş alanları</p>
+            <div className="mt-4 flex flex-wrap gap-2 text-xs text-white/80">
+              {['Logo', 'Firma adı', 'Ad soyad', 'Telefon', 'E-posta', 'Web sitesi', 'Adres', 'Sosyal medya', 'Slogan', 'Marka renkleri', 'Ek not'].map((item) => <span key={item} className="rounded-full border border-white/15 px-3 py-1.5">{item}</span>)}
+            </div>
+          </div>
+        </section>
       </main>
-
       <Footer />
     </div>
   )
-} 
+}
