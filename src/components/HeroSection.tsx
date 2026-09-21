@@ -8,7 +8,7 @@ export default function HeroSection() {
 
   return (
     <section className="border-b border-[#e7eae4] bg-white">
-      <div className="site-container grid gap-8 py-8 sm:py-10 lg:grid-cols-[.92fr_1.08fr] lg:items-start lg:gap-12 lg:py-10">
+      <div className="site-container grid gap-8 py-8 sm:py-10 lg:grid-cols-[.92fr_1.08fr] lg:items-center lg:gap-12 lg:py-10">
         <div className="max-w-2xl lg:py-6">
           <span className="inline-flex rounded-full bg-[#edf7e7] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[.12em] text-[#4e7538]">Online baskı sipariş platformu</span>
           <h1 className="mt-5 text-[clamp(2.35rem,10vw,4.2rem)] font-semibold leading-[.9] tracking-[-.065em] text-[#171a16]">Baskı ihtiyacın ne?</h1>
@@ -35,9 +35,9 @@ export default function HeroSection() {
 
         <div className="grid grid-cols-2 gap-3 rounded-[20px] bg-[#f3f4f1] p-3 sm:gap-4 sm:rounded-[24px] sm:p-4">
           {products.map((product) => (
-            <Link key={product.id} href={product.href} className="group overflow-hidden rounded-[14px] border border-[#e3e6e0] bg-white sm:relative sm:rounded-[16px]">
-              <div className="relative h-[116px] sm:aspect-[4/3] sm:h-auto lg:aspect-auto lg:h-[238px]"><Image src={product.image} alt={product.name} fill sizes="(max-width:1024px) 50vw, 28vw" className="object-contain p-3 transition duration-300 group-hover:scale-[1.03] sm:p-5" /></div>
-              <div className="border-t border-[#eceee9] px-3 py-2.5 sm:absolute sm:inset-x-3 sm:bottom-3 sm:rounded-[12px] sm:border sm:border-black/5 sm:bg-white/95 sm:backdrop-blur"><p className="truncate text-[13px] font-semibold text-[#171a16] sm:text-sm">{product.name}</p><p className="mt-0.5 text-[11px] text-[#5f665d]">{product.price ? `${product.price.min.toLocaleString('tr-TR')} TL'den` : 'İncele'}</p></div>
+            <Link key={product.id} href={product.href} className="group overflow-hidden rounded-[14px] border border-[#e3e6e0] bg-white sm:rounded-[16px]">
+              <div className="relative h-[116px] sm:h-[190px] lg:h-[220px]"><Image src={product.image} alt={product.name} fill sizes="(max-width:1024px) 50vw, 28vw" className="object-contain p-3 transition duration-300 group-hover:scale-[1.03] sm:p-5 lg:p-6" /></div>
+              <div className="border-t border-[#eceee9] bg-white px-3 py-2.5 sm:px-4 sm:py-3"><p className="truncate text-[13px] font-semibold text-[#171a16] sm:text-sm">{product.name}</p><p className="mt-0.5 text-[11px] text-[#5f665d]">{product.price ? `${product.price.min.toLocaleString('tr-TR')} TL'den` : 'İncele'}</p></div>
             </Link>
           ))}
         </div>
