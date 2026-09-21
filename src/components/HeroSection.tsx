@@ -8,8 +8,8 @@ export default function HeroSection() {
 
   return (
     <section className="border-b border-[#e7eae4] bg-white">
-      <div className="site-container grid gap-8 py-8 sm:py-10 lg:grid-cols-[.92fr_1.08fr] lg:items-center lg:gap-12 lg:py-10">
-        <div className="max-w-2xl lg:py-6">
+      <div className="site-container grid gap-8 py-8 sm:py-10 lg:grid-cols-[.92fr_1.08fr] lg:items-start lg:gap-12 lg:py-10">
+        <div className="max-w-2xl">
           <span className="inline-flex rounded-full bg-[#edf7e7] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[.12em] text-[#4e7538]">Online baskı sipariş platformu</span>
           <h1 className="mt-5 text-[clamp(2.35rem,10vw,4.2rem)] font-semibold leading-[.9] tracking-[-.065em] text-[#171a16]">Baskı ihtiyacın ne?</h1>
           <p className="mt-4 max-w-xl text-[15px] leading-6 text-[#666d63] sm:text-lg">Kartvizitten broşüre, etiketten promosyon ürünlerine kadar baskı ürünlerini seçin, özelliklerini belirleyin ve online sipariş edin.</p>
