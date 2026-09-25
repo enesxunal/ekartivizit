@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { Search, Package, Truck, CheckCircle, Clock, AlertCircle, ArrowLeft, MessageCircle } from 'lucide-react'
+import { Search, Package, Truck, CheckCircle, Clock, AlertCircle, ArrowLeft, MessageCircle, RefreshCw } from 'lucide-react'
 
 interface OrderStatus {
   orderId: string
@@ -44,6 +44,8 @@ export default function OrderTrackingPage() {
   const [orderData, setOrderData] = useState<OrderStatus | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [shippingStatus, setShippingStatus] = useState<{ provider: string; trackingNumber: string; status: string } | null>(null)
+  const [shippingLoading, setShippingLoading] = useState(false)
 
   const getOrderFromApi = async (query: string): Promise<OrderStatus | null> => {
     const response = await fetch(`/api/orders/${encodeURIComponent(query.trim())}`, { cache: 'no-store' })
@@ -96,6 +98,7 @@ export default function OrderTrackingPage() {
       
       if (order) {
         setOrderData(order)
+        setShippingStatus(null)
       } else {
         setError('Sipariş bulunamadı. Lütfen sipariş numaranızı kontrol edin.')
       }
@@ -139,6 +142,29 @@ export default function OrderTrackingPage() {
       setError('Sipariş bulunamadı. Lütfen sipariş numaranızı kontrol edin.')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const refreshShippingStatus = async () => {
+    if (!orderData?.orderId || !orderData.trackingNumber) return
+    setShippingLoading(true)
+    try {
+      const response = await fetch(`/api/orders/${encodeURIComponent(orderData.orderId)}/shipping`, { cache: 'no-store' })
+      const data = await response.json()
+      if (response.ok && data.shipping) setShippingStatus(data.shipping)
+    } finally {
+      setShippingLoading(false)
+    }
+  }
+
+  const shippingStatusText = (status?: string) => {
+    switch (status) {
+      case 'prepared': return 'Gönderi oluşturuldu'
+      case 'shipping': return 'Kargoda'
+      case 'delivered': return 'Teslim edildi'
+      case 'returned': return 'İade sürecinde'
+      case 'problem': return 'Kargo desteği gerekiyor'
+      default: return 'Hazırlanıyor'
     }
   }
 
@@ -287,13 +313,20 @@ export default function OrderTrackingPage() {
                   </div>
                   <div>
                     <span className="text-[#687067]">Takip No:</span>
-                    <p className="font-semibold">{orderData.trackingNumber}</p>
+                    <p className="font-semibold">{shippingStatus?.trackingNumber || orderData.trackingNumber || 'Henüz oluşturulmadı'}</p>
+                    {orderData.trackingNumber && <p className="mt-1 text-xs text-[#687067]">BasitKargo · {shippingStatusText(shippingStatus?.status)}</p>}
                   </div>
                   <div>
                     <span className="text-[#687067]">Tahmini Teslimat:</span>
                     <p className="font-semibold">{orderData.estimatedDelivery}</p>
                   </div>
                 </div>
+                {orderData.trackingNumber && (
+                  <Button type="button" variant="outline" className="mt-5" disabled={shippingLoading} onClick={() => void refreshShippingStatus()}>
+                    <RefreshCw className={`mr-2 h-4 w-4 ${shippingLoading ? 'animate-spin' : ''}`} />
+                    {shippingLoading ? 'Kargo durumu alınıyor...' : 'BasitKargo durumunu yenile'}
+                  </Button>
+                )}
               </CardContent>
             </Card>
 
