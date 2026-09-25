@@ -31,6 +31,7 @@ const columns = [
       ['Blog', '/blog'],
       ['Gizlilik', '/gizlilik-politikasi'],
       ['Kullanım Şartları', '/kullanim-sartlari'],
+      ['Mesafeli Satış Sözleşmesi', '/mesafeli-satis-sozlesmesi'],
     ],
   },
 ]

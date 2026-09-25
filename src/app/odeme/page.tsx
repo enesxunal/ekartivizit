@@ -26,6 +26,7 @@ export default function OdemePage() {
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'whatsapp' | 'credit-card' | 'bank-transfer'>('whatsapp')
   const [isProcessing, setIsProcessing] = useState(false)
+  const [contractAccepted, setContractAccepted] = useState(false)
 
   // Müşteri bilgileri
   const [customerInfo, setCustomerInfo] = useState({
@@ -185,6 +186,15 @@ export default function OdemePage() {
   }
 
   const handlePayment = async () => {
+    if (!contractAccepted) {
+      addToast({
+        type: 'error',
+        title: 'Sözleşme Onayı Gerekli',
+        description: 'Sipariş vermeden önce Mesafeli Satış Sözleşmesi’ni okuyup onaylamalısınız'
+      })
+      return
+    }
+
     if (!validateForm()) return
 
     setIsProcessing(true)
@@ -458,7 +468,22 @@ export default function OdemePage() {
                 <p className="mt-1 text-right text-[11px] text-[#949a91]">KDV dahil</p>
               </div>
 
-              <button type="button" onClick={handlePayment} disabled={isProcessing} className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-[12px] bg-[#171a16] px-5 text-sm font-semibold text-white transition hover:bg-[#2b3029] disabled:cursor-not-allowed disabled:opacity-55">
+              <label className="mt-5 flex cursor-pointer items-start gap-3 rounded-[12px] border border-[#e0e3dd] bg-[#fafbf8] p-4 text-xs leading-5 text-[#666d64]">
+                <input
+                  type="checkbox"
+                  checked={contractAccepted}
+                  onChange={(event) => setContractAccepted(event.target.checked)}
+                  className="mt-0.5 size-4 shrink-0 accent-[#579d32]"
+                />
+                <span>
+                  <a href="/mesafeli-satis-sozlesmesi" target="_blank" rel="noreferrer" className="font-semibold text-[#171a16] underline underline-offset-2">
+                    Mesafeli Satış Sözleşmesi
+                  </a>
+                  ’ni okudum ve kabul ediyorum.
+                </span>
+              </label>
+
+              <button type="button" onClick={handlePayment} disabled={isProcessing || !contractAccepted} className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-[12px] bg-[#171a16] px-5 text-sm font-semibold text-white transition hover:bg-[#2b3029] disabled:cursor-not-allowed disabled:opacity-55">
                 {isProcessing ? 'Sipariş oluşturuluyor...' : <>Siparişi oluştur <ChevronRight className="size-4" /></>}
               </button>
 
