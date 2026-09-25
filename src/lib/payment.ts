@@ -61,103 +61,34 @@ export async function processWhatsAppPayment(paymentData: PaymentData): Promise<
   }
 }
 
-// Kredi kartı ödeme (Tosla entegrasyonu) - Güncellenmiş
+// Kredi/banka kartı ödeme (PayTR iFrame API)
 export async function processCreditCardPayment(
-  paymentData: PaymentData, 
+  paymentData: PaymentData,
   _cardData: CreditCardData
 ): Promise<PaymentResult> {
   void _cardData
   try {
-    // İstek verisini hazırla (sunucu tarafındaki API route'a gönderilecek)
-    // NOT: Kart bilgileri Tosla'nın sayfasında girilecek, burada gönderilmiyor
-    const toslaRequest = {
-      amount: paymentData.amount,
-      currency: paymentData.currency,
-      orderId: paymentData.orderId,
-      customerInfo: {
-        name: paymentData.customerInfo.name,
-        email: paymentData.customerInfo.email,
-        phone: paymentData.customerInfo.phone
-      },
-      cardInfo: {
-        // Kart bilgileri Tosla'nın sayfasında girilecek
-        cardNumber: '',
-        expiryMonth: '',
-        expiryYear: '',
-        cvc: '',
-        cardHolderName: ''
-      },
-      returnUrl: `${window.location.origin}/odeme/basarili?order=${paymentData.orderId}`,
-      cancelUrl: `${window.location.origin}/odeme/iptal?order=${paymentData.orderId}`
-    }
-
-    // Sunucuya isteği gönder (CORS ve gizli anahtarlar için güvenli yol)
-    const response = await fetch('/api/tosla/payment', {
+    const response = await fetch('/api/paytr/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(toslaRequest)
+      body: JSON.stringify({ orderId: paymentData.orderId })
     })
 
-    // Önce yanıtın durumunu kontrol et
-    if (!response.ok) {
-      let errorMessage = 'Sunucu hatası'
-      try {
-        const errorText = await response.text()
-        if (errorText) {
-          const errorJson = JSON.parse(errorText)
-          errorMessage = errorJson.error || errorJson.errorMessage || errorText
-        }
-      } catch {
-        errorMessage = `HTTP ${response.status} hatası`
-      }
+    const result = await response.json().catch(() => ({}))
+    if (!response.ok || !result.success || !result.token) {
       return {
         success: false,
-        errorMessage: `Kredi kartı ödemesi başarısız: ${errorMessage}`
+        errorMessage: result.message || 'PayTR ödeme oturumu başlatılamadı'
       }
     }
 
-    // Yanıt içeriğini güvenli bir şekilde oku
-    const responseText = await response.text()
-    
-    if (!responseText || responseText.trim() === '') {
-      return {
-        success: false,
-        errorMessage: 'Sunucudan boş yanıt alındı'
-      }
-    }
-
-    let toslaResult
-    try {
-      toslaResult = JSON.parse(responseText)
-    } catch (parseError) {
-      console.error('JSON parse hatası:', parseError, 'Yanıt:', responseText)
-      return {
-        success: false,
-        errorMessage: `Geçersiz yanıt formatı: ${responseText.substring(0, 100)}`
-      }
-    }
-
-    if (toslaResult.success) {
-      // Sunucu HTML form döndürdüyse direkt sayfaya yaz ve gönder
-      if (toslaResult.html) {
-        document.open()
-        document.write(toslaResult.html)
-        document.close()
-        return { success: true }
-      }
-      return {
-        success: true,
-        paymentId: toslaResult.paymentId,
-        redirectUrl: toslaResult.redirectUrl
-      }
-    } else {
-      return {
-        success: false,
-        errorMessage: toslaResult.error || toslaResult.errorMessage || 'Kredi kartı ödemesi başarısız oldu'
-      }
+    return {
+      success: true,
+      paymentId: `paytr-${paymentData.orderId}`,
+      redirectUrl: `/odeme/paytr?token=${encodeURIComponent(result.token)}&order=${encodeURIComponent(paymentData.orderId)}`
     }
   } catch (error) {
-    console.error('Tosla ödeme hatası:', error)
+    console.error('PayTR ödeme hatası:', error)
     return {
       success: false,
       errorMessage: 'Kredi kartı ödemesi işlenirken hata oluştu: ' + (error instanceof Error ? error.message : 'Bilinmeyen hata')
@@ -184,7 +115,7 @@ export async function processBankTransferPayment(paymentData: PaymentData): Prom
   }
 }
 
-// Kapıda ödeme kaldırıldı - Tosla entegrasyonu kullanılacak
+// Kapıda ödeme kullanılmıyor; kart ödemeleri PayTR üzerinden alınır
 
 // WhatsApp sipariş mesajı oluştur
 function createWhatsAppOrderMessage(paymentData: PaymentData): string {
@@ -224,12 +155,8 @@ export async function checkPaymentStatus(paymentId: string): Promise<{
       return { status: 'pending' } // WhatsApp ödemeleri manuel onay gerektirir
     }
     
-    if (paymentId.startsWith('tosla-')) {
-      return { 
-        status: 'paid', 
-        amount: 100, // Örnek tutar
-        paidAt: new Date().toISOString() 
-      }
+    if (paymentId.startsWith('paytr-')) {
+      return { status: 'pending' }
     }
     
     return { status: 'pending' }
@@ -249,7 +176,7 @@ export const paymentMethods = {
   },
   'credit-card': {
     name: 'Kredi/Banka Kartı',
-    description: 'Tosla ile güvenli 3D Secure ödeme',
+    description: 'PayTR ile güvenli kart ödemesi',
     icon: '💳',
     fee: 0,
     processingTime: 'Anında'

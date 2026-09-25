@@ -57,7 +57,7 @@ export default function PaymentSuccessPage() {
         if (!foundOrder) throw new Error('Siparis bulunamadi')
         setOrderDetails({
           orderId: foundOrder.id,
-          paymentId: paymentId || 'Tosla',
+          paymentId: paymentId || 'PayTR',
           amount: foundOrder.total,
           status: foundOrder.paymentStatus,
           customerInfo: foundOrder.customerInfo,

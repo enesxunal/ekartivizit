@@ -180,7 +180,7 @@ export default function OdemePage() {
       return false
     }
 
-    // Kart bilgileri Tosla'nın sayfasında girilecek, burada kontrol gerekmez
+    // Kart bilgileri PayTR ödeme ekranında girilecek, burada kontrol gerekmez
 
     return true
   }
@@ -254,7 +254,7 @@ export default function OdemePage() {
           paymentResult = await processWhatsAppPayment(paymentData)
           break
         case 'credit-card':
-          // Kart bilgileri Tosla'nın sayfasında girilecek, burada boş gönderiyoruz
+          // Kart bilgileri PayTR ödeme ekranında girilecek, burada boş gönderiyoruz
           paymentResult = await processCreditCardPayment(paymentData, {
             cardNumber: '',
             expiryMonth: '',

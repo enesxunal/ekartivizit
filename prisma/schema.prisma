@@ -141,7 +141,7 @@ model OrderItem {
 model Payment {
   id                String        @id @default(cuid())
   orderId           String
-  provider          String        @default("tosla")
+  provider          String        @default("paytr")
   status            PaymentStatus @default(PENDING)
   amount            Decimal       @db.Decimal(12, 2)
   currency          String        @default("TRY")
