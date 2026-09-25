@@ -24,7 +24,7 @@ export default function OdemePage() {
   const { createOrder } = useOrders()
   const { addToast } = useToast()
 
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'whatsapp' | 'credit-card' | 'bank-transfer'>('whatsapp')
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'whatsapp' | 'credit-card' | 'bank-transfer'>('credit-card')
   const [isProcessing, setIsProcessing] = useState(false)
   const [contractAccepted, setContractAccepted] = useState(false)
 
@@ -425,7 +425,8 @@ export default function OdemePage() {
 
             <CheckoutSection number="04" icon={CreditCard} title="Ödeme yöntemi" description="Ödeme altyapısından bağımsız, sade bir seçim akışı.">
               <div className="grid gap-2">
-                {Object.entries(paymentMethods).map(([key, method]) => {
+                {(['credit-card', 'bank-transfer', 'whatsapp'] as const).map((key) => {
+                  const method = paymentMethods[key]
                   const selected = selectedPaymentMethod === key
                   return (
                     <button key={key} type="button" onClick={() => setSelectedPaymentMethod(key as typeof selectedPaymentMethod)} className={`flex items-center gap-4 rounded-[14px] border p-4 text-left transition ${selected ? 'border-[#171a16] bg-[#f6f7f4]' : 'border-[#dfe3dc] bg-white hover:border-[#aeb4aa]'}`}>
