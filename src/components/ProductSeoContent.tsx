@@ -6,6 +6,7 @@ import { ArrowRight, CheckCircle2 } from 'lucide-react'
 export default function ProductSeoContent({ product }: { product: Product }) {
   const content = getProductSeo(product.id)
   if (!content) return null
+  const priceRows = product.quantityPricing ?? []
 
   return (
     <section className="border-t border-[#e5e8e2] bg-white">
@@ -39,6 +40,33 @@ export default function ProductSeoContent({ product }: { product: Product }) {
                 </div>
               </article>
             ))}
+
+            {priceRows.length > 0 && (
+              <section className="border-t border-[#e5e8e2] pt-7">
+                <h3 className="text-xl font-semibold tracking-[-.025em] text-[#171a16]">Güncel {product.name.toLocaleLowerCase('tr-TR')} baskı fiyatları</h3>
+                <p className="mt-2 text-sm leading-6 text-[#666d63]">Adet, ölçü ve malzemeye göre mevcut seçenekleri karşılaştırın. Fiyatlar ürün verisinden doğrudan alınır.</p>
+                <div className="mt-4 overflow-x-auto rounded-[14px] border border-[#e5e8e2]">
+                  <table className="min-w-full border-collapse text-left text-sm">
+                    <thead className="bg-[#f7f8f5] text-xs uppercase tracking-[.08em] text-[#626960]">
+                      <tr>
+                        <th className="px-4 py-3 font-semibold">Adet</th>
+                        <th className="px-4 py-3 font-semibold">Seçenek</th>
+                        <th className="px-4 py-3 font-semibold">Fiyat</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#edf0ea] bg-white">
+                      {priceRows.map((row, index) => (
+                        <tr key={`${row.quantity}-${row.material || ''}-${row.size || ''}-${index}`}>
+                          <td className="whitespace-nowrap px-4 py-3 font-semibold text-[#252a24]">{row.quantity.toLocaleString('tr-TR')} adet</td>
+                          <td className="px-4 py-3 text-[#666d63]">{[row.size, row.material].filter(Boolean).join(' · ') || 'Standart'}</td>
+                          <td className="whitespace-nowrap px-4 py-3 font-semibold text-[#252a24]">{row.price.toLocaleString('tr-TR')} TL</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            )}
 
             <div className="border-t border-[#e5e8e2] pt-7">
               <h3 className="text-xl font-semibold tracking-[-.025em] text-[#171a16]">Sık sorulan sorular</h3>

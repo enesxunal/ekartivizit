@@ -152,8 +152,8 @@ export default function ProductContent({ product }: ProductContentProps) {
             <div className="mb-1.5 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[.12em] text-[#3f7a25] lg:mb-2 lg:tracking-[.14em]">
               <span>{product.category}</span><span className="text-[#8c918a]">/</span><span>Online baskı</span>
             </div>
-            <h1 className="text-[30px] font-semibold leading-[.96] tracking-[-.05em] text-[#171a16] lg:text-[clamp(2.2rem,3.2vw,3.4rem)] lg:leading-[.93] lg:tracking-[-.06em]">{product.name}</h1>
-            <p className="mt-2 line-clamp-2 text-[12px] leading-5 text-[#5f665d] lg:max-w-xl lg:text-[13px]">{product.description}</p>
+            <h1 className="text-[30px] font-semibold leading-[.96] tracking-[-.05em] text-[#171a16] lg:text-[clamp(2.2rem,3.2vw,3.4rem)] lg:leading-[.93] lg:tracking-[-.06em]">{product.name} Baskı</h1>
+            <p className="mt-2 line-clamp-2 text-[12px] leading-5 text-[#5f665d] lg:max-w-xl lg:text-[13px]">{product.description} Güncel fiyat ve adet seçeneklerini aşağıdan karşılaştırabilirsiniz.</p>
           </div>
 
           <div className="min-w-0 lg:col-start-1 lg:row-span-2 lg:row-start-1">

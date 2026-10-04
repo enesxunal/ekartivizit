@@ -88,7 +88,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kartvizit',
     name: 'Kartvizit',
-    description: 'Profesyonel kartvizit tasarımları',
+    description: 'Kartvizit baskı; 85×52 mm ölçüde 250 gr, 350 gr ve 700 gr seçenekleriyle 1000 ve 2000 adet online sipariş.',
     category: 'kurumsal',
     image: '/images/Kartvizit.png',
     images: [
@@ -122,7 +122,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'antetli-kagit',
     name: 'Antetli Kağıt',
-    description: 'Kurumsal antetli kağıt tasarımları',
+    description: 'Antetli kağıt baskı; A4 ve A5 ölçülerde kurumsal yazışmalar için güncel adet ve fiyat seçenekleriyle online sipariş.',
     category: 'kurumsal',
     image: '/images/antetli-kagit-2222.png',
     href: '/urun/antetli-kagit',
@@ -144,7 +144,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'zarf',
     name: 'Zarf',
-    description: 'Kurumsal zarf tasarımları',
+    description: 'Baskılı zarf; diplomat, torba A5 ve torba A4 ölçülerinde kurumsal zarf baskı seçenekleri ve güncel fiyatlar.',
     category: 'kurumsal',
     image: '/images/Zarf-Diplomat2.png',
     images: [
@@ -173,7 +173,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'makbuz',
     name: 'Makbuz',
-    description: 'Özel tasarım makbuz ve fiş',
+    description: 'NCR karbonlu makbuz baskı; 14×20 ve 20×29 cm ölçülerde numaralı otocopy makbuz seçenekleri.',
     category: 'kurumsal',
     image: '/images/makbuz-111.png',
     images: [
@@ -201,7 +201,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'cepli-dosya',
     name: 'Cepli Dosya',
-    description: 'Kurumsal cepli dosya tasarımları',
+    description: 'A4 cepli dosya baskı; kurumsal teklif ve sunumlar için Bristol kağıt, adet ve güncel fiyat seçenekleri.',
     category: 'kurumsal',
     image: '/images/Cepli-Dosya-111.png',
     images: [
@@ -232,7 +232,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'brosur',
     name: 'Broşür',
-    description: 'Reklam broşürü tasarım ve baskı',
+    description: 'Broşür baskı; A4 ve A5 ölçülerde 115 gr ve 130 gr kağıt seçenekleriyle 1000 ve 2000 adet online sipariş.',
     category: 'reklam',
     image: '/images/Brosur-Ekonomik.png',
     images: [
@@ -294,7 +294,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'arac-magnet',
     name: 'Araç Magnet',
-    description: 'Araç üstü magnet reklam çözümleri',
+    description: 'Araç magnet baskı; 20×60 ve 30×60 cm ölçülerde sökülüp takılabilir mıknatıslı araç reklamı seçenekleri.',
     category: 'reklam',
     image: '/images/Magnet Arac.png',
     href: '/urun/arac-magnet',
@@ -316,7 +316,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'etiket',
     name: 'Etiket',
-    description: 'Özel tasarım etiket çözümleri',
+    description: 'Sticker ve etiket baskı; 53×83 mm, A5 ve A4 ölçülerde standart veya özel kesim etiket seçenekleri.',
     category: 'reklam',
     image: '/images/Sticker.png',
     images: [
@@ -344,7 +344,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'yelken-bayrak',
     name: 'Yelken Bayrak',
-    description: 'Açık hava reklam yelken bayrakları',
+    description: 'Yelken bayrak baskı; 75×300 cm polyester kumaş üzerine dijital baskılı açık hava reklam bayrağı.',
     category: 'reklam',
     image: '/images/Yelken-Bayrak-e1686170893487-800x799.png',
     href: '/urun/yelken-bayrak',
@@ -367,7 +367,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'plastik-kalem',
     name: 'Plastik Kalem',
-    description: 'Kurumsal promosyon kalemleri',
+    description: 'Logolu plastik kalem baskı; 100 adet promosyon kalem için 4 renk baskı ve online sipariş seçeneği.',
     category: 'promosyon',
     image: '/images/Kalem-e1685732155641.png',
     href: '/urun/plastik-kalem',
@@ -388,7 +388,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'cakmak',
     name: 'Çakmak',
-    description: 'Promosyon çakmak baskı hizmetleri',
+    description: 'Logolu promosyon çakmak baskı; 100 adet plastik çakmak için 4 renk baskı ve online sipariş seçeneği.',
     category: 'promosyon',
     image: '/images/Çakmak.png',
     href: '/urun/cakmak',
@@ -409,7 +409,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'seramik-kupa',
     name: 'Seramik Kupa',
-    description: 'Özel tasarım seramik kupa baskı',
+    description: 'Logolu seramik kupa baskı; 10 adet kurumsal ve promosyon kupa için 4 renk baskı seçeneği.',
     category: 'promosyon',
     image: '/images/Kupa-e1686170189162-800x800.png',
     images: [
@@ -434,7 +434,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'takvim',
     name: 'Takvim',
-    description: 'Özel tasarım piramit takvim',
+    description: 'Masaüstü piramit takvim baskı; 100, 250, 500 ve 1000 adet 12 yapraklı kurumsal takvim seçenekleri.',
     category: 'kurumsal',
     image: '/images/takvim-mockup-1.png',
     images: [
