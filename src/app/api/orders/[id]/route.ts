@@ -24,6 +24,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!(await isAdminSession())) return NextResponse.json({ success: false, message: 'Admin oturumu gerekli.' }, { status: 401 })
+  if (request.headers.get('origin') !== new URL(request.url).origin) return NextResponse.json({success:false,message:'Gecersiz istek kaynagi.'},{status:403})
   const { id } = await params
   const body = await request.json()
   const data: { status?: OrderStatus; paymentStatus?: PaymentStatus; trackingNumber?: string | null; notes?: string | null } = {}
@@ -32,6 +33,9 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   if (body.trackingNumber !== undefined) data.trackingNumber = body.trackingNumber ? String(body.trackingNumber) : null
   if (body.notes !== undefined) data.notes = body.notes ? String(body.notes) : null
   if ((body.status && !data.status) || (body.paymentStatus && !data.paymentStatus)) return NextResponse.json({ success: false, message: 'Gecersiz durum.' }, { status: 400 })
+  const existing = await db.order.findUnique({where:{id}})
+  if (!existing) return NextResponse.json({success:false,message:'Siparis bulunamadi.'},{status:404})
+  if (data.status && ['DELIVERED','CANCELLED'].includes(existing.status) && data.status !== existing.status) return NextResponse.json({success:false,message:'Tamamlanmis siparis degistirilemez.'},{status:409})
   const order = await db.order.update({ where: { id }, data, include: { items: true, payments: true } })
   return NextResponse.json({ success: true, order: serializeOrder(order) })
 }

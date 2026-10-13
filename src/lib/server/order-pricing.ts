@@ -27,6 +27,9 @@ export interface PricedCheckoutItem extends CheckoutItemInput {
 function resolveBasePrice(item: CheckoutItemInput) {
   const product = PRODUCTS.find((entry) => entry.id === item.productId)
   if (!product) throw new Error(`Urun bulunamadi: ${item.productId}`)
+  if (!Number.isSafeInteger(item.quantity) || item.quantity < 1) throw new Error('Gecersiz urun adedi')
+  if (item.selectedMaterial && !product.materials?.includes(item.selectedMaterial)) throw new Error('Gecersiz malzeme')
+  if (item.selectedSize && !product.sizes?.includes(item.selectedSize)) throw new Error('Gecersiz boyut')
 
   const candidates = product.quantityPricing?.filter((entry) => entry.quantity === item.quantity) ?? []
   const exact = candidates.find((entry) =>
@@ -39,7 +42,7 @@ function resolveBasePrice(item: CheckoutItemInput) {
   if (product.customSizing?.enabled && item.customWidth && item.customHeight) {
     const width = Number(item.customWidth)
     const height = Number(item.customHeight)
-    if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) {
+    if (!Number.isFinite(width) || !Number.isFinite(height) || width < product.customSizing.minSize || height < product.customSizing.minSize || width > 200 || height > 200) {
       throw new Error('Gecersiz ozel olcu')
     }
     return { product, price: width * height * product.customSizing.pricePerCm2 * item.quantity }
@@ -49,11 +52,13 @@ function resolveBasePrice(item: CheckoutItemInput) {
 }
 
 export function priceCheckoutItems(items: CheckoutItemInput[]) {
-  if (!Array.isArray(items) || items.length === 0) throw new Error('Sepet bos')
+  if (!Array.isArray(items) || items.length === 0 || items.length > 30) throw new Error('Gecersiz sepet')
 
   const priced: PricedCheckoutItem[] = items.map((item) => {
     const { product, price: basePrice } = resolveBasePrice(item)
     const extras = item.selectedExtras ?? []
+    if (!Array.isArray(extras) || extras.length > 20 || new Set(extras).size !== extras.length) throw new Error('Gecersiz ek secenekler')
+    if (!Number.isSafeInteger(item.cartQuantity ?? 1) || (item.cartQuantity ?? 1) < 1 || (item.cartQuantity ?? 1) > 100) throw new Error('Gecersiz sepet adedi')
     const extrasTotal = extras.reduce((sum, extraName) => {
       const extra = product.extraOptions?.find((entry) => entry.name === extraName)
       if (!extra) throw new Error(`Gecersiz ek secenek: ${extraName}`)

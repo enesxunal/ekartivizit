@@ -21,14 +21,18 @@ export async function POST(request: Request) {
   const order = await db.order.findUnique({ where: { id: merchantOid } })
   if (!order) return new Response('OK', { status: 200 })
 
+  if (status !== 'success' && status !== 'failed') return new Response('Invalid status', {status:400})
   const isSuccess = status === 'success'
 
   await db.$transaction(async (tx) => {
+    const current = await tx.order.findUnique({where:{id:order.id}})
+    if (!current || current.paymentStatus === 'PAID') return
     const latest = await tx.payment.findFirst({
       where: { orderId: order.id, provider: 'paytr' },
       orderBy: { createdAt: 'desc' },
     })
 
+    if (latest && latest.status === 'PAID') return
     if (latest && latest.status === (isSuccess ? 'PAID' : 'FAILED')) return
 
     if (latest) {

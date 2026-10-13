@@ -12,6 +12,7 @@ function asTemplateOrder(order: ReturnType<typeof serializeOrder>) {
 }
 
 export async function POST(request: NextRequest) {
+  if (request.headers.get('origin') !== new URL(request.url).origin) return NextResponse.json({success:false,error:'Gecersiz istek kaynagi'},{status:403})
   try {
     const body = await request.json()
     const emailType = String(body.emailType ?? '')

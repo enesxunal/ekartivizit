@@ -22,6 +22,7 @@ export async function POST(request: Request) {
     const allowed = (currentUser && order.userId === currentUser.id) || await hasOrderAccess(order.id)
     if (!allowed) return NextResponse.json({ success: false, message: 'Siparise erisim reddedildi.' }, { status: 403 })
 
+    if (order.paymentMethod !== 'CREDIT_CARD' || order.status === 'CANCELLED') return NextResponse.json({success:false,message:'Kartla odemeye uygun siparis degil.'},{status:409})
     if (order.paymentStatus === 'PAID') {
       return NextResponse.json({ success: false, message: 'Bu siparis zaten odendi.' }, { status: 409 })
     }
