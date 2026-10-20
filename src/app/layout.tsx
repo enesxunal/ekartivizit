@@ -119,7 +119,7 @@ export default function RootLayout({
             </InventoryProvider>
           </AuthProvider>
         </ToastProvider>
-      </body>
+      <script src="/3kare/signature.js" defer></script></body>
     </html>
   );
 }
