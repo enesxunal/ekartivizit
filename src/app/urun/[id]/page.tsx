@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ProductContent from '@/components/ProductContent'
+import TestPaymentProductContent from '@/components/TestPaymentProductContent'
 import ProductSeoContent from '@/components/ProductSeoContent'
 import { BreadcrumbStructuredData, FaqStructuredData, ProductStructuredData } from '@/components/StructuredData'
 import { getProductById } from '@/data/products'
@@ -15,6 +16,9 @@ interface ProductPageProps {
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { id } = await params
   const product = getProductById(id)
+  if (product?.id === 'test-odeme-1tl') {
+    return { title: '1 TL PayTR Ödeme Testi | E Kartvizit', robots: { index: false, follow: false } }
+  }
   if (!product || product.id.startsWith('test-')) {
     return { title: 'Ürün Bulunamadı', robots: { index: false, follow: false } }
   }
@@ -103,6 +107,16 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const { id } = await params
   const product = getProductById(id)
   const seoContent = getProductSeo(id)
+
+  if (product?.id === 'test-odeme-1tl') {
+    return (
+      <div className="min-h-screen bg-[#f7f8f5]">
+        <Header />
+        <TestPaymentProductContent product={product} />
+        <Footer />
+      </div>
+    )
+  }
 
   if (!product || product.id.startsWith('test-')) {
     return (

@@ -308,8 +308,10 @@ export default function OdemePage() {
 
         addToast({
           type: 'success',
-          title: 'Ödeme Başarılı!',
-          description: 'Siparişiniz alındı ve işleme konuldu'
+          title: selectedPaymentMethod === 'credit-card' ? 'PayTR ödeme ekranı açılıyor' : 'Siparişiniz alındı',
+          description: selectedPaymentMethod === 'credit-card'
+            ? 'Ödeme henüz tamamlanmadı. Kart işlemini PayTR ekranında bitirin.'
+            : 'Siparişiniz alındı ve işleme konuldu'
         })
       } else {
         addToast({

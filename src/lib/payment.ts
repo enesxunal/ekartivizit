@@ -81,6 +81,12 @@ export async function processCreditCardPayment(
         errorMessage: result.message || 'PayTR ödeme oturumu başlatılamadı'
       }
     }
+    if (result.testMode) {
+      return {
+        success: false,
+        errorMessage: 'PayTR test modu aktif. Gerçek tahsilat için canlı ödeme modu açılmalı.'
+      }
+    }
 
     return {
       success: true,
