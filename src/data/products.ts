@@ -67,6 +67,19 @@ export const CATEGORIES: Category[] = [
 ];
 
 export const PRODUCTS: Product[] = [
+  // KAF Grup icin gecici, yalnizca dogrudan linkten erisilen tahsilat kalemi.
+  {
+    id: 'test-kaf-grup-katalog-baski-2026-54000',
+    name: 'KAF Grup - Kurumsal Katalog Baskisi (1.000 Adet)',
+    description: 'KAF Grup 2026 katalog baskisi; A4 dikey, 28 sayfa, 1.000 adet, tel dikis, nakliye dahil.',
+    category: 'kurumsal',
+    image: '/images/Kartvizit.png',
+    href: '/tahsilat/kaf-grup-katalog-baski-2026',
+    gradient: 'from-[#59af05] to-[#4a9321]',
+    minQuantity: 1,
+    price: { min: 54000, max: 54000 },
+    quantityPricing: [{ quantity: 1, price: 54000 }],
+  },
   // TEST ÜRÜNÜ (Ödeme testi için 1 TL)
   {
     id: 'test-odeme-1tl',

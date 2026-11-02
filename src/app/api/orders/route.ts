@@ -7,6 +7,7 @@ import { priceCheckoutItems, type CheckoutItemInput } from '@/lib/server/order-p
 import { serializeOrder } from '@/lib/server/serialize-order'
 import { isAdminSession } from '@/lib/admin-auth'
 import { setOrderAccess } from '@/lib/server/order-access'
+import { KAF_PAYMENT_PRODUCT_ID, isKafPaymentExpired } from '@/lib/kaf-payment'
 
 const discountCodes: Record<string, number> = { WELCOME10: 10, SAVE20: 20, FIRST50: 50, STUDENT15: 15 }
 const paymentMethods: Record<string, PaymentMethod> = {
@@ -41,6 +42,14 @@ export async function POST(request: Request) {
         customDesign: item.customDesign as CheckoutItemInput['customDesign']
       }
     })
+
+    const kafRequest = normalizedItems.some((item) => item.productId === KAF_PAYMENT_PRODUCT_ID)
+    if (kafRequest && isKafPaymentExpired()) return NextResponse.json({ success: false, message: 'Baglantinin suresi doldu.' }, { status: 410 })
+    if (kafRequest && (normalizedItems.length !== 1 || normalizedItems[0].quantity !== 1 || normalizedItems[0].cartQuantity !== 1 || body.discountCode || body.paymentMethod !== 'credit-card')) return NextResponse.json({ success: false, message: 'Gecersiz ozel tahsilat islemi.' }, { status: 400 })
+
+    if (kafRequest && await db.order.findFirst({ where: { paymentStatus: 'PAID', items: { some: { productId: KAF_PAYMENT_PRODUCT_ID } } }, select: { id: true } })) {
+      return NextResponse.json({ success: false, message: 'Bu baglanti icin odeme tamamlandi.' }, { status: 409 })
+    }
 
     const priced = priceCheckoutItems(normalizedItems)
     const code = body.discountCode ? String(body.discountCode).toUpperCase() : ''

@@ -3,6 +3,7 @@ import { db } from '@/lib/server/db'
 import { createPaytrIframeToken } from '@/lib/paytr'
 import { getCurrentUser } from '@/lib/server/session'
 import { hasOrderAccess } from '@/lib/server/order-access'
+import { KAF_PAYMENT_PRODUCT_ID, isKafPaymentExpired } from '@/lib/kaf-payment'
 
 function getIp(request: Request) {
   const forwarded = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
@@ -25,6 +26,15 @@ export async function POST(request: Request) {
     if (order.paymentMethod !== 'CREDIT_CARD' || order.status === 'CANCELLED') return NextResponse.json({success:false,message:'Kartla odemeye uygun siparis degil.'},{status:409})
     if (order.paymentStatus === 'PAID') {
       return NextResponse.json({ success: false, message: 'Bu siparis zaten odendi.' }, { status: 409 })
+    }
+
+    if (order.items.some((item) => item.productId === KAF_PAYMENT_PRODUCT_ID)) {
+      if (isKafPaymentExpired()) return NextResponse.json({ success: false, message: 'Baglanti suresi doldu.' }, { status: 410 })
+      const paid = await db.order.findFirst({
+        where: { id: { not: order.id }, paymentStatus: 'PAID', items: { some: { productId: KAF_PAYMENT_PRODUCT_ID } } },
+        select: { id: true },
+      })
+      if (paid) return NextResponse.json({ success: false, message: 'Bu tahsilat tamamlandi.' }, { status: 409 })
     }
 
     const origin = new URL(request.url).origin
