@@ -40,6 +40,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  if (request.headers.get('origin') !== new URL(request.url).origin) return NextResponse.json({ success: false, message: 'Gecersiz istek kaynagi.' }, { status: 403 })
   if (!(await isAdminSession())) {
     return NextResponse.json({ success: false, message: 'Admin oturumu gerekli.' }, { status: 401 })
   }

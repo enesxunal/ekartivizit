@@ -14,15 +14,26 @@ export async function POST(request: Request) {
     return new Response('PAYTR notification failed: missing fields', { status: 400 })
   }
 
-  if (!verifyPaytrCallback({ merchantOid, status, totalAmount, hash })) {
-    return new Response('PAYTR notification failed: bad hash', { status: 400 })
+  let validSignature = false
+  try {
+    validSignature = verifyPaytrCallback({ merchantOid, status, totalAmount, hash })
+  } catch {
+    return new Response('PAYTR notification temporarily unavailable', { status: 503 })
   }
+  if (!validSignature) return new Response('PAYTR notification failed: bad hash', { status: 400 })
 
   const order = await db.order.findUnique({ where: { id: merchantOid } })
   if (!order) return new Response('OK', { status: 200 })
 
   if (status !== 'success' && status !== 'failed') return new Response('Invalid status', {status:400})
   const isSuccess = status === 'success'
+  // PayTR'nin toplam tutari kurus cinsindendir; taksit masrafi nedeniyle buyuk olabilir.
+  // Basarili odeme sipariste kayitli tutardan daha az ise kabul etmeyiz.
+  const callbackCents = Number(totalAmount)
+  const orderCents = Math.round(Number(order.total) * 100)
+  if (isSuccess && (!Number.isSafeInteger(callbackCents) || callbackCents < orderCents)) {
+    return new Response('PAYTR notification failed: amount mismatch', { status: 400 })
+  }
 
   await db.$transaction(async (tx) => {
     const current = await tx.order.findUnique({where:{id:order.id}})

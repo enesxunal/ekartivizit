@@ -21,7 +21,9 @@ import {
   Save
 } from 'lucide-react'
 import Link from 'next/link'
-import { PRODUCTS as products } from '@/data/products'
+import { PRODUCTS as allProducts } from '@/data/products'
+
+const products = allProducts.filter(product => !product.id.startsWith('test-'))
 import { useOrders } from '@/contexts/OrderContext'
 import type { Product } from '@/data/products'
 
@@ -169,7 +171,7 @@ export default function ProductsPage() {
     }
 
     saveEditedProducts(editedProducts)
-    alert(`Ürün güncellendi: ${nameInput.value}`)
+    alert(`Taslak kaydedildi: ${nameInput.value}. Bu değişiklik canlı site fiyatlarını etkilemez.`)
     setIsEditModalOpen(false)
     setSelectedProduct(null)
     window.location.reload() // Sayfayı yenile
@@ -200,7 +202,7 @@ export default function ProductsPage() {
     }
 
     saveEditedProducts(editedProducts)
-    alert(`Ürün ayarları güncellendi: ${selectedProduct.name}`)
+    alert(`Ürün ayarları yerel taslak olarak kaydedildi: ${selectedProduct.name}. Canlı katalog değişmedi.`)
     setIsSettingsModalOpen(false)
     setSelectedProduct(null)
     window.location.reload() // Sayfayı yenile
@@ -249,7 +251,7 @@ export default function ProductsPage() {
     editedProducts[newProductId] = newProduct
     saveEditedProducts(editedProducts)
 
-    alert(`Yeni ürün eklendi: ${newProduct.name}`)
+    alert(`Yeni ürün yalnızca bu tarayıcıda taslak olarak oluşturuldu: ${newProduct.name}. Canlı sitede yayınlanmadı.`)
     setIsNewProductModalOpen(false)
     window.location.reload() // Sayfayı yenile
   }
@@ -278,6 +280,7 @@ export default function ProductsPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div role="status" className="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900"><strong>Önemli:</strong> Bu eski ürün düzenleyicisindeki değişiklikler yalnızca bu tarayıcıda taslak olarak saklanır. Canlı katalog ve ödeme fiyatları değişmez.</div>
         {/* İstatistik Kartları */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card>

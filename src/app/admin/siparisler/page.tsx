@@ -1,403 +1,117 @@
 'use client'
-
-import React, { useState } from 'react'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { 
-  Package, 
-  Eye, 
-  Search,
-  Download,
-  Truck,
-  Check,
-  X,
-  Mail,
-  Phone,
-  MapPin,
-  RefreshCw,
-  Send
-} from 'lucide-react'
+import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
-import { useOrders } from '@/contexts/OrderContext'
-// Email artık API üzerinden gönderilecek
+import { Download, RefreshCw, Search, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Truck, AlertTriangle } from 'lucide-react'
+import BasitKargoControls from '@/components/admin/BasitKargoControls'
+import { type AdminOrder, type OrderState, money, dateTime, orderLabels, paymentLabels, paymentClasses } from '@/lib/admin-view'
 
-export default function OrdersPage() {
-  const { orders, updateOrderStatus } = useOrders()
-  const [selectedStatus, setSelectedStatus] = useState('all')
-  const [searchTerm, setSearchTerm] = useState('')
+type OrderResult = { orders: AdminOrder[]; count: number; page: number; totalPages: number }
+const nextStates: Partial<Record<OrderState, OrderState>> = {
+  pending: 'confirmed', confirmed: 'preparing', preparing: 'printing', printing: 'shipping', shipping: 'delivered',
+}
 
-  // Filtreleme
-  const filteredOrders = orders.filter(order => {
-    const matchesStatus = selectedStatus === 'all' || order.status === selectedStatus
-    const matchesSearch = 
-      order.customerInfo.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.customerInfo.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.id.toLowerCase().includes(searchTerm.toLowerCase())
-    
-    return matchesStatus && matchesSearch
-  })
-
-  const getStatusBadgeColor = (status: string) => {
-    switch (status) {
-      case 'pending': return 'bg-orange-100 text-orange-800'
-      case 'confirmed': return 'bg-blue-100 text-blue-800'
-      case 'preparing': return 'bg-purple-100 text-purple-800'
-      case 'printing': return 'bg-indigo-100 text-indigo-800'
-      case 'shipping': return 'bg-yellow-100 text-yellow-800'
-      case 'delivered': return 'bg-green-100 text-green-800'
-      case 'cancelled': return 'bg-red-100 text-red-800'
-      default: return 'bg-gray-100 text-gray-800'
-    }
-  }
-
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'pending': return 'Bekliyor'
-      case 'confirmed': return 'Onaylandı'
-      case 'preparing': return 'Hazırlanıyor'
-      case 'printing': return 'Basılıyor'
-      case 'shipping': return 'Kargoda'
-      case 'delivered': return 'Teslim Edildi'
-      case 'cancelled': return 'İptal Edildi'
-      default: return status
-    }
-  }
-
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Siparişler</h1>
-              <p className="text-gray-600">Tüm siparişleri yönet</p>
-            </div>
-            <div className="flex gap-4">
-              <Link href="/admin">
-                <Button variant="outline">Panele Dön</Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Filtreler */}
-        <Card className="mb-6">
-          <CardContent className="p-6">
-            <div className="flex flex-col md:flex-row gap-4">
-              {/* Arama */}
-              <div className="flex-1">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <input
-                    type="text"
-                    placeholder="Sipariş ara (isim, email, sipariş no)"
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              {/* Durum Filtresi */}
-              <div className="flex gap-2 flex-wrap">
-                {[
-                  { value: 'all', label: 'Tümü' },
-                  { value: 'pending', label: 'Bekliyor' },
-                  { value: 'confirmed', label: 'Onaylandı' },
-                  { value: 'preparing', label: 'Hazırlanıyor' },
-                  { value: 'printing', label: 'Basılıyor' },
-                  { value: 'shipping', label: 'Kargoda' },
-                  { value: 'delivered', label: 'Teslim Edildi' }
-                ].map((status) => (
-                  <Button
-                    key={status.value}
-                    variant={selectedStatus === status.value ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setSelectedStatus(status.value)}
-                  >
-                    {status.label}
-                  </Button>
-                ))}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Siparişler Listesi */}
-        <div className="space-y-4">
-          {filteredOrders.length === 0 ? (
-            <Card>
-              <CardContent className="p-12 text-center">
-                <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Sipariş bulunamadı</h3>
-                <p className="text-gray-600">Filtrelere uygun sipariş yok.</p>
-              </CardContent>
-            </Card>
-          ) : (
-            filteredOrders.map((order) => (
-              <Card key={order.id}>
-                <CardContent className="p-6">
-                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                    {/* Sol Taraf - Sipariş Bilgileri */}
-                    <div className="flex-1">
-                      <div className="flex items-center gap-4 mb-4">
-                        <div>
-                          <h3 className="text-lg font-semibold">Sipariş #{order.id}</h3>
-                          <p className="text-sm text-gray-600">
-                            {new Date(order.createdAt).toLocaleDateString('tr-TR')}
-                          </p>
-                        </div>
-                        <Badge className={getStatusBadgeColor(order.status)}>
-                          {getStatusText(order.status)}
-                        </Badge>
-                      </div>
-
-                      {/* Müşteri Bilgileri */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div>
-                          <h4 className="font-medium text-gray-900 mb-2">Müşteri Bilgileri</h4>
-                          <div className="space-y-1 text-sm text-gray-600">
-                            <div className="flex items-center gap-2">
-                              <span className="font-medium">{order.customerInfo.name}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Mail className="w-3 h-3" />
-                              <span>{order.customerInfo.email}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Phone className="w-3 h-3" />
-                              <span>{order.customerInfo.phone}</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div>
-                          <h4 className="font-medium text-gray-900 mb-2">Teslimat Adresi</h4>
-                          <div className="text-sm text-gray-600">
-                            {order.customerInfo.address ? (
-                              <div className="flex items-start gap-2">
-                                <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0" />
-                                <div>
-                                  <div>{order.customerInfo.address.street}</div>
-                                  <div>{order.customerInfo.address.city} / {order.customerInfo.address.district}</div>
-                                  <div>{order.customerInfo.address.postalCode}</div>
-                                </div>
-                              </div>
-                            ) : (
-                              <div className="text-gray-400">Adres bilgisi yok</div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Sipariş Detayları */}
-                      <div>
-                        <h4 className="font-medium text-gray-900 mb-2">Sipariş Detayları</h4>
-                        <div className="space-y-2">
-                          {order.items.map((item, index) => {
-                            const cartQuantity = item.cartQuantity || 1
-                            const itemTotal = item.price * cartQuantity
-                            return (
-                              <div key={index} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                                <div>
-                                  <div className="font-medium">{item.product.name}</div>
-                                  <div className="text-sm text-gray-600">
-                                    Paket: {cartQuantity} × ₺{item.price.toLocaleString()} = ₺{itemTotal.toLocaleString()}
-                                    {item.customDesign && <span className="ml-2 text-purple-600">(Özel Tasarım)</span>}
-                                  </div>
-                                  <div className="text-xs text-gray-500 mt-1">
-                                    Paket İçeriği: {item.quantity.toLocaleString()} adet (Toplam: {(item.quantity * cartQuantity).toLocaleString()} adet)
-                                  </div>
-                                </div>
-                                <div className="font-medium">₺{itemTotal.toLocaleString()}</div>
-                              </div>
-                            )
-                          })}
-                        </div>
-                        <div className="mt-4 pt-4 border-t border-gray-200">
-                          <div className="flex justify-between items-center font-semibold text-lg">
-                            <span>Toplam:</span>
-                            <span>₺{order.total.toFixed(0)}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Sağ Taraf - Aksiyonlar */}
-                    <div className="lg:w-64 flex lg:flex-col gap-3">
-                      {/* Durum Değiştirme */}
-                      <div className="space-y-2 w-full">
-                        {order.status === 'pending' && (
-                          <>
-                            <Button 
-                              size="sm" 
-                              className="w-full"
-                              onClick={() => updateOrderStatus(order.id, 'confirmed')}
-                            >
-                              <Check className="w-4 h-4 mr-2" />
-                              Onayla
-                            </Button>
-                            <Button 
-                              size="sm" 
-                              variant="destructive" 
-                              className="w-full"
-                              onClick={() => updateOrderStatus(order.id, 'cancelled')}
-                            >
-                              <X className="w-4 h-4 mr-2" />
-                              İptal Et
-                            </Button>
-                          </>
-                        )}
-
-                        {order.status === 'confirmed' && (
-                          <Button 
-                            size="sm" 
-                            className="w-full"
-                            onClick={() => updateOrderStatus(order.id, 'preparing')}
-                          >
-                            <Package className="w-4 h-4 mr-2" />
-                            Hazırlamaya Al
-                          </Button>
-                        )}
-
-                        {order.status === 'preparing' && (
-                          <Button 
-                            size="sm" 
-                            className="w-full"
-                            onClick={() => updateOrderStatus(order.id, 'printing')}
-                          >
-                            <Package className="w-4 h-4 mr-2" />
-                            Baskıya Al
-                          </Button>
-                        )}
-
-                        {order.status === 'printing' && (
-                          <Button 
-                            size="sm" 
-                            className="w-full"
-                            onClick={() => updateOrderStatus(order.id, 'shipping')}
-                          >
-                            <Truck className="w-4 h-4 mr-2" />
-                            Kargoya Ver
-                          </Button>
-                        )}
-
-                        {order.status === 'shipping' && (
-                          <Button 
-                            size="sm" 
-                            className="w-full"
-                            onClick={() => updateOrderStatus(order.id, 'delivered')}
-                          >
-                            <Check className="w-4 h-4 mr-2" />
-                            Teslim Edildi
-                          </Button>
-                        )}
-
-                        <BasitKargoControls
-                          orderId={order.id}
-                          paymentStatus={order.paymentStatus}
-                          trackingNumber={order.trackingNumber}
-                        />
-
-                        {/* Detay Görüntüle */}
-                        <Button size="sm" variant="outline" className="w-full">
-                          <Eye className="w-4 h-4 mr-2" />
-                          Detaylar
-                        </Button>
-
-                        {/* PDF İndir */}
-                        <Button size="sm" variant="outline" className="w-full">
-                          <Download className="w-4 h-4 mr-2" />
-                          PDF İndir
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          )}
-        </div>
-      </div>
-    </div>
-  )
-} 
-
-function BasitKargoControls({ orderId, paymentStatus, trackingNumber }: { orderId: string; paymentStatus: string; trackingNumber?: string }) {
-  const [busy, setBusy] = useState(false)
-  const [message, setMessage] = useState('')
-  const [height, setHeight] = useState('10')
-  const [width, setWidth] = useState('20')
-  const [depth, setDepth] = useState('30')
-  const [weight, setWeight] = useState('1')
-
-  const run = async (action: 'create' | 'refresh') => {
-    setBusy(true)
-    setMessage('')
+export default function AdminOrdersPage() {
+  const [q, setQ] = useState('')
+  const [query, setQuery] = useState('')
+  const [status, setStatus] = useState('')
+  const [payment, setPayment] = useState('')
+  const [page, setPage] = useState(1)
+  const [data, setData] = useState<OrderResult | null>(null)
+  const [expanded, setExpanded] = useState('')
+  const [busy, setBusy] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const fetchOrders = useCallback(async () => {
+    setLoading(true); setError('')
     try {
-      const response = await fetch('/api/admin/basitkargo', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action,
-          orderId,
-          handlerCode: 'ECONOMIC',
-          package: {
-            height: Number(height),
-            width: Number(width),
-            depth: Number(depth),
-            weight: Number(weight),
-          },
-        }),
+      const params = new URLSearchParams({ page: String(page), limit: '20' })
+      if (query) params.set('q', query)
+      if (status) params.set('status', status)
+      if (payment) params.set('payment', payment)
+      const response = await fetch('/api/admin/orders?' + params, { cache: 'no-store' })
+      const body = await response.json()
+      if (!response.ok) throw new Error(body.message || 'Siparişler yüklenemedi.')
+      setData(body)
+    } catch (e) { setError(e instanceof Error ? e.message : 'Bağlantı hatası') }
+    finally { setLoading(false) }
+  }, [page, query, status, payment])
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (params.has('q')) { const v = params.get('q') || ''; setQ(v); setQuery(v) }
+  }, [])
+  useEffect(() => { void fetchOrders() }, [fetchOrders])
+
+  const updateStatus = async (order: AdminOrder, next: OrderState) => {
+    if (next === 'cancelled' && !window.confirm(order.id + ' numaralı siparişi iptal etmek istiyor musunuz?')) return
+    setBusy(order.id); setError('')
+    try {
+      const response = await fetch('/api/orders/' + encodeURIComponent(order.id), {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: next }),
       })
-      const data = await response.json()
-      setMessage(data.message || (response.ok ? 'İşlem tamamlandı.' : 'İşlem başarısız.'))
-      if (response.ok) window.setTimeout(() => window.location.reload(), 500)
-    } catch {
-      setMessage('BasitKargo bağlantısı kurulamadı.')
-    } finally {
-      setBusy(false)
-    }
+      const result = await response.json()
+      if (!response.ok) throw new Error(result.message || 'İşlem başarısız.')
+      await fetchOrders()
+    } catch (e) { setError(e instanceof Error ? e.message : 'Durum güncellenemedi.') }
+    finally { setBusy('') }
   }
 
-  return (
-    <div className="rounded-lg border border-blue-100 bg-blue-50/50 p-3">
-      <div className="mb-2 flex items-center justify-between gap-2">
-        <div className="text-xs font-semibold text-blue-900">BasitKargo</div>
-        {trackingNumber && <span className="max-w-[130px] truncate text-[10px] text-blue-700" title={trackingNumber}>{trackingNumber}</span>}
-      </div>
+  const exportCsv = () => {
+    if (!data) return
+    const safe = (v: unknown) => {
+      const raw = String(v ?? '').replace(/\r|\n/g, ' ')
+      const clean = /^[=+@-]/.test(raw) ? "'" + raw : raw
+      return '"' + clean.replace(/"/g, '""') + '"'
+    }
+    const rows = [['Sipariş No','Tarih','Müşteri','E-posta','Tutar TL','Ödeme','Sipariş Durumu'],
+      ...data.orders.map(o => [o.id, dateTime(o.createdAt), o.customerInfo.name, o.customerInfo.email, o.total.toFixed(2), paymentLabels[o.paymentStatus], orderLabels[o.status]])]
+    const blob = new Blob(['\ufeff' + rows.map(row => row.map(safe).join(';')).join('\r\n')], { type: 'text/csv;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url; link.download = 'ekartvizit-siparisler-sayfa-' + page + '.csv'; link.click()
+    URL.revokeObjectURL(url)
+  }
 
-      {!trackingNumber ? (
-        <>
-          <div className="grid grid-cols-2 gap-2">
-            <input aria-label="Yükseklik cm" value={height} onChange={(e) => setHeight(e.target.value)} type="number" min="1" step="1" className="h-8 rounded border border-blue-100 bg-white px-2 text-xs" placeholder="Yükseklik" />
-            <input aria-label="Genişlik cm" value={width} onChange={(e) => setWidth(e.target.value)} type="number" min="1" step="1" className="h-8 rounded border border-blue-100 bg-white px-2 text-xs" placeholder="Genişlik" />
-            <input aria-label="Derinlik cm" value={depth} onChange={(e) => setDepth(e.target.value)} type="number" min="1" step="1" className="h-8 rounded border border-blue-100 bg-white px-2 text-xs" placeholder="Derinlik" />
-            <input aria-label="Ağırlık kg" value={weight} onChange={(e) => setWeight(e.target.value)} type="number" min="0.1" step="0.1" className="h-8 rounded border border-blue-100 bg-white px-2 text-xs" placeholder="Ağırlık" />
-          </div>
-          <Button
-            size="sm"
-            type="button"
-            className="mt-2 w-full bg-blue-700 hover:bg-blue-800"
-            disabled={busy || paymentStatus !== 'paid'}
-            onClick={() => void run('create')}
-          >
-            <Send className="mr-2 h-3.5 w-3.5" />
-            {busy ? 'Oluşturuluyor...' : 'Kargo Kodu Oluştur'}
-          </Button>
-          {paymentStatus !== 'paid' && <p className="mt-2 text-[10px] leading-4 text-blue-700">Ödeme tamamlanınca aktif olur.</p>}
-        </>
-      ) : (
-        <Button size="sm" type="button" variant="outline" className="w-full border-blue-200 bg-white" disabled={busy} onClick={() => void run('refresh')}>
-          <RefreshCw className="mr-2 h-3.5 w-3.5" />
-          {busy ? 'Yenileniyor...' : 'Kargo Durumunu Yenile'}
-        </Button>
-      )}
-      {message && <p className="mt-2 text-[10px] leading-4 text-blue-800">{message}</p>}
+  return <main className="min-h-screen bg-[#f5f6f4] px-4 py-7 text-[#17221c] sm:px-6 lg:px-10">
+    <div className="mx-auto max-w-7xl">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div><p className="text-xs font-semibold uppercase tracking-wider text-[#538048]">E Kartvizit / <Link href="/admin" className="underline">Yönetim</Link></p><h1 className="mt-2 text-3xl font-bold tracking-tight">Sipariş Geçmişi</h1><p className="mt-1 text-sm text-[#6b776e]">Gerçek sipariş, ödeme ve kargo durumları</p></div>
+        <div className="flex gap-2"><button onClick={() => void fetchOrders()} disabled={loading} className="inline-flex items-center gap-2 rounded-lg border bg-white px-3 py-2 text-sm font-semibold"><RefreshCw size={16}/>Yenile</button><button onClick={exportCsv} disabled={!data?.orders.length} className="inline-flex items-center gap-2 rounded-lg bg-[#18251b] px-3 py-2 text-sm font-semibold text-white disabled:opacity-50"><Download size={16}/>CSV (bu sayfa)</button></div>
+      </div>
+      <form className="mt-7 flex flex-wrap gap-3 rounded-2xl border border-[#e0e7de] bg-white p-4" onSubmit={e => { e.preventDefault(); setPage(1); setQuery(q.trim()) }}>
+        <div className="relative min-w-[220px] flex-1"><Search size={17} className="absolute left-3 top-3 text-[#69776a]"/><input className="w-full rounded-lg border border-[#dce3dc] py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[#579a57]" value={q} onChange={e => setQ(e.target.value)} placeholder="Sipariş no, isim, e-posta, telefon" /></div>
+        <select aria-label="Sipariş durumuna göre filtrele" value={status} onChange={e => { setStatus(e.target.value); setPage(1) }} className="rounded-lg border border-[#dce3dc] bg-white px-3 py-2 text-sm"><option value="">Tüm sipariş durumları</option>{Object.entries(orderLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select>
+        <select aria-label="Ödeme durumuna göre filtrele" value={payment} onChange={e => { setPayment(e.target.value); setPage(1) }} className="rounded-lg border border-[#dce3dc] bg-white px-3 py-2 text-sm"><option value="">Tüm ödemeler</option>{Object.entries(paymentLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select>
+        <button type="submit" className="rounded-lg bg-[#17251b] px-5 py-2.5 text-sm font-semibold text-white">Ara</button>
+      </form>
+      {error && <div role="alert" className="mt-5 flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800"><AlertTriangle size={18}/>{error}</div>}
+      <div className="mt-5 overflow-hidden rounded-2xl border border-[#e0e7de] bg-white">
+        <div className="flex items-center justify-between border-b border-[#e7ebe5] px-5 py-4"><span className="text-sm font-semibold">{data ? data.count + ' sipariş' : 'Siparişler'}</span>{loading && <span className="text-xs text-[#6b776e]">Güncelleniyor…</span>}</div>
+        {!data?.orders.length && !loading ? <p className="p-8 text-center text-sm text-[#637066]">Kayıt bulunamadı.</p> : <div className="divide-y divide-[#edf0ed]">
+          {data?.orders.map(o => <article key={o.id} className="px-4 py-4 sm:px-5">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="min-w-0"><p className="break-all text-sm font-bold">{o.id}</p><p className="mt-1 text-sm text-[#4f5e51]">{o.customerInfo.name} · {dateTime(o.createdAt)}</p><p className="mt-1 text-xs text-[#899187]">{o.customerInfo.email}</p></div>
+              <div className="flex flex-wrap items-center gap-3"><span className={'rounded-full px-2.5 py-1 text-xs font-semibold ' + paymentClasses[o.paymentStatus]}>{paymentLabels[o.paymentStatus]}</span><span className="rounded-full bg-[#f2f4f0] px-2.5 py-1 text-xs font-medium">{orderLabels[o.status]}</span><span className="font-bold tabular-nums">{money(o.total)}</span><button aria-expanded={expanded === o.id} onClick={() => setExpanded(expanded === o.id ? '' : o.id)} className="rounded-lg border p-2" title="Sipariş detayları">{expanded === o.id ? <ChevronUp size={16}/> : <ChevronDown size={16}/>}</button></div>
+            </div>
+            {expanded === o.id && <div className="mt-5 grid gap-5 border-t border-[#edf0ed] pt-5 lg:grid-cols-[1.2fr_1fr]">
+              <div className="space-y-5">
+                <div><h3 className="mb-3 text-sm font-semibold">Sipariş kalemleri</h3>{o.items.map(item => <div key={item.id} className="flex justify-between gap-3 border-b border-[#eef1ed] py-2 text-sm"><div><p>{item.product.name}</p><p className="text-xs text-[#69756b]">{item.cartQuantity} paket · {item.quantity} adet {item.selectedMaterial || ''} {item.selectedSize || ''}</p></div><span>{money(item.price * item.cartQuantity)}</span></div>)}</div>
+                <div><h3 className="mb-2 text-sm font-semibold">Müşteri ve teslimat</h3><p className="whitespace-pre-wrap text-sm text-[#5f6c62]">{o.customerInfo.name} · {o.customerInfo.phone}\n{o.customerInfo.email}\n{o.customerInfo.address?.street} {o.customerInfo.address?.district} / {o.customerInfo.address?.city}</p></div>
+                <div><h3 className="mb-2 text-sm font-semibold">Ödeme hareketleri</h3>{o.paymentAttempts?.length ? o.paymentAttempts.map((p,i) => <p key={i} className="border-b border-[#eef1ed] py-2 text-xs text-[#5c685e]">{dateTime(p.createdAt)} · {p.provider} · {money(p.amount)} · {paymentLabels[p.status]} {p.lastEvent ? '· ' + p.lastEvent : ''}</p>) : <p className="text-xs text-[#78847a]">Ödeme sağlayıcısı hareketi henüz kaydedilmemiş.</p>}</div>
+              </div>
+              <div className="space-y-4">
+                {o.paymentStatus !== 'paid' && <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">Bu siparişin tahsilatı doğrulanmadı. Üretim ve sevkiyat işlemleri ödeme sonrası başlatılmalıdır.</div>}
+                {nextStates[o.status] && <button onClick={() => void updateStatus(o, nextStates[o.status]!)} disabled={busy === o.id || o.paymentStatus !== 'paid'} className="w-full rounded-lg bg-[#285a31] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50">Durum: {orderLabels[nextStates[o.status]!]} yap</button>}
+                {!['delivered','cancelled'].includes(o.status) && <button onClick={() => void updateStatus(o, 'cancelled')} disabled={busy === o.id} className="w-full rounded-lg border border-red-200 bg-white px-4 py-2 text-sm font-semibold text-red-700 disabled:opacity-50">Siparişi iptal et</button>}
+                <div className="flex items-center gap-2 text-xs font-medium text-[#687568]"><Truck size={15}/> Kargo yönetimi</div>
+                <BasitKargoControls orderId={o.id} paymentStatus={o.paymentStatus} trackingNumber={o.trackingNumber}/>
+                <Link href={'/siparis/' + encodeURIComponent(o.id)} className="block rounded-lg border bg-white px-4 py-2 text-center text-sm font-medium">Sipariş sayfası</Link>
+              </div>
+            </div>}
+          </article>)}
+        </div>}
+      </div>
+      {data && data.totalPages > 1 && <div className="mt-5 flex items-center justify-end gap-4 text-sm"><button disabled={page <= 1} onClick={() => setPage(page - 1)} className="rounded-lg border bg-white p-2 disabled:opacity-30"><ChevronLeft size={18}/></button><span>{page} / {data.totalPages}</span><button disabled={page >= data.totalPages} onClick={() => setPage(page + 1)} className="rounded-lg border bg-white p-2 disabled:opacity-30"><ChevronRight size={18}/></button></div>}
     </div>
-  )
+  </main>
 }

@@ -1,400 +1,61 @@
 'use client'
-
-import React, { useState, useMemo } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { 
-  BarChart3, 
-  TrendingUp,
-  TrendingDown,
-  Package,
-  Users,
-  DollarSign,
-  Download
-} from 'lucide-react'
+import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
-import { useOrders } from '@/contexts/OrderContext'
+import { BarChart3, CreditCard, Download, RefreshCw, TrendingUp, ShoppingBag } from 'lucide-react'
+import { type Overview, money } from '@/lib/admin-view'
 
-export default function ReportsPage() {
-  const { orders } = useOrders()
-  const [timeRange, setTimeRange] = useState('30') // Son 30 gün
+export default function SalesReportsPage() {
+  const [days, setDays] = useState(30)
+  const [data, setData] = useState<Overview | null>(null)
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const refresh = useCallback(async () => {
+    setLoading(true); setError('')
+    try {
+      const response = await fetch('/api/admin/overview?days=' + days, { cache: 'no-store' })
+      const json = await response.json()
+      if (!response.ok) throw new Error(json.message || 'Rapor alınamadı.')
+      setData(json)
+    } catch (e) { setError(e instanceof Error ? e.message : 'Sunucuya bağlanılamadı.') }
+    finally { setLoading(false) }
+  }, [days])
+  useEffect(() => { void refresh() }, [refresh])
 
-  // Tarih filtreleme
-  const filteredOrders = useMemo(() => {
-    const days = parseInt(timeRange)
-    const cutoffDate = new Date()
-    cutoffDate.setDate(cutoffDate.getDate() - days)
-    
-    return orders.filter(order => new Date(order.createdAt) >= cutoffDate)
-  }, [orders, timeRange])
+  const exportCsv = () => {
+    if (!data) return
+    const rows = [['Gün', 'Tahsilat (TL)', 'Ödenen sipariş'], ...data.daily.map(p => [p.date, p.total.toFixed(2), String(p.count)])]
+    const blob = new Blob(['\ufeff' + rows.map(a => a.join(';')).join('\r\n')], { type: 'text/csv;charset=utf-8' })
+    const href = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = href; a.download = 'ekartvizit-tahsilat-' + days + 'gun.csv'; a.click(); URL.revokeObjectURL(href)
+  }
 
-  // Temel istatistikler
-  const stats = useMemo(() => {
-    const totalRevenue = filteredOrders.reduce((sum, order) => sum + order.total, 0)
-    const totalOrders = filteredOrders.length
-    const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0
-    
-    // Önceki döneme göre karşılaştırma (aynı süre öncesi)
-    const prevPeriodStart = new Date()
-    const days = parseInt(timeRange)
-    prevPeriodStart.setDate(prevPeriodStart.getDate() - (days * 2))
-    const prevPeriodEnd = new Date()
-    prevPeriodEnd.setDate(prevPeriodEnd.getDate() - days)
-    
-    const prevOrders = orders.filter(order => {
-      const orderDate = new Date(order.createdAt)
-      return orderDate >= prevPeriodStart && orderDate < prevPeriodEnd
-    })
-    
-    const prevRevenue = prevOrders.reduce((sum, order) => sum + order.total, 0)
-    const prevOrderCount = prevOrders.length
-    
-    const revenueGrowth = prevRevenue > 0 ? ((totalRevenue - prevRevenue) / prevRevenue) * 100 : 0
-    const orderGrowth = prevOrderCount > 0 ? ((totalOrders - prevOrderCount) / prevOrderCount) * 100 : 0
-
-    return {
-      totalRevenue,
-      totalOrders,
-      avgOrderValue,
-      revenueGrowth,
-      orderGrowth,
-      prevRevenue,
-      prevOrderCount
-    }
-  }, [filteredOrders, orders, timeRange])
-
-  // Durum bazında analiz
-  const statusAnalysis = useMemo(() => {
-    const statusCounts = filteredOrders.reduce((acc, order) => {
-      acc[order.status] = (acc[order.status] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
-
-    return [
-      { status: 'pending', label: 'Bekliyor', count: statusCounts.pending || 0, color: 'bg-orange-500' },
-      { status: 'confirmed', label: 'Onaylandı', count: statusCounts.confirmed || 0, color: 'bg-blue-500' },
-      { status: 'preparing', label: 'Hazırlanıyor', count: statusCounts.preparing || 0, color: 'bg-purple-500' },
-      { status: 'printing', label: 'Basılıyor', count: statusCounts.printing || 0, color: 'bg-indigo-500' },
-      { status: 'shipping', label: 'Kargoda', count: statusCounts.shipping || 0, color: 'bg-yellow-500' },
-      { status: 'delivered', label: 'Teslim Edildi', count: statusCounts.delivered || 0, color: 'bg-green-500' },
-      { status: 'cancelled', label: 'İptal Edildi', count: statusCounts.cancelled || 0, color: 'bg-red-500' }
-    ]
-  }, [filteredOrders])
-
-  // En çok satılan ürünler
-  const topProducts = useMemo(() => {
-    const productCounts = new Map<string, { name: string; count: number; revenue: number }>()
-    
-    filteredOrders.forEach(order => {
-      order.items.forEach(item => {
-        const productName = item.product.name
-        const existing = productCounts.get(productName)
-        
-        if (existing) {
-          existing.count += item.quantity * item.cartQuantity
-          existing.revenue += item.price * item.cartQuantity
-        } else {
-          productCounts.set(productName, {
-            name: productName,
-            count: item.quantity * item.cartQuantity,
-            revenue: item.price * item.cartQuantity
-          })
-        }
-      })
-    })
-    
-    return Array.from(productCounts.values())
-      .sort((a, b) => b.revenue - a.revenue)
-      .slice(0, 5)
-  }, [filteredOrders])
-
-  // Günlük gelir analizi
-  const dailyRevenue = useMemo(() => {
-    const dailyData = new Map<string, number>()
-    
-    filteredOrders.forEach(order => {
-      const date = new Date(order.createdAt).toISOString().split('T')[0]
-      dailyData.set(date, (dailyData.get(date) || 0) + order.total)
-    })
-    
-    return Array.from(dailyData.entries())
-      .map(([date, revenue]) => ({ date, revenue }))
-      .sort((a, b) => a.date.localeCompare(b.date))
-      .slice(-7) // Son 7 gün
-  }, [filteredOrders])
-
-  // Müşteri segmentasyonu
-  const customerSegments = useMemo(() => {
-    const customerData = new Map<string, { orders: number; total: number }>()
-    
-    filteredOrders.forEach(order => {
-      const email = order.customerInfo.email
-      const existing = customerData.get(email)
-      
-      if (existing) {
-        existing.orders += 1
-        existing.total += order.total
-      } else {
-        customerData.set(email, { orders: 1, total: order.total })
-      }
-    })
-    
-    const customers = Array.from(customerData.values())
-    const totalCustomers = customers.length
-    
-    const newCustomers = customers.filter(c => c.orders === 1).length
-    const returningCustomers = customers.filter(c => c.orders > 1).length
-    const vipCustomers = customers.filter(c => c.total > 1000).length
-    
-    return {
-      total: totalCustomers,
-      new: newCustomers,
-      returning: returningCustomers,
-      vip: vipCustomers
-    }
-  }, [filteredOrders])
-
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Raporlar</h1>
-              <p className="text-gray-600">Satış analizi ve performans metrikleri</p>
-            </div>
-            <div className="flex gap-4">
-              <Button variant="outline">
-                <Download className="w-4 h-4 mr-2" />
-                Rapor İndir
-              </Button>
-              <Link href="/admin">
-                <Button variant="outline">Panele Dön</Button>
-              </Link>
-            </div>
-          </div>
+  const max = Math.max(1, ...(data?.daily.map(x => x.total) || []))
+  return <main className="min-h-screen bg-[#f5f6f4] px-4 py-7 text-[#17221c] sm:px-6 lg:px-10">
+    <div className="mx-auto max-w-7xl">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div><Link href="/admin" className="text-xs font-semibold text-[#4c8449]">← YÖNETİM PANELİ</Link><h1 className="mt-3 text-3xl font-bold tracking-tight">Satış ve Tahsilat Raporları</h1><p className="mt-2 text-sm text-[#667367]">Yalnızca ödemesi doğrulanan siparişler gelir olarak hesaplanır.</p></div>
+        <div className="flex flex-wrap gap-2">
+          <select aria-label="Rapor aralığı" className="rounded-lg border bg-white px-4 py-2 text-sm" value={days} onChange={e => setDays(Number(e.target.value))}><option value={7}>Son 7 gün</option><option value={30}>Son 30 gün</option><option value={90}>Son 90 gün</option></select>
+          <button onClick={() => void refresh()} disabled={loading} className="flex items-center gap-2 rounded-lg border bg-white px-3 py-2 text-sm"><RefreshCw size={16}/>Yenile</button>
+          <button onClick={exportCsv} disabled={!data} className="flex items-center gap-2 rounded-lg bg-[#1e3522] px-3 py-2 text-sm text-white disabled:opacity-50"><Download size={16}/>CSV</button>
         </div>
       </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Zaman Aralığı Seçici */}
-        <Card className="mb-8">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-medium">Rapor Dönemi</h3>
-              <div className="flex gap-2">
-                {[
-                  { value: '7', label: 'Son 7 Gün' },
-                  { value: '30', label: 'Son 30 Gün' },
-                  { value: '90', label: 'Son 3 Ay' },
-                  { value: '365', label: 'Son 1 Yıl' }
-                ].map((period) => (
-                  <Button
-                    key={period.value}
-                    variant={timeRange === period.value ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setTimeRange(period.value)}
-                  >
-                    {period.label}
-                  </Button>
-                ))}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Ana Metrikler */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Toplam Gelir</p>
-                  <p className="text-2xl font-bold text-gray-900">₺{stats.totalRevenue.toFixed(0)}</p>
-                  <p className={`text-xs flex items-center gap-1 mt-1 ${
-                    stats.revenueGrowth >= 0 ? 'text-green-600' : 'text-red-600'
-                  }`}>
-                    {stats.revenueGrowth >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                    {Math.abs(stats.revenueGrowth).toFixed(1)}% önceki döneme göre
-                  </p>
-                </div>
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <DollarSign className="w-6 h-6 text-green-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Sipariş Sayısı</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.totalOrders}</p>
-                  <p className={`text-xs flex items-center gap-1 mt-1 ${
-                    stats.orderGrowth >= 0 ? 'text-green-600' : 'text-red-600'
-                  }`}>
-                    {stats.orderGrowth >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                    {Math.abs(stats.orderGrowth).toFixed(1)}% önceki döneme göre
-                  </p>
-                </div>
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Package className="w-6 h-6 text-blue-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Ortalama Sipariş</p>
-                  <p className="text-2xl font-bold text-gray-900">₺{stats.avgOrderValue.toFixed(0)}</p>
-                  <p className="text-xs text-gray-500 mt-1">Sipariş başına</p>
-                </div>
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <BarChart3 className="w-6 h-6 text-purple-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Müşteri Sayısı</p>
-                  <p className="text-2xl font-bold text-gray-900">{customerSegments.total}</p>
-                  <p className="text-xs text-gray-500 mt-1">{customerSegments.new} yeni müşteri</p>
-                </div>
-                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                  <Users className="w-6 h-6 text-orange-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+      {error && <div role="alert" className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">{error}</div>}
+      {loading && !data && <p className="mt-8 text-sm">Rapor hazırlanıyor…</p>}
+      {data && <>
+        <div className="mt-7 grid gap-4 md:grid-cols-3">
+          {[
+            { title: 'Seçili dönem tahsilat', value: money(data.totals.periodRevenue), caption: days + ' gün', icon: TrendingUp },
+            { title: 'Ödenen sipariş', value: String(data.totals.periodPaidOrders), caption: 'Başarılı ödeme kaydı', icon: CreditCard },
+            { title: 'Ortalama ödeme', value: money(data.totals.periodPaidOrders ? data.totals.periodRevenue / data.totals.periodPaidOrders : 0), caption: 'Ödenen sipariş başına', icon: ShoppingBag },
+          ].map(({title,value,caption,icon:Icon}) => <section key={title} className="rounded-2xl border border-[#e0e7de] bg-white p-6"><div className="flex justify-between text-sm text-[#5e6c62]"><span>{title}</span><Icon size={19} className="text-[#45804c]"/></div><p className="mt-4 text-3xl font-bold tabular-nums">{value}</p><p className="mt-2 text-xs text-[#7c887c]">{caption}</p></section>)}
         </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Sipariş Durumları */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Sipariş Durumları</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {statusAnalysis.map((item) => (
-                  <div key={item.status} className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-3 h-3 rounded-full ${item.color}`}></div>
-                      <span className="text-sm font-medium">{item.label}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium">{item.count}</span>
-                      <div className="w-20 bg-gray-200 rounded-full h-2">
-                        <div
-                          className={`h-2 rounded-full ${item.color}`}
-                          style={{
-                            width: `${stats.totalOrders > 0 ? (item.count / stats.totalOrders) * 100 : 0}%`
-                          }}
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Müşteri Segmentasyonu */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Müşteri Segmentasyonu</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
-                  <span className="font-medium">Toplam Müşteri</span>
-                  <span className="text-blue-600 font-semibold">{customerSegments.total}</span>
-                </div>
-                <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
-                  <span className="font-medium">Yeni Müşteri</span>
-                  <span className="text-green-600 font-semibold">{customerSegments.new}</span>
-                </div>
-                <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
-                  <span className="font-medium">Tekrarlayan Müşteri</span>
-                  <span className="text-purple-600 font-semibold">{customerSegments.returning}</span>
-                </div>
-                <div className="flex justify-between items-center p-3 bg-yellow-50 rounded-lg">
-                  <span className="font-medium">VIP Müşteri (₺1000+)</span>
-                  <span className="text-yellow-600 font-semibold">{customerSegments.vip}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+        <section className="mt-6 rounded-2xl border border-[#e0e7de] bg-white p-6"><h2 className="flex items-center gap-2 font-semibold"><BarChart3 size={18}/>Günlük tahsilat</h2><div className="mt-7 flex h-56 items-end gap-1 overflow-x-auto border-b border-[#e9eee8]">{data.daily.map(row => <div key={row.date} className="flex min-w-[11px] flex-1 items-end" style={{height:'100%'}} title={row.date + ' · ' + money(row.total)}><div className="w-full rounded-t bg-[#4a8150]" style={{height: Math.max(4,row.total/max*100)+'%'}}/></div>)}{!data.daily.length && <p className="self-center text-sm text-[#7c887c]">Bu dönemde başarılı ödeme bulunamadı.</p>}</div><p className="mt-3 text-xs text-[#7c887c]">Her sütun ödeme tarihi değil, siparişin oluşturulma tarihine göre raporlanır.</p></section>
+        <div className="mt-6 grid gap-5 lg:grid-cols-2">
+          <section className="rounded-2xl border border-[#e0e7de] bg-white p-6"><h2 className="font-semibold">Ürün bazında gerçekleşen tahsilatlar</h2><div className="mt-4 divide-y divide-[#edf0ed]">{data.topProducts.length ? data.topProducts.map((item,i) => <div key={i} className="flex items-center justify-between gap-3 py-3"><div className="min-w-0"><p className="truncate text-sm font-medium">{item.name}</p><p className="text-xs text-[#788478]">{item.quantity} paket</p></div><p className="text-sm font-bold">{money(item.revenue)}</p></div>) : <p className="py-4 text-sm text-[#788478]">Veri yok.</p>}</div></section>
+          <section className="rounded-2xl border border-[#e0e7de] bg-white p-6"><h2 className="font-semibold">Ödeme takip özeti</h2><dl className="mt-4 divide-y divide-[#edf0ed]">{[['Ödenen sipariş (tüm zamanlar)', data.totals.paidOrders],['Ödeme bekleyen',data.totals.pendingPayments],['Başarısız ödeme',data.totals.failedPayments],['Toplam sipariş',data.totals.allOrders]].map(([label,num]) => <div key={String(label)} className="flex justify-between gap-3 py-4 text-sm"><dt className="text-[#6d796e]">{label}</dt><dd className="font-bold">{num}</dd></div>)}</dl><p className="mt-4 text-xs leading-5 text-[#778376]">Bu rapor banka mutabakatı yerine geçmez. İade işlemleri ödeme sağlayıcısıyla ayrıca karşılaştırılmalıdır.</p></section>
         </div>
-
-        {/* En Çok Satılan Ürünler */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>En Çok Satılan Ürünler</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {topProducts.length === 0 ? (
-                <p className="text-gray-500 text-center py-8">Henüz satış verisi yok</p>
-              ) : (
-                topProducts.map((product, index) => (
-                  <div key={product.name} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                    <div className="flex items-center gap-4">
-                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                        <span className="text-blue-600 font-semibold text-sm">{index + 1}</span>
-                      </div>
-                      <div>
-                        <div className="font-medium">{product.name}</div>
-                        <div className="text-sm text-gray-600">{product.count} adet satıldı</div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-semibold">₺{product.revenue.toFixed(0)}</div>
-                      <div className="text-sm text-gray-600">toplam gelir</div>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Günlük Gelir Trendi */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Son 7 Günün Gelir Trendi</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {dailyRevenue.length === 0 ? (
-                <p className="text-gray-500 text-center py-8">Günlük gelir verisi yok</p>
-              ) : (
-                dailyRevenue.map((day) => (
-                  <div key={day.date} className="flex items-center justify-between p-3 border-b last:border-b-0">
-                    <div className="font-medium">
-                      {new Date(day.date).toLocaleDateString('tr-TR', { 
-                        weekday: 'long', 
-                        day: 'numeric', 
-                        month: 'long' 
-                      })}
-                    </div>
-                    <div className="font-semibold text-green-600">₺{day.revenue.toFixed(0)}</div>
-                  </div>
-                ))
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+        {data.truncated && <p className="mt-4 text-xs text-amber-800">Ürün/gün kırılımları son 3.000 başarılı siparişle sınırlandırıldı.</p>}
+      </>}
     </div>
-  )
-} 
+  </main>
+}

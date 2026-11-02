@@ -35,6 +35,13 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   if ((body.status && !data.status) || (body.paymentStatus && !data.paymentStatus)) return NextResponse.json({ success: false, message: 'Gecersiz durum.' }, { status: 400 })
   const existing = await db.order.findUnique({where:{id}})
   if (!existing) return NextResponse.json({success:false,message:'Siparis bulunamadi.'},{status:404})
+  // Kart tahsilatinin PAID/FAILED/REFUNDED durumunu yalniz PayTR bildirimi degistirir.
+  if (body.paymentStatus !== undefined && existing.paymentMethod === 'CREDIT_CARD') {
+    return NextResponse.json({ success: false, message: 'Kart odemesi sadece odeme saglayicisindan dogrulanabilir.' }, { status: 403 })
+  }
+  if (data.status && ['PREPARING','PRINTING','SHIPPING','DELIVERED'].includes(data.status) && existing.paymentStatus !== 'PAID') {
+    return NextResponse.json({ success: false, message: 'Tahsilat onaylanmadan uretim veya sevkiyat baslatilamaz.' }, { status: 409 })
+  }
   if (data.status && ['DELIVERED','CANCELLED'].includes(existing.status) && data.status !== existing.status) return NextResponse.json({success:false,message:'Tamamlanmis siparis degistirilemez.'},{status:409})
   const order = await db.order.update({ where: { id }, data, include: { items: true, payments: true } })
   return NextResponse.json({ success: true, order: serializeOrder(order) })

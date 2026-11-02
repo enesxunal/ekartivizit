@@ -1,247 +1,73 @@
 'use client'
-
-import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { 
-  Package, 
-  Users, 
-  TrendingUp, 
-  ShoppingCart, 
-  FileText, 
-  Palette,
-  Settings,
-  BarChart3,
-  Eye,
-  Mail
-} from 'lucide-react'
+import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
-import { useOrders } from '@/contexts/OrderContext'
+import { ArrowUpRight, BarChart3, CreditCard, Package, RefreshCw, ShoppingBag, Users, AlertTriangle } from 'lucide-react'
+import { type Overview, money, dateTime, paymentLabels, paymentClasses } from '@/lib/admin-view'
 
 export default function AdminDashboard() {
-  const { orders } = useOrders()
+  const [data, setData] = useState<Overview | null>(null)
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(true)
+  const refresh = useCallback(async () => {
+    setLoading(true)
+    setError('')
+    try {
+      const response = await fetch('/api/admin/overview?days=30', { cache: 'no-store' })
+      const result = await response.json()
+      if (!response.ok) throw new Error(result.message || 'İstatistikler alınamadı.')
+      setData(result)
+    } catch (e) { setError(e instanceof Error ? e.message : 'Bağlantı hatası') }
+    finally { setLoading(false) }
+  }, [])
+  useEffect(() => { void refresh() }, [refresh])
 
-  // İstatistikler
-  const totalOrders = orders.length
-  const pendingOrders = orders.filter(o => o.status === 'pending').length
-  // const completedOrders = orders.filter(o => o.status === 'delivered').length
-  const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0)
-  
-  // Tasarım sayıları
-  const customDesigns = orders.reduce((sum, order) => {
-    return sum + order.items.filter(item => item.customDesign).length
-  }, 0)
-
-  // Son siparişler (5 tane)
-  const recentOrders = orders.slice(0, 5)
-
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Admin Paneli</h1>
-              <p className="text-gray-600">E-Kartvizit yönetim sistemi</p>
-            </div>
-            <div className="flex gap-4">
-              <Link href="/">
-                <Button variant="outline">
-                  <Eye className="w-4 h-4 mr-2" />
-                  Siteyi Görüntüle
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
+  const figures = data ? [
+    { label: 'Tahsil edilen toplam', value: money(data.totals.paidRevenue), note: data.totals.paidOrders + ' başarılı ödeme', icon: CreditCard },
+    { label: 'Son 30 gün tahsilat', value: money(data.totals.periodRevenue), note: data.totals.periodPaidOrders + ' başarılı ödeme', icon: BarChart3 },
+    { label: 'Toplam sipariş', value: String(data.totals.allOrders), note: 'Tüm zamanlar', icon: ShoppingBag },
+    { label: 'Ödeme bekleyenler', value: String(data.totals.pendingPayments), note: data.totals.failedPayments + ' başarısız ödeme', icon: Package },
+  ] : []
+  const maxRevenue = Math.max(1, ...(data?.daily.map(x => x.total) || []))
+  return <main className="min-h-screen bg-[#f5f6f4] px-4 py-7 text-[#17221c] sm:px-6 lg:px-10">
+    <div className="mx-auto max-w-7xl">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div><p className="text-xs font-semibold uppercase tracking-[.17em] text-[#54824a]">E Kartvizit / Yönetim</p><h1 className="mt-2 text-3xl font-bold tracking-tight">Genel Bakış</h1><p className="mt-1 text-sm text-[#637166]">Gerçek veritabanından sipariş ve tahsilat istatistikleri</p></div>
+        <button onClick={() => void refresh()} disabled={loading} className="flex items-center gap-2 rounded-lg border border-[#dce3dc] bg-white px-4 py-2 text-sm font-semibold hover:bg-[#edf2ea] disabled:opacity-60"><RefreshCw size={16} className={loading ? 'animate-spin' : ''}/>Yenile</button>
       </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* İstatistik Kartları */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Toplam Sipariş</p>
-                  <p className="text-2xl font-bold text-gray-900">{totalOrders}</p>
-                </div>
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <ShoppingCart className="w-6 h-6 text-blue-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Bekleyen Siparişler</p>
-                  <p className="text-2xl font-bold text-orange-600">{pendingOrders}</p>
-                </div>
-                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                  <Package className="w-6 h-6 text-orange-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Özel Tasarımlar</p>
-                  <p className="text-2xl font-bold text-purple-600">{customDesigns}</p>
-                </div>
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <Palette className="w-6 h-6 text-purple-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Toplam Gelir</p>
-                  <p className="text-2xl font-bold text-green-600">₺{totalRevenue.toFixed(0)}</p>
-                </div>
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="w-6 h-6 text-green-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+      <nav aria-label="Yönetim bölümleri" className="mt-7 flex flex-wrap gap-2 text-sm">
+        {[['Sipariş geçmişi','/admin/siparisler',ShoppingBag],['Satış raporları','/admin/raporlar',BarChart3],['Ürünler','/admin/urunler',Package],['Müşteriler','/admin/musteriler',Users]].map(([name,href,Icon]) => {
+          const ItemIcon = Icon as typeof ShoppingBag
+          return <Link key={String(href)} href={String(href)} className="inline-flex items-center gap-2 rounded-xl border border-[#dce3dc] bg-white px-4 py-3 font-semibold hover:border-[#9ab796]"><ItemIcon size={16}/>{String(name)}<ArrowUpRight size={14}/></Link>
+        })}
+      </nav>
+      {error && <div role="alert" className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">{error}</div>}
+      {loading && !data ? <p className="mt-8 text-sm text-[#687267]">Raporlar yükleniyor…</p> : null}
+      {data && <>
+        <div className="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {figures.map(({ label, value, note, icon: Icon }) => <section key={label} className="rounded-2xl border border-[#e0e7de] bg-white p-5 shadow-sm">
+            <div className="flex items-center justify-between"><p className="text-sm text-[#647163]">{label}</p><Icon size={19} className="text-[#47793b]"/></div>
+            <p className="mt-4 text-2xl font-bold tabular-nums tracking-tight">{value}</p><p className="mt-2 text-xs text-[#758174]">{note}</p>
+          </section>)}
         </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Hızlı Erişim Menüsü */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Hızlı Erişim</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-4">
-                <Link href="/admin/siparisler">
-                  <Button variant="outline" className="w-full h-20 flex flex-col items-center gap-2">
-                    <Package className="w-6 h-6" />
-                    <span>Siparişler</span>
-                  </Button>
-                </Link>
-
-                <Link href="/admin/tasarimlar">
-                  <Button variant="outline" className="w-full h-20 flex flex-col items-center gap-2">
-                    <Palette className="w-6 h-6" />
-                    <span>Tasarımlar</span>
-                  </Button>
-                </Link>
-
-                <Link href="/admin/musteriler">
-                  <Button variant="outline" className="w-full h-20 flex flex-col items-center gap-2">
-                    <Users className="w-6 h-6" />
-                    <span>Müşteriler</span>
-                  </Button>
-                </Link>
-
-                <Link href="/admin/raporlar">
-                  <Button variant="outline" className="w-full h-20 flex flex-col items-center gap-2">
-                    <BarChart3 className="w-6 h-6" />
-                    <span>Raporlar</span>
-                  </Button>
-                </Link>
-
-                <Link href="/admin/urunler">
-                  <Button variant="outline" className="w-full h-20 flex flex-col items-center gap-2">
-                    <FileText className="w-6 h-6" />
-                    <span>Ürünler</span>
-                  </Button>
-                </Link>
-
-                <Link href="/admin/ayarlar">
-                  <Button variant="outline" className="w-full h-20 flex flex-col items-center gap-2">
-                    <Settings className="w-6 h-6" />
-                    <span>Ayarlar</span>
-                  </Button>
-                </Link>
-
-                <Link href="/admin/email-test">
-                  <Button variant="outline" className="w-full h-20 flex flex-col items-center gap-2">
-                    <Mail className="w-6 h-6" />
-                    <span>E-posta Test</span>
-                  </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Son Siparişler */}
-          <Card>
-            <CardHeader>
-              <div className="flex justify-between items-center">
-                <CardTitle>Son Siparişler</CardTitle>
-                <Link href="/admin/siparisler">
-                  <Button variant="outline" size="sm">Tümünü Gör</Button>
-                </Link>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {recentOrders.length === 0 ? (
-                  <p className="text-gray-500 text-center py-4">Henüz sipariş yok</p>
-                ) : (
-                  recentOrders.map((order) => (
-                    <div key={order.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div>
-                        <div className="font-medium">#{order.id}</div>
-                        <div className="text-sm text-gray-600">{order.customerInfo.name}</div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-medium">₺{order.total.toFixed(0)}</div>
-                        <div className={`text-xs px-2 py-1 rounded-full inline-block ${
-                          order.status === 'pending' ? 'bg-orange-100 text-orange-800' :
-                          order.status === 'confirmed' ? 'bg-blue-100 text-blue-800' :
-                          order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                          'bg-gray-100 text-gray-800'
-                        }`}>
-                          {order.status === 'pending' ? 'Bekliyor' :
-                           order.status === 'confirmed' ? 'Onaylandı' :
-                           order.status === 'delivered' ? 'Teslim Edildi' : order.status}
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Günlük Özet */}
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle>Günlük Özet</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">{totalOrders}</div>
-                <div className="text-sm text-gray-600">Bugünkü Siparişler</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">₺{totalRevenue.toFixed(0)}</div>
-                <div className="text-sm text-gray-600">Bugünkü Gelir</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600">{customDesigns}</div>
-                <div className="text-sm text-gray-600">Özel Tasarımlar</div>
-              </div>
+        <div className="mt-6 grid gap-5 lg:grid-cols-[1.3fr_1fr]">
+          <section className="rounded-2xl border border-[#e0e7de] bg-white p-6">
+            <div className="flex items-center justify-between gap-3"><h2 className="font-semibold">Günlük tahsilatlar</h2><span className="text-xs text-[#758174]">Son 30 gün · sadece ödenenler</span></div>
+            <div className="mt-7 flex h-48 items-end gap-1 overflow-x-auto border-b border-[#e0e7de] pb-1">
+              {data.daily.length ? data.daily.map(point => <div key={point.date} title={point.date + ' · ' + money(point.total)} className="flex min-w-[9px] flex-1 flex-col justify-end" style={{ height: '100%' }}><div className="w-full rounded-t bg-[#4d8650]" style={{ height: Math.max(4, point.total / maxRevenue * 100) + '%' }}/></div>) : <div className="self-center text-sm text-[#758174]">Bu dönemde başarılı tahsilat bulunmuyor.</div>}
             </div>
-          </CardContent>
-        </Card>
-      </div>
+            <div className="mt-3 flex justify-between text-xs text-[#758174]"><span>{data.daily[0]?.date || '—'}</span><span>{data.daily.at(-1)?.date || '—'}</span></div>
+          </section>
+          <section className="rounded-2xl border border-[#e0e7de] bg-white p-6">
+            <h2 className="font-semibold">En çok tahsilat yapılan ürünler</h2>
+            <div className="mt-5 space-y-4">{data.topProducts.length ? data.topProducts.slice(0,5).map((p,i) => <div key={p.name + i} className="flex items-center justify-between gap-4 border-b border-[#edf0ed] pb-3"><div className="min-w-0"><p className="truncate text-sm font-medium">{p.name}</p><p className="mt-1 text-xs text-[#758174]">{p.quantity} paket</p></div><span className="shrink-0 text-sm font-semibold tabular-nums">{money(p.revenue)}</span></div>) : <p className="text-sm text-[#758174]">Henüz başarılı ödeme yok.</p>}</div>
+          </section>
+        </div>
+        {data.truncated && <p className="mt-4 flex items-center gap-2 text-xs text-amber-800"><AlertTriangle size={14}/>Grafikler son 3.000 tahsilat üzerinden hesaplandı.</p>}
+        <section className="mt-6 overflow-hidden rounded-2xl border border-[#e0e7de] bg-white">
+          <div className="flex items-center justify-between border-b border-[#edf0ed] p-5"><h2 className="font-semibold">Son siparişler</h2><Link href="/admin/siparisler" className="text-sm font-semibold text-[#427a3f]">Tümünü görüntüle</Link></div>
+          <div className="divide-y divide-[#edf0ed]">{data.recent.length ? data.recent.map(o => <Link key={o.id} href={'/admin/siparisler?q=' + encodeURIComponent(o.id)} className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 hover:bg-[#f8faf6]"><div><p className="text-sm font-semibold">{o.id} · {o.customerInfo.name}</p><p className="mt-1 text-xs text-[#7a8579]">{dateTime(o.createdAt)}</p></div><div className="flex items-center gap-3"><span className={'rounded-full px-2.5 py-1 text-xs font-semibold ' + paymentClasses[o.paymentStatus]}>{paymentLabels[o.paymentStatus]}</span><span className="text-sm font-bold tabular-nums">{money(o.total)}</span></div></Link>) : <p className="p-6 text-sm text-[#758174]">Henüz sipariş kaydı yok.</p>}</div>
+        </section>
+      </>}
     </div>
-  )
-} 
+  </main>
+}
