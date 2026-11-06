@@ -80,6 +80,19 @@ export const PRODUCTS: Product[] = [
     price: { min: 54000, max: 54000 },
     quantityPricing: [{ quantity: 1, price: 54000 }],
   },
+  // KAF Grup web sitesi tasarimi: 27.10.2026 tarihli faturadaki hizmet, KDV dahil 54.000 TL.
+  {
+    id: 'test-kaf-grup-web-tasarim-2026-54000',
+    name: 'KAF Grup - Website Tasarımı',
+    description: '27.10.2026 tarihli KAF Grup web sitesi tasarım hizmeti.',
+    category: 'kurumsal',
+    image: '/images/Kartvizit.png',
+    href: '/tahsilat/kaf-grup-katalog-baski-2026',
+    gradient: 'from-[#59af05] to-[#4a9321]',
+    minQuantity: 1,
+    price: { min: 54000, max: 54000 },
+    quantityPricing: [{ quantity: 1, price: 54000 }],
+  },
   // TEST ÜRÜNÜ (Ödeme testi için 1 TL)
   {
     id: 'test-odeme-1tl',

@@ -14,6 +14,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { useOrders } from '@/contexts/OrderContext'
 import { useToast } from '@/contexts/ToastContext'
 import { paymentMethods, processCreditCardPayment, processWhatsAppPayment, processBankTransferPayment } from '@/lib/payment'
+import { KAF_PAYMENT_PRODUCT_IDS } from '@/lib/kaf-payment'
 // E-posta şablonları artık API üzerinden kullanılacak
 import { ArrowLeft, Building2, Check, ChevronRight, CreditCard, LockKeyhole, MapPin, ShieldCheck, ShoppingCart, Smartphone, Truck, User } from 'lucide-react'
 
@@ -91,7 +92,9 @@ export default function OdemePage() {
 
   const [sameAsShipping, setSameAsShipping] = useState(true)
 
-  const totalPrice = getDiscountedTotal()
+  const isKafSpecialCheckout = items.some(item => KAF_PAYMENT_PRODUCT_IDS.some(id => id === item.product.id))
+  // Kurumsal tahsilatta eski bir sepet kuponu kalmis olsa bile KAF tutari sabit kalir.
+  const totalPrice = isKafSpecialCheckout ? getTotalPrice() : getDiscountedTotal()
 
   if (!items || items.length === 0) {
     return (
@@ -216,7 +219,7 @@ export default function OdemePage() {
         paymentMethod: selectedPaymentMethod,
         subtotal: getTotalPrice(),
         discount: appliedDiscount ? getTotalPrice() - totalPrice : 0,
-        discountCode: appliedDiscount?.code,
+        discountCode: isKafSpecialCheckout ? undefined : appliedDiscount?.code,
         shippingCost: 0,
         total: totalPrice,
         notes: customerInfo.notes
@@ -427,7 +430,7 @@ export default function OdemePage() {
 
             <CheckoutSection number="04" icon={CreditCard} title="Ödeme yöntemi" description="Ödeme altyapısından bağımsız, sade bir seçim akışı.">
               <div className="grid gap-2">
-                {(['credit-card', 'bank-transfer', 'whatsapp'] as const).map((key) => {
+                {(isKafSpecialCheckout ? (['credit-card'] as const) : (['credit-card', 'bank-transfer', 'whatsapp'] as const)).map((key) => {
                   const method = paymentMethods[key]
                   const selected = selectedPaymentMethod === key
                   return (
@@ -462,7 +465,7 @@ export default function OdemePage() {
 
               <div className="space-y-3 py-5 text-sm">
                 <div className="flex justify-between"><span className="text-[#777d74]">Ara toplam</span><span>{getTotalPrice().toLocaleString('tr-TR')} TL</span></div>
-                {appliedDiscount && <div className="flex justify-between text-[#579d32]"><span>İndirim</span><span>-{(getTotalPrice() - totalPrice).toLocaleString('tr-TR')} TL</span></div>}
+                {appliedDiscount && !isKafSpecialCheckout && <div className="flex justify-between text-[#579d32]"><span>İndirim</span><span>-{(getTotalPrice() - totalPrice).toLocaleString('tr-TR')} TL</span></div>}
                 <div className="flex justify-between"><span className="text-[#777d74]">Kargo</span><span className="font-medium text-[#579d32]">Ücretsiz</span></div>
               </div>
 

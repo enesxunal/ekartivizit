@@ -3,7 +3,7 @@ import { db } from '@/lib/server/db'
 import { createPaytrIframeToken } from '@/lib/paytr'
 import { getCurrentUser } from '@/lib/server/session'
 import { hasOrderAccess } from '@/lib/server/order-access'
-import { KAF_PAYMENT_PRODUCT_ID, isKafPaymentExpired } from '@/lib/kaf-payment'
+import { KAF_PAYMENT_PRODUCT_IDS, KAF_PAYMENT_AMOUNT, isKafPaymentExpired } from '@/lib/kaf-payment'
 
 function getIp(request: Request) {
   const forwarded = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
@@ -28,10 +28,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, message: 'Bu siparis zaten odendi.' }, { status: 409 })
     }
 
-    if (order.items.some((item) => item.productId === KAF_PAYMENT_PRODUCT_ID)) {
+    const kafProductIds = new Set<string>(KAF_PAYMENT_PRODUCT_IDS)
+    if (order.items.some((item) => kafProductIds.has(item.productId))) {
       if (isKafPaymentExpired()) return NextResponse.json({ success: false, message: 'Baglanti suresi doldu.' }, { status: 410 })
+      if (order.items.length !== 2 ||
+          new Set(order.items.map(item => item.productId)).size !== 2 ||
+          order.items.some(item => !kafProductIds.has(item.productId) || item.quantity !== 1 || item.cartQuantity !== 1) ||
+          Number(order.total) !== KAF_PAYMENT_AMOUNT || Number(order.discount) !== 0) {
+        return NextResponse.json({ success: false, message: 'Bu siparis guncel KAF Grup 108.000 TL tahsilat paketine ait degil.' }, { status: 409 })
+      }
       const paid = await db.order.findFirst({
-        where: { id: { not: order.id }, paymentStatus: 'PAID', items: { some: { productId: KAF_PAYMENT_PRODUCT_ID } } },
+        where: { id: { not: order.id }, paymentStatus: 'PAID', items: { some: { productId: { in: [...KAF_PAYMENT_PRODUCT_IDS] } } } },
         select: { id: true },
       })
       if (paid) return NextResponse.json({ success: false, message: 'Bu tahsilat tamamlandi.' }, { status: 409 })

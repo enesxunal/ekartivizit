@@ -4,25 +4,31 @@ import Footer from '@/components/Footer'
 import KafPaymentContent from '@/components/KafPaymentContent'
 import { PRODUCTS } from '@/data/products'
 import { db } from '@/lib/server/db'
-import { KAF_PAYMENT_PRODUCT_ID, isKafPaymentExpired } from '@/lib/kaf-payment'
+import {
+  KAF_PAYMENT_PRODUCT_ID,
+  KAF_PAYMENT_WEBSITE_ID,
+  KAF_PAYMENT_PRODUCT_IDS,
+  isKafPaymentExpired,
+} from '@/lib/kaf-payment'
 
 export const metadata: Metadata = {
-  title: 'KAF Grup Katalog Baskı Ödemesi | E Kartvizit',
-  description: 'KAF Grup katalog baskısı için özel tahsilat sayfası.',
+  title: 'KAF Grup Katalog ve Website Ödemesi | E Kartvizit',
+  description: 'KAF Grup katalog baskısı ve web sitesi tasarımı için özel 108.000 TL tahsilat sayfası.',
   robots: { index: false, follow: false, noarchive: true },
 }
 
 export const dynamic = 'force-dynamic'
 
 export default async function KafPaymentPage() {
-  const product = PRODUCTS.find((entry) => entry.id === KAF_PAYMENT_PRODUCT_ID)
+  const catalogProduct = PRODUCTS.find(entry => entry.id === KAF_PAYMENT_PRODUCT_ID)
+  const websiteProduct = PRODUCTS.find(entry => entry.id === KAF_PAYMENT_WEBSITE_ID)
   const expired = isKafPaymentExpired()
   const alreadyPaid = expired ? false : Boolean(await db.order.findFirst({
-    where: { paymentStatus: 'PAID', items: { some: { productId: KAF_PAYMENT_PRODUCT_ID } } },
+    where: { paymentStatus: 'PAID', items: { some: { productId: { in: [...KAF_PAYMENT_PRODUCT_IDS] } } } },
     select: { id: true },
   }))
 
-  if (!product || expired || alreadyPaid) {
+  if (!catalogProduct || !websiteProduct || expired || alreadyPaid) {
     return (
       <div className="min-h-screen bg-[#f7f8f5]">
         <Header />
@@ -44,7 +50,7 @@ export default async function KafPaymentPage() {
   return (
     <div className="min-h-screen bg-[#f7f8f5]">
       <Header />
-      <KafPaymentContent product={product} />
+      <KafPaymentContent catalogProduct={catalogProduct} websiteProduct={websiteProduct} />
       <Footer />
     </div>
   )
